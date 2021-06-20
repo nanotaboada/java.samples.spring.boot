@@ -1,18 +1,17 @@
 package ar.com.nanotaboada.java.samples.spring.boot;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+// INFO: Reverted static imports due to build issues on Github Actions
+import org.assertj.core.api.Assertions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -36,7 +35,7 @@ public class BooksControllerTests {
         
         // Arrange
         Book book = BooksBuilder.buildOne();
-        when(service.retrieveByIsbn(book.getIsbn())).thenReturn(book);
+        Mockito.when(service.retrieveByIsbn(book.getIsbn())).thenReturn(book);
         
         RequestBuilder request = MockMvcRequestBuilders.get("/books/{isbn}", book.getIsbn());     
         
@@ -44,8 +43,8 @@ public class BooksControllerTests {
         MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
         
         // Assert
-        assertEquals(response.getStatus(), 200);
+        Assertions.assertThat(response.getStatus()).isEqualTo(200);
         // TODO: Improve response content assertions
-        assertTrue(response.getContentAsString().contains(book.getIsbn()));
+        Assertions.assertThat(response.getContentAsString().contains(book.getIsbn())).isTrue();
     }
 }
