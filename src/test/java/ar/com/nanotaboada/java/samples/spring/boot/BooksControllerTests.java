@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
@@ -33,17 +35,19 @@ public class BooksControllerTests {
     public void givenHttpGetVerb_WhenRequestParameterIdentifiesExistingBook_ThenShouldReturnStatusOkAndTheBook() throws Exception {
         
         // Arrange
-        Book book = BooksBuilder.buildOne();
-        Mockito.when(service.retrieveByIsbn(book.getIsbn())).thenReturn(book);
+        Book expected = BooksBuilder.buildOne();
+        Mockito.when(service.retrieveByIsbn(expected.getIsbn())).thenReturn(expected);
         
-        RequestBuilder request = MockMvcRequestBuilders.get("/books/{isbn}", book.getIsbn());     
+        RequestBuilder request = MockMvcRequestBuilders.get("/books/{isbn}", expected.getIsbn());     
         
         // Act
         MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
         
+        String content = response.getContentAsString();
+        Book actual = new ObjectMapper().readValue(content, Book.class);
+        
         // Assert
         assertThat(response.getStatus()).isEqualTo(200);
-        // TODO: Improve response content assertions
-        assertThat(response.getContentAsString().contains(book.getIsbn())).isTrue();
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }

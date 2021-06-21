@@ -3,6 +3,11 @@ package ar.com.nanotaboada.java.samples.spring.boot.models;
 import java.time.LocalDate;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+
 @Entity
 @Table(name = "books")
 public class Book {
@@ -12,6 +17,8 @@ public class Book {
     private String subtitle;
     private String author;
     private String publisher;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate published;
     private int pages;
     private String description;
