@@ -21,6 +21,7 @@ public class Book {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate published;
     private int pages;
+    @Lob
     private String description;
     private String website;
 
