@@ -1,4 +1,4 @@
-package ar.com.nanotaboada.java.samples.spring.boot;
+package ar.com.nanotaboada.java.samples.spring.boot.test.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
+import ar.com.nanotaboada.java.samples.spring.boot.exceptions.BookNotFoundException;
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
@@ -36,18 +37,40 @@ public class BooksControllerTests {
         
         // Arrange
         Book expected = BooksBuilder.buildOne();
-        Mockito.when(service.retrieveByIsbn(expected.getIsbn())).thenReturn(expected);
         
+        Mockito
+            .when(service.retrieveByIsbn(expected.getIsbn()))
+            .thenReturn(expected);
+
         RequestBuilder request = MockMvcRequestBuilders.get("/books/{isbn}", expected.getIsbn());     
         
         // Act
         MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
-        
         String content = response.getContentAsString();
         Book actual = new ObjectMapper().readValue(content, Book.class);
         
         // Assert
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    public void givenHttpGetVerb_WhenRequestParameterDoesNotIdentifyAnExistingBook_ThenShouldReturnStatusNotFound()
+        throws Exception {
+
+        // Arrange
+        String isbn = "978-0000000000";
+
+        Mockito
+            .when(service.retrieveByIsbn(Mockito.anyString()))
+            .thenThrow(new BookNotFoundException(Mockito.anyString()));
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/books/{isbn}", isbn);
+
+        // Act
+        MockHttpServletResponse response = mvc.perform(request).andReturn().getResponse();
+
+        // Assert
+        assertThat(response.getStatus()).isEqualTo(404);
     }
 }

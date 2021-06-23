@@ -1,4 +1,4 @@
-package ar.com.nanotaboada.java.samples.spring.boot;
+package ar.com.nanotaboada.java.samples.spring.boot.test.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
