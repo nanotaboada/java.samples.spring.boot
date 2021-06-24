@@ -28,7 +28,7 @@ public class Book {
     // The no-argument constructor, which is also a JavaBean convention, is a
     // requirement for all persistent classes.
     // https://docs.jboss.org/hibernate/orm/5.5/quickstart/html_single/
-    protected Book() { }
+    public Book() { }
 
     public String getIsbn() {
         return isbn;

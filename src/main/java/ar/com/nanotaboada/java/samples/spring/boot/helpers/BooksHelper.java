@@ -1,9 +1,11 @@
-package ar.com.nanotaboada.java.samples.spring.boot.models;
+package ar.com.nanotaboada.java.samples.spring.boot.helpers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class BooksBuilder {
+import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
+
+public class BooksHelper {
 
     public static Book buildOne() {
         

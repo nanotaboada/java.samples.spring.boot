@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
+import ar.com.nanotaboada.java.samples.spring.boot.helpers.BooksHelper;
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
-import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 
 @ExtendWith(SpringExtension.class)
@@ -32,10 +32,10 @@ public class BooksControllerTests {
     private BooksService service;
     
     @Test
-    public void givenHttpGetVerb_WhenRequestParameterIdentifiesExistingBook_ThenShouldReturnStatusOkAndTheBook() throws Exception {
+    public void givenHttpGetVerb_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook() throws Exception {
         
         // Arrange
-        Book expected = BooksBuilder.buildOne();
+        Book expected = BooksHelper.buildOne();
         
         Mockito
             .when(service.retrieveByIsbn(expected.getIsbn()))
@@ -54,7 +54,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpGetVerb_WhenRequestParameterDoesNotIdentifyAnExistingBook_ThenShouldReturnStatusNotFound()
+    public void givenHttpGetVerb_whenRequestParameterDoesNotIdentifyAnExistingBook_thenShouldReturnStatusNotFound()
         throws Exception {
 
         // Arrange
