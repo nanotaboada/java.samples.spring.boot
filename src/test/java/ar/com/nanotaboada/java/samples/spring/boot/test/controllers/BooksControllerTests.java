@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
-import ar.com.nanotaboada.java.samples.spring.boot.exceptions.BookNotFoundException;
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
@@ -63,7 +62,7 @@ public class BooksControllerTests {
 
         Mockito
             .when(service.retrieveByIsbn(Mockito.anyString()))
-            .thenThrow(new BookNotFoundException(Mockito.anyString()));
+            .thenReturn(Mockito.any(Book.class));
 
         RequestBuilder request = MockMvcRequestBuilders.get("/books/{isbn}", isbn);
 
