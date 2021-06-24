@@ -25,8 +25,6 @@ public class BooksBuilder {
 	
     public static ArrayList<Book> buildMany() {
         
-        // TODO: Implement collection of Fakes.
         throw new UnsupportedOperationException();
-        
 	}
 }

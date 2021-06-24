@@ -1,6 +1,7 @@
 # java.samples.spring.boot
 
 ## Status
+[![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4a37be878958415bbee9f85d1f893db7)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot?utm_source=github.com&utm_medium=referral&utm_content=nanotaboada/java.samples.spring.boot&utm_campaign=Badge_Grade_Settings)
 [![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml)
 [![Build Status](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_apis/build/status/nanotaboada.java.samples.spring.boot?branchName=master)](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_build/latest?definitionId=12&branchName=master)

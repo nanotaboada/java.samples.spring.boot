@@ -17,7 +17,7 @@ class BooksRepositoryTests {
     private BooksRepository repository;
     
     @Test
-    public void givenSave_WhenInvokedWithBook_ThenShouldCreateBookIntoRepository() {
+    public void givenSave_whenInvokedWithBook_thenShouldCreateBookIntoRepository() {
         
         // Arrange
         Book expected = BooksBuilder.buildOne();
@@ -29,5 +29,4 @@ class BooksRepositoryTests {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
         assertThat(repository.count()).isEqualTo(1L);
     }
-
 }

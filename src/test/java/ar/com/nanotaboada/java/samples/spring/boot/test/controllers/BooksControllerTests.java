@@ -32,7 +32,7 @@ public class BooksControllerTests {
     private BooksService service;
     
     @Test
-    public void givenHttpGetVerb_WhenRequestParameterIdentifiesExistingBook_ThenShouldReturnStatusOkAndTheBook() throws Exception {
+    public void givenHttpGetVerb_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook() throws Exception {
         
         // Arrange
         Book expected = BooksBuilder.buildOne();
@@ -54,7 +54,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpGetVerb_WhenRequestParameterDoesNotIdentifyAnExistingBook_ThenShouldReturnStatusNotFound()
+    public void givenHttpGetVerb_whenRequestParameterDoesNotIdentifyAnExistingBook_thenShouldReturnStatusNotFound()
         throws Exception {
 
         // Arrange
