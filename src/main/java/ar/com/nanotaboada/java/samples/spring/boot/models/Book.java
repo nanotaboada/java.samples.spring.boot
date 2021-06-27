@@ -7,6 +7,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+
+import org.hibernate.validator.constraints.ISBN;
+import org.hibernate.validator.constraints.URL;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -16,17 +22,24 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 @Table(name = "books")
 public class Book {
     @Id
+    @ISBN
     private String isbn;
+    @NotBlank(message ="Title is required.")
     private String title;
     private String subtitle;
+    @NotBlank(message ="Author is required.")
     private String author;
     private String publisher;
+    @Past
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate published;
     private int pages;
     @Lob
+    @NotBlank(message ="Description is required.")
     private String description;
+    @URL
+    @NotBlank(message ="Website is required.")
     private String website;
     // The no-argument constructor, which is also a JavaBean convention, is a requirement for all
     // persistent classes.
