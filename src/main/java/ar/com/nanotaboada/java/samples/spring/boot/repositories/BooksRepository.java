@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface BooksRepository extends CrudRepository<Book, String> {
-    
-    Optional<Book> findByIsbn(String isbn);
 
+    // Query creation from method names
+    // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
+    Optional<Book> findByIsbn(String isbn);
 }
