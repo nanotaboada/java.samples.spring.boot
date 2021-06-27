@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class BooksBuilder {
 
-    public static Book buildOneExistingValid() {
+    public static Book buildOneValid() {
         Book book = new Book();
         book.setIsbn("978-1484200773");
         book.setTitle("Pro Git");
@@ -23,43 +23,17 @@ public class BooksBuilder {
         return book;
     }
 
-    public static Book buildOneExistingInvalid() {
+    public static Book buildOneInvalid() {
         Book book = new Book();
-        book.setIsbn("978-1484200773");
-        book.setTitle("Pro Git");
-        book.setSubtitle("Everything you neeed to know about Git");
-        return book;
-    }
-
-    public static Book buildOneNewValid() {
-        Book book = new Book();
-        book.setIsbn("978-1234567890");
+        book.setIsbn("978-1234567890"); // Invalid (invalid ISBN)
         book.setTitle("Title");
         book.setSubtitle("Sub Title");
         book.setAuthor("Author");
         book.setPublisher("Publisher");
-        book.setPublished(LocalDate.now());
+        book.setPublished(LocalDate.now()); // Invalid (must be a past date)
         book.setPages(123);
-        book.setDescription("Descrition");
+        book.setDescription("Description");
         book.setWebsite("https://domain.com/");
         return book;
-    }
-    
-    public static Book buildOneNewInvalid() {
-        Book book = new Book();
-        book.setIsbn("978-1234567890");
-        book.setTitle("Title");
-        book.setSubtitle("Sub Title");
-        book.setAuthor("Author");
-        book.setPublisher("Publisher");
-        book.setPublished(LocalDate.now());
-        book.setPages(123);
-        book.setDescription("Descrition");
-        book.setWebsite("https://domain.com/");
-        return book;
-    }
-
-    public static ArrayList<Book> buildMany() {
-        throw new UnsupportedOperationException();
     }
 }
