@@ -3,6 +3,8 @@ package ar.com.nanotaboada.java.samples.spring.boot.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Validator;
+
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 
@@ -12,10 +14,13 @@ public class BooksService {
     @Autowired
     private BooksRepository repository;
 
+    @Autowired
+    private Validator validator;
+
     // Create
     public boolean create(Book book) {
         boolean created = false;
-        if (book != null && !repository.existsById(book.getIsbn())) {
+        if (validator.validate(book).isEmpty() && !repository.existsById(book.getIsbn())) {
             repository.save(book);
             created = true;
         }
@@ -30,7 +35,7 @@ public class BooksService {
     // Update
     public boolean update(Book book) {
         boolean updated = false;
-        if (book != null && repository.existsById(book.getIsbn())) {
+        if (validator.validate(book).isEmpty() && repository.existsById(book.getIsbn())) {
             repository.save(book);
             updated = true;
         }
