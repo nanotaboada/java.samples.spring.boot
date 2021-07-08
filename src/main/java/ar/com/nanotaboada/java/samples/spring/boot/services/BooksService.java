@@ -1,9 +1,9 @@
 package ar.com.nanotaboada.java.samples.spring.boot.services;
 
+import javax.validation.Validator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Validator;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;

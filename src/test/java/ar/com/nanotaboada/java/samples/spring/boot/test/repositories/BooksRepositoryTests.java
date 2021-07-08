@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,12 +17,14 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 
+@DisplayName("Derived Query Methods on Repository")
 @DataJpaTest
 class BooksRepositoryTests {
 
     @Autowired
     private BooksRepository repository;
 
+    @Disabled
     @Test
     public void givenSave_whenBookIsInvalid_thenShouldThrowConstraintViolationException() {
         // Arrange
@@ -37,6 +41,7 @@ class BooksRepositoryTests {
             .hasMessageContaining("must be a past date");
     }
 
+    @Disabled
     @Test
     public void givenSave_whenBookIsValid_thenShouldSaveBookIntoRepository() {
         // Arrange
@@ -60,6 +65,7 @@ class BooksRepositoryTests {
         assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    
     @Test
     public void givenFindByIsbn_whenIsbnDoesNotExist_thenShouldReturnEmptyOptional() {
         // Arrange

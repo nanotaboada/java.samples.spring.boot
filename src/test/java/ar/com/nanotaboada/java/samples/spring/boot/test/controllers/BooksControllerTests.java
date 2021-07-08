@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -28,6 +29,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 
+@DisplayName("HTTP Verbs on Controller")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BooksController.class)
 public class BooksControllerTests {
@@ -97,8 +99,8 @@ public class BooksControllerTests {
         Book book = BooksBuilder.buildOneInvalid();
         String content = new ObjectMapper().writeValueAsString(book);
         Mockito
-        .when(service.retrieveByIsbn(anyString()))
-        .thenReturn(null); // New
+            .when(service.retrieveByIsbn(anyString()))
+            .thenReturn(null); // New
         Mockito
             .when(service.create(any(Book.class)))
             .thenReturn(false);
