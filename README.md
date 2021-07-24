@@ -6,6 +6,7 @@
 [![Build Status](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_apis/build/status/nanotaboada.java.samples.spring.boot?branchName=master)](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_build/latest?definitionId=12&branchName=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4a37be878958415bbee9f85d1f893db7)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot?utm_source=github.com&utm_medium=referral&utm_content=nanotaboada/java.samples.spring.boot&utm_campaign=Badge_Grade_Settings)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
+[![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
 [![Known Vulnerabilities](https://snyk.io/test/github/nanotaboada/java.samples.spring.boot/badge.svg)](https://snyk.io/test/github/nanotaboada/java.samples.spring.boot)
 
 ## Manifesto
@@ -18,7 +19,7 @@ Proof of Concept for a REST API bootstrapped with [Spring Initializr](https://st
 
 ## Credits
 
-The solution has been coded using [Eclipse IDE](https://www.eclipse.org/eclipseide/) including the [Spring Tools 4](https://marketplace.eclipse.org/content/spring-tools-4-aka-spring-tool-suite-4) plugin.
+The solution has been coded using [Eclipse IDE](https://www.eclipse.org/eclipseide/) including the [DevStyle](https://www.genuitec.com/products/devstyle/) plugin.
 
 ## Terms
 
