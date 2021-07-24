@@ -23,7 +23,7 @@
         <!--
             [WEB] Spring Web
             Build web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container.
-         -->
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -48,7 +48,7 @@
         </dependency>
         <!--
             [I/O] Bean Validation with Hibernate validator.
-         -->
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -67,7 +67,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-         -->
+        -->
         <!-- 
             [TESTING] Spring Test
             Starter for testing Spring Boot applications with libraries including JUnit Jupiter, Hamcrest and Mockito.
@@ -79,7 +79,7 @@
         </dependency>
         <!-- 
             [TESTING] Rich and fluent assertions for testing for Java
-         -->
+        -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -91,6 +91,28 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- 
+                [TESTING] JaCoCo is a free code coverage library for Java
+            -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
