@@ -1,7 +1,6 @@
 package ar.com.nanotaboada.java.samples.spring.boot.models;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class BooksBuilder {
 
