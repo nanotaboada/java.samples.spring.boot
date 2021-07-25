@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.1</version>
+        <version>2.5.2</version>
         <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
     <groupId>ar.com.nanotaboada</groupId>
     <artifactId>java.samples.spring.boot</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>java.samples.spring.boot</name>
     <description>PoC for a REST API made with Spring Boot using Initializr</description>
     <properties>
