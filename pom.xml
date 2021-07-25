@@ -99,6 +99,13 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
+                    <configuration>
+                        <!-- https://www.eclemma.org/jacoco/trunk/doc/report-mojo.html#excludes -->
+                        <excludes>
+                            <exclude>ar/com/nanotaboada/**/Application.class</exclude>
+                            <exclude>ar/com/nanotaboada/**/models/*</exclude>
+                        </excludes>
+                     </configuration>
                 <executions>
                     <execution>
                         <goals>
