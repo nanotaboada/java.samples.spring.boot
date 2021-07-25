@@ -1,11 +1,12 @@
-# java.samples.spring.boot
+# Sample REST API with Spring Boot 2.5
 
 ## Status
 
 [![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml)
 [![Build Status](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_apis/build/status/nanotaboada.java.samples.spring.boot?branchName=master)](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_build/latest?definitionId=12&branchName=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4a37be878958415bbee9f85d1f893db7)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot?utm_source=github.com&utm_medium=referral&utm_content=nanotaboada/java.samples.spring.boot&utm_campaign=Badge_Grade_Settings)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2b6a5b7ec87a44d622d9/maintainability)](https://codeclimate.com/github/nanotaboada/java.samples.spring.boot/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4a37be878958415bbee9f85d1f893db7)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot?utm_source=github.com&utm_medium=referral&utm_content=nanotaboada/java.samples.spring.boot&utm_campaign=Badge_Grade_Settings)
 [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
 [![Known Vulnerabilities](https://snyk.io/test/github/nanotaboada/java.samples.spring.boot/badge.svg)](https://snyk.io/test/github/nanotaboada/java.samples.spring.boot)
 
@@ -15,7 +16,7 @@
 
 ## About
 
-Proof of Concept for a REST API bootstrapped with [Spring Initializr](https://start.spring.io/) targeting [Spring Boot 2.5.1](https://spring.io/projects/spring-boot)
+Proof of Concept for a REST API bootstrapped with [Spring Initializr](https://start.spring.io/) targeting [Spring Boot 2.5](https://spring.io/blog/2021/05/20/spring-boot-2-5-is-now-ga)
 
 ## Credits
 
