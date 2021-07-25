@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
-import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
+import ar.com.nanotaboada.java.samples.spring.boot.test.BooksBuilder;
 
 @DisplayName("Derived Query Methods on Repository")
 @DataJpaTest

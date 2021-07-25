@@ -24,9 +24,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
-import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
+import ar.com.nanotaboada.java.samples.spring.boot.test.BooksBuilder;
 
 @DisplayName("CRUD Operations on Service")
 @ExtendWith(MockitoExtension.class)
@@ -103,7 +103,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenRetrieveByIsbn_whenIsbnIsFoundOnRepository_thenShouldReturnBook() {
+    public void givenRetrieveByIsbn_whenIsbnIsFoundInRepository_thenShouldReturnBook() {
         // Arrange
         Book expected = BooksBuilder.buildOneValid();
         Mockito
@@ -117,7 +117,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenRetrieveByIsbn_whenIsbnIsNotFoundOnRepository_thenShouldReturnNull() {
+    public void givenRetrieveByIsbn_whenIsbnIsNotFoundInRepository_thenShouldReturnNull() {
         // Arrange
         Book expected = BooksBuilder.buildOneValid();
         Mockito

@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
-import ar.com.nanotaboada.java.samples.spring.boot.models.BooksBuilder;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
+import ar.com.nanotaboada.java.samples.spring.boot.test.BooksBuilder;
 
 @DisplayName("HTTP Verbs on Controller")
 @ExtendWith(SpringExtension.class)

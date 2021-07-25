@@ -1,6 +1,8 @@
-package ar.com.nanotaboada.java.samples.spring.boot.models;
+package ar.com.nanotaboada.java.samples.spring.boot.test;
 
 import java.time.LocalDate;
+
+import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 
 public class BooksBuilder {
 
