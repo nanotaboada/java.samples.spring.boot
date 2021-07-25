@@ -1,13 +1,9 @@
 package ar.com.nanotaboada.java.samples.spring.boot.test.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.util.Optional;
 
-import javax.validation.ConstraintViolationException;
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,35 +20,6 @@ class BooksRepositoryTests {
     @Autowired
     private BooksRepository repository;
 
-    @Disabled
-    @Test
-    public void givenSave_whenBookIsInvalid_thenShouldThrowConstraintViolationException() {
-        // Arrange
-        Book expected = BooksBuilder.buildOneInvalid();
-        // Act
-        Throwable thrown = catchThrowable(() -> {
-            repository.save(expected);
-            repository.count(); // Throws the Exception
-        });
-        // Assert
-        assertThat(thrown)
-            .isInstanceOf(ConstraintViolationException.class)
-            .hasMessageContaining("invalid ISBN")
-            .hasMessageContaining("must be a past date");
-    }
-
-    @Disabled
-    @Test
-    public void givenSave_whenBookIsValid_thenShouldSaveBookIntoRepository() {
-        // Arrange
-        Book expected = BooksBuilder.buildOneValid();
-        // Act
-        Book actual = repository.save(expected);
-        // Assert
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-        assertThat(repository.count()).isEqualTo(1L);
-    }
-
     @Test
     public void givenFindByIsbn_whenIsbnAlreadyExists_thenShouldReturnExistingBook() {
         // Arrange
@@ -65,7 +32,6 @@ class BooksRepositoryTests {
         assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    
     @Test
     public void givenFindByIsbn_whenIsbnDoesNotExist_thenShouldReturnEmptyOptional() {
         // Arrange
