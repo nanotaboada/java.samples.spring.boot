@@ -41,10 +41,12 @@ public class Book {
     @URL
     @NotBlank(message ="Website is required.")
     private String website;
-    // The no-argument constructor, which is also a JavaBean convention, is a requirement for all
-    // persistent classes.
-    // https://docs.jboss.org/hibernate/orm/5.5/quickstart/html_single/
-    public Book() { }
+
+    public Book() {
+        // The no-argument constructor, which is also a JavaBean convention,
+        // is a requirement for all persistent classes.
+        // https://docs.jboss.org/hibernate/orm/5.5/quickstart/html_single/
+    }
 
     public String getIsbn() {
         return isbn;
