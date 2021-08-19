@@ -42,7 +42,7 @@ public class BooksServiceTests {
     private BooksService service;
 
     @Test
-    public void givenCreate_whenBookIsInvalid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenCreate_whenBookIsInvalid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneInvalid();
@@ -65,7 +65,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenCreate_whenBookIsValidButAlreadyExistsInRepository_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenCreate_whenBookIsValidButAlreadyExistsInRepository_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();
@@ -84,7 +84,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenCreate_whenBookIsValidAndDoesNotExistInRepository_thenShouldSaveBookIntoRepositoryAndReturnTrue() {
+    void givenCreate_whenBookIsValidAndDoesNotExistInRepository_thenShouldSaveBookIntoRepositoryAndReturnTrue() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();
@@ -103,7 +103,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenRetrieveByIsbn_whenIsbnIsFoundInRepository_thenShouldReturnBook() {
+    void givenRetrieveByIsbn_whenIsbnIsFoundInRepository_thenShouldReturnBook() {
         // Arrange
         Book expected = BooksBuilder.buildOneValid();
         Mockito
@@ -117,7 +117,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenRetrieveByIsbn_whenIsbnIsNotFoundInRepository_thenShouldReturnNull() {
+    void givenRetrieveByIsbn_whenIsbnIsNotFoundInRepository_thenShouldReturnNull() {
         // Arrange
         Book expected = BooksBuilder.buildOneValid();
         Mockito
@@ -131,7 +131,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenUpdate_whenBookIsInvalid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenUpdate_whenBookIsInvalid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneInvalid();
@@ -154,7 +154,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenUpdate_whenBookIsValidAndExistInRepository_thenShouldSaveBookIntoRepositoryAndReturnTrue() {
+    void givenUpdate_whenBookIsValidAndExistInRepository_thenShouldSaveBookIntoRepositoryAndReturnTrue() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();
@@ -173,7 +173,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenUpdate_whenBookIsValidButDoesNotExistInRepository_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenUpdate_whenBookIsValidButDoesNotExistInRepository_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();
@@ -192,7 +192,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenDelete_whenIsbnIsBlank_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
+    void givenDelete_whenIsbnIsBlank_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();
@@ -205,7 +205,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenDelete_whenIsbnIsNotBlankButDoesNotExistInRepository_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
+    void givenDelete_whenIsbnIsNotBlankButDoesNotExistInRepository_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();
@@ -220,7 +220,7 @@ public class BooksServiceTests {
     }
 
     @Test
-    public void givenDelete_whenIsbnIsNotBlankAndExistInRepository_thenShouldDeleteBookFromRepositoryAndReturnTrue() {
+    void givenDelete_whenIsbnIsNotBlankAndExistInRepository_thenShouldDeleteBookFromRepositoryAndReturnTrue() {
         // Arrange
         boolean result = false;
         Book book = BooksBuilder.buildOneValid();

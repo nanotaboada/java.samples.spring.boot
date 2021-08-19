@@ -28,7 +28,7 @@ public class BooksController {
     @PostMapping("/book")
     public ResponseEntity<String> postBook(@RequestBody Book book) {
         if (service.retrieveByIsbn(book.getIsbn()) != null) {
-            return new ResponseEntity<String>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
             if (service.create(book)) {
                 URI location = MvcUriComponentsBuilder
@@ -37,9 +37,9 @@ public class BooksController {
                     .toUri();
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setLocation(location);
-                return new ResponseEntity<String>(httpHeaders, HttpStatus.CREATED);
+                return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
     }
@@ -49,9 +49,9 @@ public class BooksController {
     public ResponseEntity<Book> getBook(@PathVariable String isbn) {
         Book book = service.retrieveByIsbn(isbn);
         if (book != null) {
-            return new ResponseEntity<Book>(book, HttpStatus.OK);
+            return new ResponseEntity<>(book, HttpStatus.OK);
         } else {
-            return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -60,12 +60,12 @@ public class BooksController {
     public ResponseEntity<String> putBook(@RequestBody Book book) {
         if (service.retrieveByIsbn(book.getIsbn()) != null)   {
             if (service.update(book)) {
-                return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
-                return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -74,12 +74,12 @@ public class BooksController {
     public ResponseEntity<String> deleteBook(@PathVariable String isbn) {
         if (service.retrieveByIsbn(isbn) != null) {
             if (service.delete(isbn)) {
-                return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
-                return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

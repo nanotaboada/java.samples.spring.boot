@@ -41,7 +41,7 @@ public class BooksControllerTests {
     private BooksService service;
 
     @Test
-    public void givenHttpPostVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusConflict()
+    void givenHttpPostVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusConflict()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneInvalid();
@@ -64,7 +64,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpPostVerb_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusCreatedAndLocationHeader()
+    void givenHttpPostVerb_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusCreatedAndLocationHeader()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneValid();
@@ -93,7 +93,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpPostVerb_whenRequestBodyContainsInvalidBook_thenShouldReturnStatusBadRequest()
+    void givenHttpPostVerb_whenRequestBodyContainsInvalidBook_thenShouldReturnStatusBadRequest()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneInvalid();
@@ -120,7 +120,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpGetVerb_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook()
+    void givenHttpGetVerb_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook()
         throws Exception {
         // Arrange
         Book expected = BooksBuilder.buildOneValid();
@@ -143,7 +143,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpGetVerb_whenRequestParameterDoesNotIdentifyAnExistingBook_thenShouldReturnStatusNotFound()
+    void givenHttpGetVerb_whenRequestParameterDoesNotIdentifyAnExistingBook_thenShouldReturnStatusNotFound()
         throws Exception {
         // Arrange
         String isbn = BooksBuilder.buildOneValid().getIsbn();
@@ -163,7 +163,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpPutVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
+    void givenHttpPutVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneValid();
@@ -190,7 +190,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpPutVerb_whenRequestBodyContainsExistingInvalidBook_thenShouldReturnStatusBadRequest()
+    void givenHttpPutVerb_whenRequestBodyContainsExistingInvalidBook_thenShouldReturnStatusBadRequest()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneInvalid();
@@ -217,7 +217,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpPutVerb_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusNotFound()
+    void givenHttpPutVerb_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusNotFound()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneValid();
@@ -240,7 +240,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpDeleteVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
+    void givenHttpDeleteVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneValid();
@@ -264,7 +264,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpDeleteVerb_whenRequestBodyContainsExistingInvalidBook_thenShouldReturnStatusBadRequest()
+    void givenHttpDeleteVerb_whenRequestBodyContainsExistingInvalidBook_thenShouldReturnStatusBadRequest()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneInvalid();
@@ -288,7 +288,7 @@ public class BooksControllerTests {
     }
 
     @Test
-    public void givenHttpDeleteVerb_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusNotFound()
+    void givenHttpDeleteVerb_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusNotFound()
         throws Exception {
         // Arrange
         Book book = BooksBuilder.buildOneValid();
