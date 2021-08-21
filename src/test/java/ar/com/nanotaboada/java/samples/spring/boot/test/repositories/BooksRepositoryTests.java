@@ -24,13 +24,13 @@ class BooksRepositoryTests {
     @Test
     void givenFindByIsbn_whenIsbnAlreadyExists_thenShouldReturnExistingBook() {
         // Arrange
-        Book expected = BooksBuilder.buildOneValid();
-        repository.save(expected); // Exists
+        Book existing = BooksBuilder.buildOneValid();
+        repository.save(existing); // Exists
         // Act
-        Optional<Book> actual = repository.findByIsbn(expected.getIsbn());
+        Optional<Book> actual = repository.findByIsbn(existing.getIsbn());
         // Assert
         assertTrue(actual.isPresent());
-        assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual.get()).usingRecursiveComparison().isEqualTo(existing);
     }
 
     @Test
