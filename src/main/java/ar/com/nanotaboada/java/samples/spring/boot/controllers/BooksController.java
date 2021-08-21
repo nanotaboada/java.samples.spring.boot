@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
+import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 
 @RestController
@@ -26,13 +26,13 @@ public class BooksController {
 
     // HTTP POST
     @PostMapping("/book")
-    public ResponseEntity<String> postBook(@RequestBody Book book) {
-        if (service.retrieveByIsbn(book.getIsbn()) != null) {
+    public ResponseEntity<String> postBook(@RequestBody BookDTO bookDTO) {
+        if (service.retrieveByIsbn(bookDTO.getIsbn()) != null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
-            if (service.create(book)) {
+            if (service.create(bookDTO)) {
                 URI location = MvcUriComponentsBuilder
-                    .fromMethodName(BooksController.class, "getBook", book.getIsbn())
+                    .fromMethodName(BooksController.class, "getBook", bookDTO.getIsbn())
                     .build()
                     .toUri();
                 HttpHeaders httpHeaders = new HttpHeaders();
@@ -46,10 +46,10 @@ public class BooksController {
 
     // HTTP GET
     @GetMapping("/book/{isbn}")
-    public ResponseEntity<Book> getBook(@PathVariable String isbn) {
-        Book book = service.retrieveByIsbn(isbn);
-        if (book != null) {
-            return new ResponseEntity<>(book, HttpStatus.OK);
+    public ResponseEntity<BookDTO> getBook(@PathVariable String isbn) {
+        BookDTO bookDTO = service.retrieveByIsbn(isbn);
+        if (bookDTO != null) {
+            return new ResponseEntity<>(bookDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -57,9 +57,9 @@ public class BooksController {
 
     // HTTP PUT
     @PutMapping("/book")
-    public ResponseEntity<String> putBook(@RequestBody Book book) {
-        if (service.retrieveByIsbn(book.getIsbn()) != null)   {
-            if (service.update(book)) {
+    public ResponseEntity<String> putBook(@RequestBody BookDTO bookDTO) {
+        if (service.retrieveByIsbn(bookDTO.getIsbn()) != null)   {
+            if (service.update(bookDTO)) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
