@@ -7,17 +7,17 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.4</version>
+        <version>2.7.17-SNAPSHOT</version>
         <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
     <groupId>ar.com.nanotaboada</groupId>
     <artifactId>java.samples.spring.boot</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>java.samples.spring.boot</name>
     <description>PoC for a REST API made with Spring Boot using Initializr</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <!-- 
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
         </dependency>
 
         <!-- 
@@ -141,7 +141,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.10</version>
                     <configuration>
                         <!-- https://www.eclemma.org/jacoco/trunk/doc/report-mojo.html#excludes -->
                         <excludes>
