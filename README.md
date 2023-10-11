@@ -1,4 +1,4 @@
-# Sample REST API with Spring Boot 2.5
+# Sample RESTful Web Service with Spring Boot 2.7
 
 ## Status
 
@@ -15,7 +15,7 @@
 
 ## About
 
-Proof of Concept for a REST API bootstrapped with [Spring Initializr](https://start.spring.io/) targeting [Spring Boot 2.5](https://spring.io/blog/2021/05/20/spring-boot-2-5-is-now-ga)
+Proof of Concept for a RESTful Web Service made with [Spring Boot 2.7](https://spring.io/blog/2022/05/19/spring-boot-2-7-0-available-now) targeting [JDK 17](https://jdk.java.net/17/)
 
 ## Credits
 
