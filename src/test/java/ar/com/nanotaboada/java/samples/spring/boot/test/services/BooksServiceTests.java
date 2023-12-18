@@ -47,6 +47,10 @@ public class BooksServiceTests {
     @InjectMocks
     private BooksService service;
 
+    /* --------------------------------------------------------------------------------------------
+     * Create
+     * ----------------------------------------------------------------------------------------- */
+
     @Test
     void givenCreate_whenBookIsInvalid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
         // Arrange
@@ -123,6 +127,10 @@ public class BooksServiceTests {
         assertThat(result).isTrue();
     }
 
+    /* --------------------------------------------------------------------------------------------
+     * Retrieve
+     * ----------------------------------------------------------------------------------------- */
+
     @Test
     void givenRetrieveByIsbn_whenIsbnIsFoundInRepository_thenShouldReturnBook() {
         // Arrange
@@ -156,6 +164,10 @@ public class BooksServiceTests {
         verify(mapper, never()).map(any(Book.class), any(BookDTO.class));
         verify(repository, times(1)).findByIsbn(anyString());
     }
+
+    /* --------------------------------------------------------------------------------------------
+     * Update
+     * ----------------------------------------------------------------------------------------- */
 
     @Test
     void givenUpdate_whenBookIsInvalid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
@@ -232,6 +244,10 @@ public class BooksServiceTests {
         verify(repository, never()).save(any(Book.class));
         assertThat(result).isFalse();
     }
+
+    /* --------------------------------------------------------------------------------------------
+     * Delete
+     * ----------------------------------------------------------------------------------------- */
 
     @Test
     void givenDelete_whenIsbnIsBlank_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
