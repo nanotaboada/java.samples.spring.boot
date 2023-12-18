@@ -40,6 +40,10 @@ public class BooksControllerTests {
     @MockBean
     private BooksService service;
 
+    /* --------------------------------------------------------------------------------------------
+     * HTTP POST
+     * ----------------------------------------------------------------------------------------- */
+
     @Test
     void givenHttpPostVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusConflict()
         throws Exception {
@@ -119,6 +123,10 @@ public class BooksControllerTests {
         verify(service, times(1)).create(any(BookDTO.class));
     }
 
+    /* --------------------------------------------------------------------------------------------
+     * HTTP GET
+     * ----------------------------------------------------------------------------------------- */
+
     @Test
     void givenHttpGetVerb_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook()
         throws Exception {
@@ -161,6 +169,10 @@ public class BooksControllerTests {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
         verify(service, times(1)).retrieveByIsbn(anyString());
     }
+
+    /* --------------------------------------------------------------------------------------------
+     * HTTP PUT
+     * ----------------------------------------------------------------------------------------- */
 
     @Test
     void givenHttpPutVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
@@ -238,6 +250,10 @@ public class BooksControllerTests {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
         verify(service, times(1)).retrieveByIsbn(anyString());
     }
+
+    /* --------------------------------------------------------------------------------------------
+     * HTTP DELETE
+     * ----------------------------------------------------------------------------------------- */
 
     @Test
     void givenHttpDeleteVerb_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
