@@ -22,7 +22,10 @@ public class BooksService {
     @Autowired
     private ModelMapper mapper;
 
-    // Create
+    /* --------------------------------------------------------------------------------------------
+     * Create
+     * ----------------------------------------------------------------------------------------- */
+
     public boolean create(BookDTO bookDTO) {
         boolean created = false;
         Book book = mapper.map(bookDTO, Book.class);
@@ -33,7 +36,10 @@ public class BooksService {
         return created;
     }
 
-    // Retrieve
+    /* --------------------------------------------------------------------------------------------
+     * Retrieve
+     * ----------------------------------------------------------------------------------------- */
+
     public BookDTO retrieveByIsbn(String isbn) {
         BookDTO bookDTO = null;
         Book book = repository.findByIsbn(isbn).orElse(null);
@@ -43,7 +49,10 @@ public class BooksService {
         return bookDTO;
     }
 
-    // Update
+    /* --------------------------------------------------------------------------------------------
+     * Update
+     * ----------------------------------------------------------------------------------------- */
+
     public boolean update(BookDTO bookDTO) {
         boolean updated = false;
         Book book = mapper.map(bookDTO, Book.class);
@@ -54,7 +63,10 @@ public class BooksService {
         return updated;
     }
 
-    // Delete
+    /* --------------------------------------------------------------------------------------------
+     * Delete
+     * ----------------------------------------------------------------------------------------- */
+
     public boolean delete(String isbn) {
         boolean deleted = false;
         if (!isbn.isBlank() && repository.existsById(isbn)) {

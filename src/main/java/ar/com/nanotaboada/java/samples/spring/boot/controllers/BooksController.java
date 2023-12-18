@@ -24,7 +24,10 @@ public class BooksController {
     @Autowired
     private BooksService service;
 
-    // HTTP POST
+    /* --------------------------------------------------------------------------------------------
+     * HTTP POST
+     * ----------------------------------------------------------------------------------------- */
+
     @PostMapping("/book")
     public ResponseEntity<String> postBook(@RequestBody BookDTO bookDTO) {
         if (service.retrieveByIsbn(bookDTO.getIsbn()) != null) {
@@ -44,7 +47,10 @@ public class BooksController {
         }
     }
 
-    // HTTP GET
+    /* --------------------------------------------------------------------------------------------
+     * HTTP GET
+     * ----------------------------------------------------------------------------------------- */
+
     @GetMapping("/book/{isbn}")
     public ResponseEntity<BookDTO> getBook(@PathVariable String isbn) {
         BookDTO bookDTO = service.retrieveByIsbn(isbn);
@@ -55,7 +61,10 @@ public class BooksController {
         }
     }
 
-    // HTTP PUT
+    /* --------------------------------------------------------------------------------------------
+     * HTTP PUT
+     * ----------------------------------------------------------------------------------------- */
+
     @PutMapping("/book")
     public ResponseEntity<String> putBook(@RequestBody BookDTO bookDTO) {
         if (service.retrieveByIsbn(bookDTO.getIsbn()) != null)   {
@@ -69,7 +78,10 @@ public class BooksController {
         }
     }
 
-    // HTTP DELETE
+    /* --------------------------------------------------------------------------------------------
+     * HTTP DELETE
+     * ----------------------------------------------------------------------------------------- */
+
     @DeleteMapping("/book/{isbn}")
     public ResponseEntity<String> deleteBook(@PathVariable String isbn) {
         if (service.retrieveByIsbn(isbn) != null) {
