@@ -3,7 +3,6 @@ package ar.com.nanotaboada.java.samples.spring.boot.services;
 import javax.validation.Validator;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
@@ -13,14 +12,15 @@ import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 @Service
 public class BooksService {
 
-    @Autowired
-    private BooksRepository repository;
+    private final BooksRepository repository;
+    private final Validator validator;
+    private final ModelMapper mapper;
 
-    @Autowired
-    private Validator validator;
-    
-    @Autowired
-    private ModelMapper mapper;
+    public BooksService(BooksRepository repository, Validator validator, ModelMapper mapper) {
+        this.repository =  repository;
+        this.validator = validator;
+        this.mapper = mapper;
+    }
 
     /* --------------------------------------------------------------------------------------------
      * Create

@@ -2,7 +2,6 @@ package ar.com.nanotaboada.java.samples.spring.boot.controllers;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,11 @@ import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 @RestController
 public class BooksController {
 
-    @Autowired
-    private BooksService service;
+    private final BooksService service;
+
+    public BooksController(BooksService service) {
+        this.service = service;
+    }
 
     /* --------------------------------------------------------------------------------------------
      * HTTP POST

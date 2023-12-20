@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,9 +28,8 @@ import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 import ar.com.nanotaboada.java.samples.spring.boot.test.BookDTOsBuilder;
 
 @DisplayName("HTTP Verbs on Controller")
-@ExtendWith(SpringExtension.class)
 @WebMvcTest(BooksController.class)
-public class BooksControllerTests {
+class BooksControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
