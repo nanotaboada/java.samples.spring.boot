@@ -1,6 +1,6 @@
 package ar.com.nanotaboada.java.samples.spring.boot.services;
 
-import javax.validation.Validator;
+import jakarta.validation.Validator;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
