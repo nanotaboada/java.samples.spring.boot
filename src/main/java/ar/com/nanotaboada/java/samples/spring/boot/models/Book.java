@@ -2,13 +2,13 @@ package ar.com.nanotaboada.java.samples.spring.boot.models;
 
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
