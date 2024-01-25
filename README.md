@@ -1,4 +1,4 @@
-# Sample RESTful Web Service with Spring Boot 2.7
+# Sample RESTful Web Service with Spring Boot
 
 ## Status
 
@@ -15,12 +15,12 @@
 
 ## About
 
-Proof of Concept for a RESTful Web Service made with [Spring Boot 2.7](https://spring.io/blog/2022/05/19/spring-boot-2-7-0-available-now) targeting [JDK 17](https://jdk.java.net/17/)
+Proof of Concept for a RESTful Web Service made with [Spring Boot 3.1](https://spring.io/blog/2023/05/18/spring-boot-3-1-0-available-now) targeting [JDK 17](https://jdk.java.net/17/)
 
 ## Credits
 
-The solution has been coded using [Eclipse IDE](https://www.eclipse.org/eclipseide/) including the [DevStyle](https://www.genuitec.com/products/devstyle/) plugin.
+The solution has been coded using [Visual Studio Code](https://code.visualstudio.com/) with the [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
 
 ## Terms
 
-All trademarks, registered trademarks, service marks, product names, company names or logos are property of their respective owners and are used for educational purposes only.
+All trademarks, registered trademarks, service marks, product names, company names, or logos mentioned on this repository are the property of their respective owners. All usage of such terms herein is for identification purposes only and constitutes neither an endorsement nor a recommendation of those items. Furthermore, the use of such terms is intended to be for educational and informational purposes only.
