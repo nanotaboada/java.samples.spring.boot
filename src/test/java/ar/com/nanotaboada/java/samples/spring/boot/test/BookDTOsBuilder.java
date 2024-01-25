@@ -15,11 +15,13 @@ public class BookDTOsBuilder {
         bookDto.setPublisher("lulu.com; First Edition");
         bookDto.setPublished(LocalDate.of(2014, 11, 18));
         bookDto.setPages(458);
-        bookDto.setDescription("Pro Git (Second Edition) is your fully-updated guide to Git and its "
-            + "usage in the modern world. Git has come a long way since it was first developed by "
-            + "Linus Torvalds for Linux kernel development. It has taken the open source world by "
-            + "storm since its inception in 2005, and this book teaches you how to use it like a "
-            + "pro.");
+        bookDto.setDescription("""
+            Pro Git (Second Edition) is your fully-updated guide to Git and its \
+            usage in the modern world. Git has come a long way since it was first developed by \
+            Linus Torvalds for Linux kernel development. It has taken the open source world by \
+            storm since its inception in 2005, and this book teaches you how to use it like a \
+            pro.\
+            """);
         bookDto.setWebsite("https://git-scm.com/book/en/v2");
         return bookDto;
     }
