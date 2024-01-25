@@ -164,7 +164,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--            Open Rewrite-->
+            <!--Open Rewrite-->
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
