@@ -174,7 +174,7 @@
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>5.21.0</version>
+                <version>5.23.3</version>
                 <configuration>
                     <activeRecipes>
                         <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1</recipe>
@@ -184,7 +184,7 @@
                     <dependency>
                         <groupId>org.openrewrite.recipe</groupId>
                         <artifactId>rewrite-spring</artifactId>
-                        <version>5.3.1</version>
+                        <version>5.5.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
