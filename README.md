@@ -15,7 +15,7 @@
 
 ## About
 
-Proof of Concept for a RESTful Web Service made with [Spring Boot 3.1](https://spring.io/blog/2023/05/18/spring-boot-3-1-0-available-now) targeting [JDK 17](https://jdk.java.net/17/)
+Proof of Concept for a RESTful Web Service made with [Spring Boot 3](https://spring.io/blog/2024/02/22/spring-boot-3-2-3-available-now) targeting [JDK 21](https://openjdk.org/projects/jdk/21/)
 
 ## Credits
 
