@@ -144,6 +144,20 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.3.0</version>
         </dependency>
+        <!-- 
+            CVE-2022-1471 
+        -->
+        <!-- 
+            SnakeYAML
+            YAML 1.1 parser and emitter for Java
+
+            https://mvnrepository.com/artifact/org.yaml/snakeyaml
+        -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.0</version>
+        </dependency>
     </dependencies>
     <build>
         <!-- 
