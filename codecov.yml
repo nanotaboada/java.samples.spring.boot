@@ -1,0 +1,22 @@
+# https://api.codecov.io/validate
+
+# Usage:
+# curl -X POST --data-binary @codecov.yml https://codecov.io/validate
+
+ignore:
+  - src/main/java/ar/com/nanotaboada/java/samples/spring/boot/models
+  - src/main/java/ar/com/nanotaboada/java/samples/spring/boot/repositories
+  - src/test
+
+coverage:
+  status:
+    project:
+      controllers:
+        paths:
+          - src/main/java/ar/com/nanotaboada/java/samples/spring/boot/controllers/BooksController.java
+      services:
+        paths:
+          - src/main/java/ar/com/nanotaboada/java/samples/spring/boot/services/BooksService.java
+    patch:
+      default:
+        informational: true
