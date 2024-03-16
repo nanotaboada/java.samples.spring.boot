@@ -145,6 +145,18 @@
             <version>2.3.0</version>
         </dependency>
         <!-- 
+            Spring Boot Starter Actuator
+            Starter for using Spring Boot's Actuator which provides production ready features to
+            help you monitor and manage your application
+
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator 
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>3.2.3</version>
+        </dependency>
+        <!-- 
             CVE-2022-1471 
         -->
         <!-- 
