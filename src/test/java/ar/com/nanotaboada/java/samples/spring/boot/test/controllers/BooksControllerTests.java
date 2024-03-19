@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
+import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 import ar.com.nanotaboada.java.samples.spring.boot.test.BookDTOsBuilder;
 
@@ -36,6 +37,9 @@ class BooksControllerTests {
 
     @MockBean
     private BooksService service;
+
+    @MockBean
+    private BooksRepository repository;
 
     /* --------------------------------------------------------------------------------------------
      * HTTP POST
