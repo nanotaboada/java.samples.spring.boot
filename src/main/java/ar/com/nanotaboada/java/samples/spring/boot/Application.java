@@ -30,10 +30,6 @@ public class Application {
         return new ModelMapper();
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
     @Bean
     CommandLineRunner seed() {
         return args -> {
@@ -42,5 +38,9 @@ public class Application {
                 repository.saveAll(books);
             }
         };
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
     }
 }
