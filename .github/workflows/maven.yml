@@ -33,7 +33,7 @@ jobs:
         name: jacoco.xml
         path: ./target/site/jacoco/jacoco.xml
 
-  coverage:
+  coverage-codecov:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -51,3 +51,22 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: jacoco.xml
+
+  coverage-codacy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download JaCoCo coverage report
+      uses: actions/download-artifact@v4
+      with:
+        name: jacoco.xml
+
+    - name: Upload coverage report to Codacy
+      uses: codacy/codacy-coverage-reporter-action@v1
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: jacoco.xml
