@@ -17,6 +17,12 @@
 
 Proof of Concept for a RESTful Web Service made with [Spring Boot 3](https://spring.io/blog/2024/02/22/spring-boot-3-2-3-available-now) targeting [JDK 21](https://openjdk.org/projects/jdk/21/)
 
+## Structure
+
+The following is a simplified dependency diagram of modules and main libraries:
+
+![Dependency Diagram](java.samples.spring.boot.svg)
+
 ## Credits
 
 The solution has been coded using [Visual Studio Code](https://code.visualstudio.com/) with the [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
