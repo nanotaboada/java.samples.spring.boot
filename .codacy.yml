@@ -1,0 +1,13 @@
+exclude_paths:
+  - ".github"
+  - ".vscode"
+  - ".gitignore"
+  - "LICENSE"
+  - "README.md"
+  - ".mvn"
+  - "mvnw*"
+  - "pom.xml"
+  - "test/**"
+  - "src/main/resources/**"
+  - "src/main/**/models/**"
+  - "src/main/**/Application.java"
