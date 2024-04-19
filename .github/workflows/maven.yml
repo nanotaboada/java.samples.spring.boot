@@ -11,61 +11,65 @@ on:
 
 jobs:
 
-  build:
+  compile:
     runs-on: ubuntu-latest
     steps:
-
     - name: Checkout repository
       uses: actions/checkout@v4
-
     - name: Set up OpenJDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'adopt'
+    - name: Compile with Maven
+      run: mvn compile --file pom.xml
 
+  verify:
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Set up OpenJDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'adopt'
     - name: Verify with Maven
       run: mvn verify --file pom.xml
-
-    - name: Upload JaCoCo coverage report
+    - name: Upload JaCoCo coverage report artifact
       uses: actions/upload-artifact@v4
       with:
         name: jacoco.xml
         path: ./target/site/jacoco/jacoco.xml
 
   coverage-codecov:
-    needs: build
+    needs: verify
     runs-on: ubuntu-latest
     steps:
-
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Download JaCoCo coverage report
+    - name: Download JaCoCo coverage report artifact
       uses: actions/download-artifact@v4
       with:
         name: jacoco.xml
-
-    - name: Upload coverage report to Codecov
+    - name: Upload JaCoCo coverage report to Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: jacoco.xml
 
   coverage-codacy:
-    needs: build
+    needs: verify
     runs-on: ubuntu-latest
     steps:
-
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Download JaCoCo coverage report
+    - name: Download JaCoCo coverage report artifact
       uses: actions/download-artifact@v4
       with:
         name: jacoco.xml
-
-    - name: Upload coverage report to Codacy
+    - name: Upload JaCoCo coverage report to Codacy
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
