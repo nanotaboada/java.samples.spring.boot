@@ -21,6 +21,7 @@ jobs:
       with:
         java-version: '21'
         distribution: 'adopt'
+        cache: 'maven'
     - name: Compile with Maven
       run: mvn compile --file pom.xml
 
@@ -35,6 +36,7 @@ jobs:
       with:
         java-version: '21'
         distribution: 'adopt'
+        cache: 'maven'
     - name: Verify with Maven
       run: mvn verify --file pom.xml
     - name: Upload JaCoCo coverage report artifact
