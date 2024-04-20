@@ -2,12 +2,7 @@
 
 ## Status
 
-[![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml)
-[![Build Status](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_apis/build/status/nanotaboada.java.samples.spring.boot?branchName=master)](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_build/latest?definitionId=12&branchName=master)
-[![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2b6a5b7ec87a44d622d9/maintainability)](https://codeclimate.com/github/nanotaboada/java.samples.spring.boot/maintainability)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4a37be878958415bbee9f85d1f893db7)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot?utm_source=github.com&utm_medium=referral&utm_content=nanotaboada/java.samples.spring.boot&utm_campaign=Badge_Grade_Settings)
-[![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
+[![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml) [![Build Status](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_apis/build/status/nanotaboada.java.samples.spring.boot?branchName=master)](https://dev.azure.com/nanotaboada/java.samples.spring.boot/_build/latest?definitionId=12&branchName=master) [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot) [![Maintainability](https://api.codeclimate.com/v1/badges/2b6a5b7ec87a44d622d9/maintainability)](https://codeclimate.com/github/nanotaboada/java.samples.spring.boot/maintainability) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea6918db332642089ef420822267931b)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
 
 ## Manifesto
 
