@@ -154,7 +154,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.5</version>
         </dependency>
         <!-- 
             CVE-2022-1471 
