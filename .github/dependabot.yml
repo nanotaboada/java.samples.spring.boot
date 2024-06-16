@@ -5,7 +5,11 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      spring-boot-starter:
+        patterns:
+        - "org.springframework.boot:spring-boot-starter*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
