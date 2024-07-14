@@ -3,6 +3,9 @@ package ar.com.nanotaboada.java.samples.spring.boot.services;
 import jakarta.validation.Validator;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
@@ -26,6 +29,7 @@ public class BooksService {
      * Create
      * ----------------------------------------------------------------------------------------- */
 
+    @CachePut(value = "books", key = "#bookDTO.isbn")
     public boolean create(BookDTO bookDTO) {
         boolean created = false;
         Book book = mapper.map(bookDTO, Book.class);
@@ -40,6 +44,7 @@ public class BooksService {
      * Retrieve
      * ----------------------------------------------------------------------------------------- */
 
+    @Cacheable(value = "books", key = "#isbn")
     public BookDTO retrieveByIsbn(String isbn) {
         BookDTO bookDTO = null;
         Book book = repository.findByIsbn(isbn).orElse(null);
@@ -53,6 +58,7 @@ public class BooksService {
      * Update
      * ----------------------------------------------------------------------------------------- */
 
+    @CachePut(value = "books", key = "#bookDTO.isbn")
     public boolean update(BookDTO bookDTO) {
         boolean updated = false;
         Book book = mapper.map(bookDTO, Book.class);
@@ -67,6 +73,7 @@ public class BooksService {
      * Delete
      * ----------------------------------------------------------------------------------------- */
 
+    @CacheEvict(value = "books", key = "#isbn")
     public boolean delete(String isbn) {
         boolean deleted = false;
         if (!isbn.isBlank() && repository.existsById(isbn)) {
