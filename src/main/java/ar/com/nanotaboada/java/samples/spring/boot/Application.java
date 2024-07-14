@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
@@ -17,6 +18,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
  * and component scanning.
  * */
 @SpringBootApplication
+@EnableCaching
 public class Application {
 
     private final BooksRepository repository;

@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot (Debug)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "ar.com.nanotaboada.java.samples.spring.boot.Application",
+      "projectName": "java.samples.spring.boot",
+      "args": "--spring.profiles.active=local"
+    }
+  ]
+}
