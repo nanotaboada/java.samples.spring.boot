@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.BooksController;
@@ -89,6 +92,7 @@ class BooksControllerTests {
             .perform(request)
             .andReturn()
             .getResponse();
+        response.setContentType("application/json;charset=UTF-8");
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getHeader(HttpHeaders.LOCATION)).isNotNull();
@@ -132,22 +136,23 @@ class BooksControllerTests {
     void givenHttpGetVerb_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook()
         throws Exception {
         // Arrange
-        BookDTO expected = BookDTOsBuilder.buildOneValid();
+        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Mockito
             .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(expected); // Existing
+            .thenReturn(bookDTO); // Existing
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get("/book/{isbn}", expected.getIsbn());
+            .get("/book/{isbn}", bookDTO.getIsbn());
         // Act
         MockHttpServletResponse response = mockMvc
             .perform(request)
             .andReturn()
             .getResponse();
+        response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
         BookDTO actual = new ObjectMapper().readValue(content, BookDTO.class);
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(bookDTO);
         verify(service, times(1)).retrieveByIsbn(anyString());
     }
 
@@ -155,7 +160,7 @@ class BooksControllerTests {
     void givenHttpGetVerb_whenRequestParameterDoesNotIdentifyAnExistingBook_thenShouldReturnStatusNotFound()
         throws Exception {
         // Arrange
-        String isbn = BookDTOsBuilder.buildOneValid().getIsbn();
+        String isbn = "9781484242216";
         Mockito
             .when(service.retrieveByIsbn(anyString()))
             .thenReturn(null); // New
@@ -169,6 +174,30 @@ class BooksControllerTests {
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
         verify(service, times(1)).retrieveByIsbn(anyString());
+    }
+
+    @Test
+    void givenHttpGetVerb_whenRequestPathIsBooks_thenShouldReturnStatusOkAndCollectionOfBooks()
+        throws Exception {
+        // Arrange
+        List<BookDTO> expected = BookDTOsBuilder.buildManyValid();
+        Mockito
+            .when(service.retrieveAll())
+            .thenReturn(expected);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get("/books");
+        // Act
+        MockHttpServletResponse response = mockMvc
+            .perform(request)
+            .andReturn()
+            .getResponse();
+        response.setContentType("application/json;charset=UTF-8");
+        String content = response.getContentAsString();
+        List<BookDTO> actual = new ObjectMapper().readValue(content, new TypeReference<List<BookDTO>>() {});
+        // Assert
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(service, times(1)).retrieveAll();
     }
 
     /* --------------------------------------------------------------------------------------------

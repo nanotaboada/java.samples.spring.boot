@@ -2,6 +2,10 @@ package ar.com.nanotaboada.java.samples.spring.boot.services;
 
 import jakarta.validation.Validator;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -52,6 +56,15 @@ public class BooksService {
             bookDTO = mapper.map(book, BookDTO.class);
         }
         return bookDTO;
+    }
+
+    @Cacheable(value = "books")
+    public List<BookDTO> retrieveAll() {
+        List<Book> books = StreamSupport.stream(repository.findAll().spliterator(), false)
+                                        .collect(Collectors.toList());
+        return books.stream()
+                    .map(book -> mapper.map(book, BookDTO.class))
+                    .collect(Collectors.toList());
     }
 
     /* --------------------------------------------------------------------------------------------
