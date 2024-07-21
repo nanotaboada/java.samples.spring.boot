@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class BooksServiceTests {
 
     @Mock
     private Validator validator;
-    
+
     @Mock
     private ModelMapper mapper;
 
@@ -85,7 +86,7 @@ public class BooksServiceTests {
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>(); // isEmpty();
+        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
         Mockito
             .when(mapper.map(bookDTO, Book.class))
             .thenReturn(book);
@@ -99,6 +100,7 @@ public class BooksServiceTests {
         result = service.create(bookDTO);
         // Assert
         verify(mapper, times(1)).map(bookDTO, Book.class);
+        assertThat(errors).isEmpty();
         verify(repository, never()).save(any(Book.class));
         assertThat(result).isFalse();
     }
@@ -109,7 +111,7 @@ public class BooksServiceTests {
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>(); // isEmpty();
+        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
         Mockito
             .when(mapper.map(bookDTO, Book.class))
             .thenReturn(book);
@@ -123,6 +125,7 @@ public class BooksServiceTests {
         result = service.create(bookDTO);
         // Assert
         verify(mapper, times(1)).map(bookDTO, Book.class);
+        assertThat(errors).isEmpty();
         verify(repository, times(1)).save(any(Book.class));
         assertThat(result).isTrue();
     }
@@ -134,35 +137,58 @@ public class BooksServiceTests {
     @Test
     void givenRetrieveByIsbn_whenIsbnIsFoundInRepository_thenShouldReturnBook() {
         // Arrange
-        BookDTO expected = BookDTOsBuilder.buildOneValid();
-        Book existing = BooksBuilder.buildOneValid();
+        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
+        Book book = BooksBuilder.buildOneValid();
         Mockito
             .when(repository.findByIsbn(anyString()))
-            .thenReturn(Optional.of(existing));
+            .thenReturn(Optional.of(book));
         Mockito
-            .when(mapper.map(existing, BookDTO.class))
-            .thenReturn(expected);
+            .when(mapper.map(book, BookDTO.class))
+            .thenReturn(bookDTO);
         // Act
-        BookDTO actual = service.retrieveByIsbn(expected.getIsbn());
+        BookDTO result = service.retrieveByIsbn(bookDTO.getIsbn());
         // Assert
-        verify(mapper, times(1)).map(existing, BookDTO.class);
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(mapper, times(1)).map(book, BookDTO.class);
+        assertThat(result).usingRecursiveComparison().isEqualTo(bookDTO);
         verify(repository, times(1)).findByIsbn(anyString());
     }
 
     @Test
     void givenRetrieveByIsbn_whenIsbnIsNotFoundInRepository_thenShouldReturnNull() {
         // Arrange
-        BookDTO expected = BookDTOsBuilder.buildOneValid();
+        String isbn = "9781484242216";
         Mockito
             .when(repository.findByIsbn(anyString()))
             .thenReturn(Optional.empty());
         // Act
-        BookDTO actual = service.retrieveByIsbn(expected.getIsbn());
+        BookDTO result = service.retrieveByIsbn(isbn);
         // Assert
-        assertThat(actual).isNull();
+        assertThat(result).isNull();
         verify(mapper, never()).map(any(Book.class), any(BookDTO.class));
         verify(repository, times(1)).findByIsbn(anyString());
+    }
+
+    @Test
+    void givenRetrieveAll_whenRepositoryHasCollectionOfBooks_thenShouldReturnAllBooks() {
+        // Arrange
+        List<BookDTO> expected = BookDTOsBuilder.buildManyValid();
+        List<Book> existing = BooksBuilder.buildManyValid();
+        Mockito
+            .when(repository.findAll())
+            .thenReturn(existing);
+            for (int index = 0; index < existing.size(); index++) {
+                Mockito
+                    .when(mapper.map(existing.get(index), BookDTO.class))
+                    .thenReturn(expected.get(index));
+            }
+        // Act
+        List<BookDTO> actual = service.retrieveAll();
+        // Assert
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        for (Book book : existing) {
+            verify(mapper, times(1)).map(book, BookDTO.class);
+        }
+        verify(repository, times(1)).findAll();
     }
 
     /* --------------------------------------------------------------------------------------------
@@ -203,7 +229,7 @@ public class BooksServiceTests {
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>(); // isEmpty();
+        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
         Mockito
             .when(mapper.map(bookDTO, Book.class))
             .thenReturn(book);
@@ -217,6 +243,7 @@ public class BooksServiceTests {
         result = service.update(bookDTO);
         // Assert
         verify(mapper, times(1)).map(bookDTO, Book.class);
+        assertThat(errors).isEmpty();
         verify(repository, times(1)).save(any(Book.class));
         assertThat(result).isTrue();
     }
@@ -227,7 +254,7 @@ public class BooksServiceTests {
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>(); // isEmpty();
+        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
         Mockito
             .when(mapper.map(bookDTO, Book.class))
             .thenReturn(book);
@@ -241,6 +268,7 @@ public class BooksServiceTests {
         result = service.update(bookDTO);
         // Assert
         verify(mapper, times(1)).map(bookDTO, Book.class);
+        assertThat(errors).isEmpty();
         verify(repository, never()).save(any(Book.class));
         assertThat(result).isFalse();
     }

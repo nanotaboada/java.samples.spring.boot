@@ -1,6 +1,7 @@
 package ar.com.nanotaboada.java.samples.spring.boot.controllers;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,12 @@ public class BooksController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/books")
+    public ResponseEntity<List<BookDTO>> getAllBooks() {
+        List<BookDTO> books = service.retrieveAll();
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     /* --------------------------------------------------------------------------------------------
