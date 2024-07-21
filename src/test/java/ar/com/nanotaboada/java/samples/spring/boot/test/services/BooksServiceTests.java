@@ -34,7 +34,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.test.BooksBuilder;
 
 @DisplayName("CRUD Operations on Service")
 @ExtendWith(MockitoExtension.class)
-public class BooksServiceTests {
+class BooksServiceTests {
 
     @Mock
     private BooksRepository repository;
