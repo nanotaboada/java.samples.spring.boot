@@ -2,7 +2,7 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Spring Boot (Debug)",
+      "name": "Java: Launch Spring Boot (Debug)",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
