@@ -21,7 +21,7 @@ The following is a simplified dependency diagram of modules and main libraries:
 ## Documentation
 
 ```console
-http://localhost:9000/swagger-ui/index.html
+http://localhost:9000/swagger/index.html
 ```
 
 ![API Documentation](java.samples.spring.boot-swagger.png)

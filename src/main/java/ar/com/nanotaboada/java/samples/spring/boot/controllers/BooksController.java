@@ -29,14 +29,14 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 
 @RestController
-@Tag(name = "Books", description = "CRUD operations for books")
+@Tag(name = "Books")
 @OpenAPIDefinition(
     info = @Info(
         title = "java.samples.spring.boot",
         version = "1.0",
         description = "🧪 Proof of Concept for a RESTful Web Service made with JDK 21 (LTS) and Spring Boot 3",
         contact = @Contact(
-            name = "Github",
+            name = "GitHub",
             url = "https://github.com/nanotaboada/java.samples.spring.boot"
         ),
         license = @License(
