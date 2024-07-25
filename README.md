@@ -18,6 +18,14 @@ The following is a simplified dependency diagram of modules and main libraries:
 
 ![Dependency Diagram](java.samples.spring.boot.svg)
 
+## Documentation
+
+```console
+http://localhost:9000/swagger-ui/index.html
+```
+
+![API Documentation](java.samples.spring.boot-swagger.png)
+
 ## Credits
 
 The solution has been coded using [Visual Studio Code](https://code.visualstudio.com/) with the [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
