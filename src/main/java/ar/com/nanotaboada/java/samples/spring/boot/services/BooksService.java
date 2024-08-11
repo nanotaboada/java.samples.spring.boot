@@ -35,13 +35,13 @@ public class BooksService {
 
     @CachePut(value = "books", key = "#bookDTO.isbn")
     public boolean create(BookDTO bookDTO) {
-        boolean created = false;
-        Book book = mapper.map(bookDTO, Book.class);
-        if (validator.validate(book).isEmpty() && !repository.existsById(book.getIsbn())) {
+        if (validator.validate(bookDTO).isEmpty()
+            && !repository.existsById(bookDTO.getIsbn())) {
+            Book book = mapper.map(bookDTO, Book.class);
             repository.save(book);
-            created = true;
+            return true;
         }
-        return created;
+        return false;
     }
 
     /* --------------------------------------------------------------------------------------------
@@ -50,21 +50,16 @@ public class BooksService {
 
     @Cacheable(value = "books", key = "#isbn")
     public BookDTO retrieveByIsbn(String isbn) {
-        BookDTO bookDTO = null;
-        Book book = repository.findByIsbn(isbn).orElse(null);
-        if (book != null) {
-            bookDTO = mapper.map(book, BookDTO.class);
-        }
-        return bookDTO;
+        return repository.findByIsbn(isbn)
+            .map(book -> mapper.map(book, BookDTO.class))
+            .orElse(null);
     }
 
     @Cacheable(value = "books")
     public List<BookDTO> retrieveAll() {
-        List<Book> books = StreamSupport.stream(repository.findAll().spliterator(), false)
-                                        .collect(Collectors.toList());
-        return books.stream()
-                    .map(book -> mapper.map(book, BookDTO.class))
-                    .collect(Collectors.toList());
+        return StreamSupport.stream(repository.findAll().spliterator(), false)
+            .map(book -> mapper.map(book, BookDTO.class))
+            .collect(Collectors.toList());
     }
 
     /* --------------------------------------------------------------------------------------------
@@ -73,13 +68,13 @@ public class BooksService {
 
     @CachePut(value = "books", key = "#bookDTO.isbn")
     public boolean update(BookDTO bookDTO) {
-        boolean updated = false;
-        Book book = mapper.map(bookDTO, Book.class);
-        if (validator.validate(book).isEmpty() && repository.existsById(book.getIsbn())) {
+        if (validator.validate(bookDTO).isEmpty()
+            && repository.existsById(bookDTO.getIsbn())) {
+            Book book = mapper.map(bookDTO, Book.class);
             repository.save(book);
-            updated = true;
+            return true;
         }
-        return updated;
+        return false;
     }
 
     /* --------------------------------------------------------------------------------------------
@@ -88,11 +83,10 @@ public class BooksService {
 
     @CacheEvict(value = "books", key = "#isbn")
     public boolean delete(String isbn) {
-        boolean deleted = false;
-        if (!isbn.isBlank() && repository.existsById(isbn)) {
+        if (repository.existsById(isbn)) {
             repository.deleteById(isbn);
-            deleted = true;
+            return true;
         }
-        return deleted;
+        return false;
     }
 }

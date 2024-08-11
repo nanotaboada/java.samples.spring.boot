@@ -89,8 +89,8 @@ public class BooksController {
     @GetMapping("/books/{isbn}")
     @Operation(summary = "Retrieves a book by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = BookDTO.class))),
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema =
+            @Schema(implementation = BookDTO.class))),
         @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<BookDTO> getByIsbn(@PathVariable String isbn) {
@@ -105,8 +105,8 @@ public class BooksController {
     @GetMapping("/books")
     @Operation(summary = "Retrieves all books")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = BookDTO[].class)))
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema =
+        @Schema(implementation = BookDTO[].class)))
     })
     public ResponseEntity<List<BookDTO>> getAll() {
         List<BookDTO> books = service.retrieveAll();
@@ -125,7 +125,7 @@ public class BooksController {
         @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<String> put(@RequestBody BookDTO bookDTO) {
-        if (service.retrieveByIsbn(bookDTO.getIsbn()) != null)   {
+        if (service.retrieveByIsbn(bookDTO.getIsbn()) != null) {
             if (service.update(bookDTO)) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
