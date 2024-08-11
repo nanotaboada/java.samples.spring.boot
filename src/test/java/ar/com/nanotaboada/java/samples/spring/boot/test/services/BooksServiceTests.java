@@ -57,15 +57,11 @@ class BooksServiceTests {
         // Arrange
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
-        Book book = BooksBuilder.buildOneInvalid();
         // Simplify creation of ConstraintViolationExceptions
         // https://hibernate.atlassian.net/browse/BVAL-198
-        Set<? extends ConstraintViolation<?>> errors = new HashSet<ConstraintViolation<Book>>();
+        Set<? extends ConstraintViolation<?>> errors = new HashSet<ConstraintViolation<BookDTO>>();
         Mockito
-            .when(mapper.map(bookDTO, Book.class))
-            .thenReturn(book);
-        Mockito
-            .when(validator.validate(any(Book.class)))
+            .when(validator.validate(any(BookDTO.class)))
             .thenThrow(new ConstraintViolationException(errors));
         // Act
         try {
@@ -74,7 +70,6 @@ class BooksServiceTests {
         // Assert
             assertThat(exception).isInstanceOf(ConstraintViolationException.class);
         } finally {
-            verify(mapper, times(1)).map(bookDTO, Book.class);
             verify(repository, never()).save(any(Book.class));
             assertThat(result).isFalse();
         }
@@ -85,13 +80,9 @@ class BooksServiceTests {
         // Arrange
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
-        Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
+        Set<ConstraintViolation<BookDTO>> errors = new HashSet<ConstraintViolation<BookDTO>>();
         Mockito
-            .when(mapper.map(bookDTO, Book.class))
-            .thenReturn(book);
-        Mockito
-            .when(validator.validate(any(Book.class)))
+            .when(validator.validate(any(BookDTO.class)))
             .thenReturn(errors);
         Mockito
             .when(repository.existsById(anyString()))
@@ -99,7 +90,6 @@ class BooksServiceTests {
         // Act
         result = service.create(bookDTO);
         // Assert
-        verify(mapper, times(1)).map(bookDTO, Book.class);
         assertThat(errors).isEmpty();
         verify(repository, never()).save(any(Book.class));
         assertThat(result).isFalse();
@@ -111,12 +101,12 @@ class BooksServiceTests {
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
+        Set<ConstraintViolation<BookDTO>> errors = new HashSet<ConstraintViolation<BookDTO>>();
         Mockito
             .when(mapper.map(bookDTO, Book.class))
             .thenReturn(book);
         Mockito
-            .when(validator.validate(any(Book.class)))
+            .when(validator.validate(any(BookDTO.class)))
             .thenReturn(errors);
         Mockito
             .when(repository.existsById(anyString()))
@@ -200,15 +190,11 @@ class BooksServiceTests {
         // Arrange
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
-        Book book = BooksBuilder.buildOneInvalid();
         // Simplify creation of ConstraintViolationExceptions
         // https://hibernate.atlassian.net/browse/BVAL-198
-        Set<? extends ConstraintViolation<?>> errors = new HashSet<ConstraintViolation<Book>>();
+        Set<? extends ConstraintViolation<?>> errors = new HashSet<ConstraintViolation<BookDTO>>();
         Mockito
-            .when(mapper.map(bookDTO, Book.class))
-            .thenReturn(book);
-        Mockito
-            .when(validator.validate(any(Book.class)))
+            .when(validator.validate(any(BookDTO.class)))
             .thenThrow(new ConstraintViolationException(errors));
         // Act
         try {
@@ -217,7 +203,6 @@ class BooksServiceTests {
         // Assert
             assertThat(exception).isInstanceOf(ConstraintViolationException.class);
         } finally {
-            verify(mapper, times(1)).map(bookDTO, Book.class);
             verify(repository, never()).save(any(Book.class));
             assertThat(result).isFalse();
         }
@@ -229,12 +214,12 @@ class BooksServiceTests {
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
+        Set<ConstraintViolation<BookDTO>> errors = new HashSet<ConstraintViolation<BookDTO>>();
         Mockito
             .when(mapper.map(bookDTO, Book.class))
             .thenReturn(book);
         Mockito
-            .when(validator.validate(any(Book.class)))
+            .when(validator.validate(any(BookDTO.class)))
             .thenReturn(errors);
         Mockito
             .when(repository.existsById(anyString()))
@@ -253,13 +238,9 @@ class BooksServiceTests {
         // Arrange
         boolean result = false;
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
-        Book book = BooksBuilder.buildOneValid();
-        Set<ConstraintViolation<Book>> errors = new HashSet<ConstraintViolation<Book>>();
+        Set<ConstraintViolation<BookDTO>> errors = new HashSet<ConstraintViolation<BookDTO>>();
         Mockito
-            .when(mapper.map(bookDTO, Book.class))
-            .thenReturn(book);
-        Mockito
-            .when(validator.validate(any(Book.class)))
+            .when(validator.validate(any(BookDTO.class)))
             .thenReturn(errors);
         Mockito
             .when(repository.existsById(anyString()))
@@ -267,7 +248,6 @@ class BooksServiceTests {
         // Act
         result = service.update(bookDTO);
         // Assert
-        verify(mapper, times(1)).map(bookDTO, Book.class);
         assertThat(errors).isEmpty();
         verify(repository, never()).save(any(Book.class));
         assertThat(result).isFalse();
