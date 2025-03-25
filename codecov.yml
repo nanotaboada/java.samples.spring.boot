@@ -28,3 +28,5 @@ coverage:
     patch:
       default:
         informational: true
+fixes:
+  - "/home/runner/work/java.samples.spring.boot/java.samples.spring.boot/::"
