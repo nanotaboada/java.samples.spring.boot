@@ -42,6 +42,9 @@ jobs:
       matrix:
         service: [codecov, codacy]
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Download JaCoCo coverage report artifact
       uses: actions/download-artifact@v4
       with:
