@@ -17,7 +17,7 @@ public class BooksDataInitializer {
         book9781838986698.setTitle("The Java Workshop");
         book9781838986698.setSubtitle("Learn object-oriented programming and kickstart your career in software development");
         book9781838986698.setAuthor("David Cuartielles, Andreas Göransson, Eric Foster-Johnson");
-        book9781838986698.setPublisher("Packt Publishing");
+        book9781838986698.setPublisher(PACKT_PUBLISHING);
         book9781838986698.setPublished(LocalDate.of(2019, 10, 31));
         book9781838986698.setPages(606);
         book9781838986698.setDescription(
@@ -45,7 +45,7 @@ public class BooksDataInitializer {
         book9781789613476.setTitle("Hands-On Microservices with Spring Boot and Spring Cloud");
         book9781789613476.setSubtitle("Build and deploy Java microservices using Spring Cloud, Istio, and Kubernetes");
         book9781789613476.setAuthor("Magnus Larsson");
-        book9781789613476.setPublisher("Packt Publishing");
+        book9781789613476.setPublisher(PACKT_PUBLISHING);
         book9781789613476.setPublished(LocalDate.of(2019, 9, 20));
         book9781789613476.setPages(668);
         book9781789613476.setDescription(
@@ -73,7 +73,7 @@ public class BooksDataInitializer {
         book9781838555726.setTitle("Mastering Kotlin");
         book9781838555726.setSubtitle("Learn advanced Kotlin programming techniques to build apps for Android, iOS, and the web");
         book9781838555726.setAuthor("Nate Ebel");
-        book9781838555726.setPublisher("Packt Publishing");
+        book9781838555726.setPublisher(PACKT_PUBLISHING);
         book9781838555726.setPublished(LocalDate.of(2019, 10, 11));
         book9781838555726.setPages(434);
         book9781838555726.setDescription(
@@ -114,4 +114,6 @@ public class BooksDataInitializer {
         books.add(book9781484242216);
         return books;
     }
+    
+    private static final String PACKT_PUBLISHING = "Packt Publishing";
 }
