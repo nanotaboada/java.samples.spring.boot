@@ -18,6 +18,7 @@
     <description>PoC for a REST API made with Spring Boot using Initializr</description>
     <properties>
         <java.version>21</java.version>
+        <versions.java-security-toolkit>1.2.1</versions.java-security-toolkit>
     </properties>
     <!--
         Dependencies
@@ -196,6 +197,10 @@
             <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.pixee</groupId>
+            <artifactId>java-security-toolkit</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <!--
@@ -278,4 +283,13 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.pixee</groupId>
+                <artifactId>java-security-toolkit</artifactId>
+                <version>${versions.java-security-toolkit}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
