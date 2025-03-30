@@ -2,7 +2,12 @@
 
 ## Status
 
-[![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_java.samples.spring.boot&metric=bugs)](https://sonarcloud.io/summary/new_code?id=nanotaboada_java.samples.spring.boot) [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot) [![codebeat badge](https://codebeat.co/badges/fedf65ac-45fa-4a3e-9151-13d459d71de0)](https://codebeat.co/projects/github-com-nanotaboada-java-samples-spring-boot-master) [![Maintainability](https://qlty.sh/badges/89f9e737-cc98-45c6-9b29-204388f5c1e4/maintainability.svg)](https://qlty.sh/gh/nanotaboada/projects/java.samples.spring.boot) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea6918db332642089ef420822267931b)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot) [![Known Vulnerabilities](https://snyk.io/test/github/nanotaboada/java.samples.spring.boot/badge.svg)](https://snyk.io/test/github/nanotaboada/java.samples.spring.boot)
+[![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_java.samples.spring.boot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_java.samples.spring.boot)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea6918db332642089ef420822267931b)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
+[![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
+[![codebeat badge](https://codebeat.co/badges/fedf65ac-45fa-4a3e-9151-13d459d71de0)](https://codebeat.co/projects/github-com-nanotaboada-java-samples-spring-boot-master)
 
 ## Manifesto
 
