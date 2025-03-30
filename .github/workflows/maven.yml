@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'adopt'
+        distribution: 'temurin'
         cache: 'maven'
 
     - name: Compile and verify with Maven
