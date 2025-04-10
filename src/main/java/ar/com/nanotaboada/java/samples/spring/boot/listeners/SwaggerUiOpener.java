@@ -28,30 +28,31 @@ public class SwaggerUiOpener implements ApplicationListener<ApplicationReadyEven
         try {
             String url = "http://localhost:" + port + swaggerPath;
             System.out.println("✅ Swagger UI will open at: " + url);
-
+    
             if (Desktop.isDesktopSupported() && !GraphicsEnvironment.isHeadless()) {
                 Desktop.getDesktop().browse(new URI(url));
             } else {
                 // Fallback: open Swagger UI in browser depending on the OS (Windows, macOS, Linux)
                 String os = System.getProperty("os.name").toLowerCase();
-                Runtime rt = Runtime.getRuntime();
-
+    
                 if (os.contains("win")) {
-                    rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+                    new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", url).start();
                 } else if (os.contains("mac")) {
-                    rt.exec("open " + url);
+                    new ProcessBuilder("open", url).start();
                 } else if (os.contains("nix") || os.contains("nux")) {
                     String[] browsers = { "xdg-open", "google-chrome", "firefox" };
-                    String browser = null;
-                    for (String b : browsers) {
-                        if (Runtime.getRuntime().exec(new String[] { "which", b }).getInputStream().read() != -1) {
-                            browser = b;
+                    boolean launched = false;
+    
+                    for (String browser : browsers) {
+                        Process process = new ProcessBuilder("which", browser).start();
+                        if (process.getInputStream().read() != -1) {
+                            new ProcessBuilder(browser, url).start();
+                            launched = true;
                             break;
                         }
                     }
-                    if (browser != null) {
-                        rt.exec(new String[] { browser, url });
-                    } else {
+    
+                    if (!launched) {
                         System.err.println("⚠️ No supported browser found to open Swagger.");
                     }
                 } else {
