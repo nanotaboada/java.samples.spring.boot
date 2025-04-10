@@ -4,55 +4,93 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
+        <!-- == Spring Boot Starter Parent ================================= -->
+        <!--
+            Parent pom providing dependency and plugin management for
+            applications built with Maven
+        -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.8</version>
+        <version>3.4.4</version>
         <relativePath/>
-        <!-- lookup parent from repository -->
     </parent>
+
     <groupId>ar.com.nanotaboada</groupId>
     <artifactId>java.samples.spring.boot</artifactId>
     <version>3.2.2024</version>
     <name>java.samples.spring.boot</name>
     <description>PoC for a REST API made with Spring Boot using Initializr</description>
+
     <properties>
         <java.version>21</java.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
-    <!--
-        Dependencies
-        ________________________________________________________________________________
-    -->
     <dependencies>
+        <!-- == Spring Boot Starter Web ==================================== -->
         <!--
-            Spring Boot Starter Web
-            Starter for building web, including RESTful, applications using Spring MVC. Uses Tomcat
-            as the default embedded container.
-
+            Starter for building web, including RESTful, applications using
+            Spring MVC. Uses Tomcat as the default embedded container.
             https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
         -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.3.7</version>
         </dependency>
+        <!-- == Spring Boot Starter Test =================================== -->
         <!--
-            Spring Boot Starter Data JPA
+            Starter for testing Spring Boot applications with libraries
+            including JUnit Jupiter, Hamcrest and Mockito
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- == Spring Boot Starter Data JPA =============================== -->
+        <!--
             Starter for using Spring Data JPA with Hibernate
-
             https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
         -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>3.3.7</version>
         </dependency>
+        <!-- == Spring Boot Starter Validation ============================= -->
         <!--
-            H2 Database Engine
-            Provides a fast in-memory database that supports JDBC API and R2DBC access, with a small
-            (2mb) footprint. Supports embedded and server modes as well as a browser based console
-            application.
-
+            Starter for using Java Bean Validation with Hibernate Validator
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- ============== =Spring Boot Starter Cache ===================== -->
+        <!--
+            Starter for using Spring Framework's caching support
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- == Spring Boot Starter Actuator =============================== -->
+        <!--
+            Starter for using Spring Boot's Actuator which provides production
+            ready features to help you monitor and manage your application
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- == H2 Database Engine ========================================= -->
+        <!--
+            Provides a fast in-memory database that supports JDBC API and R2DBC
+            access, with a small (2mb) footprint. Supports embedded and server
+            modes as well as a browser based console application.
             https://mvnrepository.com/artifact/com.h2database/h2
         -->
         <dependency>
@@ -61,71 +99,9 @@
             <version>2.3.232</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- == AssertJ Fluent Assertions ================================== -->
         <!--
-            Spring Boot Starter Validation
-            Starter for using Java Bean Validation with Hibernate Validator
-
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-            <version>3.3.7</version>
-        </dependency>
-        <!--
-            ModelMapper
-            Simple, Intelligent, Object Mapping.
-
-            https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-        -->
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.2</version>
-        </dependency>
-
-        <!--
-            Spring Boot Starter Security
-            Starter for using Spring Security.
-
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
-        -->
-        <!--
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        -->
-        <!--
-            Spring Security Test
-            Spring Security
-
-            https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
-        -->
-        <!--
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
-        <!--
-            Spring Boot Starter Test
-            Starter for testing Spring Boot applications with libraries including JUnit Jupiter,
-            Hamcrest and Mockito.
-
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <!--
-            AssertJ Fluent Assertions
-            Rich and fluent assertions for testing for Java
-
+            Rich and fluent assertions for testing in Java
             https://mvnrepository.com/artifact/org.assertj/assertj-core
         -->
         <dependency>
@@ -134,9 +110,19 @@
             <version>3.27.3</version>
             <scope>test</scope>
         </dependency>
+        <!-- == ModelMapper ================================================ -->
+        <!--
+            Simple, Intelligent, Object Mapping.
+            https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+        -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <!-- == SpringDoc OpenAPI Starter WebMVC UI ======================== -->
         <!--
             SpringDoc OpenAPI Starter WebMVC UI
-
             https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
         -->
         <dependency>
@@ -145,73 +131,59 @@
             <version>2.8.6</version>
         </dependency>
         <!--
-            Spring Boot Starter Actuator
-            Starter for using Spring Boot's Actuator which provides production ready features to
-            help you monitor and manage your application
-
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>3.3.7</version>
-        </dependency>
-        <!--
-            CVE-2022-1471
-        -->
-        <!--
-            SnakeYAML
-            YAML 1.1 parser and emitter for Java
-
-            https://mvnrepository.com/artifact/org.yaml/snakeyaml
-        -->
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <!--
-            Spring Boot Starter Cache
-            Starter for using Spring Framework's caching support
-
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-            <version>3.3.7</version>
-        </dependency>
-        <!--
             Project Lombok
-            Lombok is a Java library that provides annotations to simplify Java development by automating the generation of
-            boilerplate code. Key features include automatic generation of getters, setters, equals, hashCode, and toString
-            methods, as well as a facility for automatic resource management. It aims to reduce the amount of manual coding,
-            thereby streamlining the codebase and reducing potential for errors.
-
+            Lombok is a Java library that provides annotations to simplify
+            Java development by automating the generation of boilerplate code.
+            Key features include automatic generation of getters, setters,
+            equals, hashCode, and toString methods, as well as a facility for
+            automatic resource management. It aims to reduce the amount of
+            manual coding, thereby streamlining the codebase and reducing
+            potential for errors.
             https://mvnrepository.com/artifact/org.projectlombok/lombok
         -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
-        <!--
-            Plugins
-            ________________________________________________________________________________
-        -->
         <plugins>
+            <!-- Apache Maven Compiler Plugin ============================== -->
+            <!--
+                The Compiler Plugin is used to compile the sources of your
+                project.
+                https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!-- == Spring Boot Maven Plugin =============================== -->
+            <!--
+                https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin
+            -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- == JaCoCo :: Maven Plugin ================================= -->
             <!--
-                JaCoCo :: Maven Plugin
-                The JaCoCo Maven Plugin provides the JaCoCo runtime agent to your tests and allows
-                basic report creation.
-
+                The JaCoCo Maven Plugin provides the JaCoCo runtime agent to
+                your tests and allows basic report creation.
                 https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin
             -->
             <plugin>
@@ -242,40 +214,4 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
 </project>

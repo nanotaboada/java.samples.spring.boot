@@ -6,10 +6,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "org.springframework.boot:spring-boot-starter*"
+      - dependency-name: "org.springframework.boot:spring-boot-dependencies"
     groups:
-      spring-boot-starter:
+      spring-boot:
         patterns:
-        - "org.springframework.boot:spring-boot-starter*"
+          - "org.springframework.boot:*"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
