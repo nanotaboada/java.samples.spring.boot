@@ -1,3 +1,9 @@
 {
-  "java.configuration.updateBuildConfiguration": "automatic"
+  "editor.rulers": [80],
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "nanotaboada",
+    "projectKey": "nanotaboada_java.samples.spring.boot"
+  }
 }
