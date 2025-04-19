@@ -6,9 +6,13 @@ import java.util.List;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
 
-public class BookDTOsBuilder {
+public final class BookDTOFakes {
 
-    public static BookDTO buildOneValid() {
+    private BookDTOFakes() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    public static BookDTO createOneValid() {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setIsbn("978-1484200773");
         bookDTO.setTitle("Pro Git");
@@ -28,7 +32,7 @@ public class BookDTOsBuilder {
         return bookDTO;
     }
 
-    public static BookDTO buildOneInvalid() {
+    public static BookDTO createOneInvalid() {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setIsbn("978-1234567890"); // Invalid (invalid ISBN)
         bookDTO.setTitle("Title");
@@ -42,7 +46,7 @@ public class BookDTOsBuilder {
         return bookDTO;
     }
 
-    public static List<BookDTO> buildManyValid() {
+    public static List<BookDTO> createManyValid() {
         ArrayList<BookDTO> bookDTOs = new ArrayList<>();
         BookDTO bookDTO9781838986698 = new BookDTO();
         bookDTO9781838986698.setIsbn("9781838986698");
