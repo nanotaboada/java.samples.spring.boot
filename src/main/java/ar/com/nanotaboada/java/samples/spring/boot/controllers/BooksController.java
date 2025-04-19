@@ -30,49 +30,37 @@ import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 
 @RestController
 @Tag(name = "Books")
-@OpenAPIDefinition(
-    info = @Info(
-        title = "java.samples.spring.boot",
-        version = "1.0",
-        description = "🧪 Proof of Concept for a RESTful Web Service made with JDK 21 (LTS) and Spring Boot 3",
-        contact = @Contact(
-            name = "GitHub",
-            url = "https://github.com/nanotaboada/java.samples.spring.boot"
-        ),
-        license = @License(
-            name = "MIT License",
-            url = "https://opensource.org/licenses/MIT"
-        )
-    )
-)
+@OpenAPIDefinition(info = @Info(title = "java.samples.spring.boot", version = "1.0", description = "🧪 Proof of Concept for a RESTful Web Service made with JDK 21 (LTS) and Spring Boot 3", contact = @Contact(name = "GitHub", url = "https://github.com/nanotaboada/java.samples.spring.boot"), license = @License(name = "MIT License", url = "https://opensource.org/licenses/MIT")))
 public class BooksController {
 
-    private final BooksService service;
+    private final BooksService booksService;
 
-    public BooksController(BooksService service) {
-        this.service = service;
+    public BooksController(BooksService booksService) {
+        this.booksService = booksService;
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP POST
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @PostMapping("/books")
     @Operation(summary = "Creates a new book")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Created", content = @Content),
-        @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-        @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
     })
     public ResponseEntity<String> post(@RequestBody BookDTO bookDTO) {
-        if (service.retrieveByIsbn(bookDTO.getIsbn()) != null) {
+        if (booksService.retrieveByIsbn(bookDTO.getIsbn()) != null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
-            if (service.create(bookDTO)) {
+            if (booksService.create(bookDTO)) {
                 URI location = MvcUriComponentsBuilder
-                    .fromMethodName(BooksController.class, "getByIsbn", bookDTO.getIsbn())
-                    .build()
-                    .toUri();
+                        .fromMethodName(BooksController.class, "getByIsbn", bookDTO.getIsbn())
+                        .build()
+                        .toUri();
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setLocation(location);
                 return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
@@ -82,19 +70,20 @@ public class BooksController {
         }
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP GET
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @GetMapping("/books/{isbn}")
     @Operation(summary = "Retrieves a book by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema =
-            @Schema(implementation = BookDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<BookDTO> getByIsbn(@PathVariable String isbn) {
-        BookDTO bookDTO = service.retrieveByIsbn(isbn);
+        BookDTO bookDTO = booksService.retrieveByIsbn(isbn);
         if (bookDTO != null) {
             return new ResponseEntity<>(bookDTO, HttpStatus.OK);
         } else {
@@ -105,28 +94,29 @@ public class BooksController {
     @GetMapping("/books")
     @Operation(summary = "Retrieves all books")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema =
-        @Schema(implementation = BookDTO[].class)))
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookDTO[].class)))
     })
     public ResponseEntity<List<BookDTO>> getAll() {
-        List<BookDTO> books = service.retrieveAll();
+        List<BookDTO> books = booksService.retrieveAll();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP PUT
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @PutMapping("/books")
     @Operation(summary = "Updates (entirely) a book by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
-        @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<String> put(@RequestBody BookDTO bookDTO) {
-        if (service.retrieveByIsbn(bookDTO.getIsbn()) != null) {
-            if (service.update(bookDTO)) {
+        if (booksService.retrieveByIsbn(bookDTO.getIsbn()) != null) {
+            if (booksService.update(bookDTO)) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -136,20 +126,22 @@ public class BooksController {
         }
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP DELETE
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @DeleteMapping("/books/{isbn}")
     @Operation(summary = "Deletes a book by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
-        @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<String> delete(@PathVariable String isbn) {
-        if (service.retrieveByIsbn(isbn) != null) {
-            if (service.delete(isbn)) {
+        if (booksService.retrieveByIsbn(isbn) != null) {
+            if (booksService.delete(isbn)) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
