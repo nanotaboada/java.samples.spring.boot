@@ -14,9 +14,9 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.BooksDataInitializer;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 
 /**
- * A configuration class that declares one or more Bean methods and also triggers auto-configuration
- * and component scanning.
- * */
+ * A configuration class that declares one or more Bean methods and also
+ * triggers auto-configuration and component scanning.
+ */
 @SpringBootApplication
 @EnableCaching
 public class Application {

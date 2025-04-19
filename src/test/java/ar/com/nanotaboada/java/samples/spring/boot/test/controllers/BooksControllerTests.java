@@ -38,320 +38,329 @@ class BooksControllerTests {
     private static final String PATH = "/books";
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc application;
 
     @MockBean
-    private BooksService service;
+    private BooksService booksServiceMock;
 
     @MockBean
-    private BooksRepository repository;
+    private BooksRepository booksRepositoryMock;
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP POST
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @Test
     void givenPost_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusConflict()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
         String content = new ObjectMapper().writeValueAsString(bookDTO);
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(bookDTO); // Existing
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(bookDTO); // Existing
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(PATH)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON);
+                .post(PATH)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CONFLICT.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
     }
 
     @Test
     void givenPost_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusCreatedAndLocationHeader()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
         String content = new ObjectMapper().writeValueAsString(bookDTO);
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(null); // New
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(null); // New
         Mockito
-            .when(service.create(any(BookDTO.class)))
-            .thenReturn(true);
+                .when(booksServiceMock.create(any(BookDTO.class)))
+                .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(PATH)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON);
+                .post(PATH)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         response.setContentType("application/json;charset=UTF-8");
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getHeader(HttpHeaders.LOCATION)).isNotNull();
         assertThat(response.getHeader(HttpHeaders.LOCATION)).contains(PATH + "/" + bookDTO.getIsbn());
-        verify(service, times(1)).retrieveByIsbn(anyString());
-        verify(service, times(1)).create(any(BookDTO.class));
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).create(any(BookDTO.class));
     }
 
     @Test
     void givenPost_whenRequestBodyContainsInvalidBook_thenShouldReturnStatusBadRequest()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
         String content = new ObjectMapper().writeValueAsString(bookDTO);
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(null); // New
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(null); // New
         Mockito
-            .when(service.create(any(BookDTO.class)))
-            .thenReturn(false);
+                .when(booksServiceMock.create(any(BookDTO.class)))
+                .thenReturn(false);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(PATH)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON);
+                .post(PATH)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
-        verify(service, times(1)).create(any(BookDTO.class));
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).create(any(BookDTO.class));
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP GET
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @Test
     void givenGetByIsbn_whenRequestParameterIdentifiesExistingBook_thenShouldReturnStatusOkAndTheBook()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(bookDTO); // Existing
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(bookDTO); // Existing
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(PATH + "/{isbn}", bookDTO.getIsbn());
+                .get(PATH + "/{isbn}", bookDTO.getIsbn());
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
         BookDTO actual = new ObjectMapper().readValue(content, BookDTO.class);
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(actual).usingRecursiveComparison().isEqualTo(bookDTO);
-        verify(service, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
     }
 
     @Test
     void givenGetByIsbn_whenRequestParameterDoesNotIdentifyAnExistingBook_thenShouldReturnStatusNotFound()
-        throws Exception {
+            throws Exception {
         // Arrange
         String isbn = "9781484242216";
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(null); // New
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(null); // New
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(PATH + "/{isbn}", isbn);
+                .get(PATH + "/{isbn}", isbn);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
     }
 
     @Test
     void givenGetAll_whenRequestPathIsBooks_thenShouldReturnStatusOkAndCollectionOfBooks()
-        throws Exception {
+            throws Exception {
         // Arrange
         List<BookDTO> expected = BookDTOsBuilder.buildManyValid();
         Mockito
-            .when(service.retrieveAll())
-            .thenReturn(expected);
+                .when(booksServiceMock.retrieveAll())
+                .thenReturn(expected);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(PATH);
+                .get(PATH);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
-        List<BookDTO> actual = new ObjectMapper().readValue(content, new TypeReference<List<BookDTO>>() {});
+        List<BookDTO> actual = new ObjectMapper().readValue(content, new TypeReference<List<BookDTO>>() {
+        });
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-        verify(service, times(1)).retrieveAll();
+        verify(booksServiceMock, times(1)).retrieveAll();
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP PUT
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @Test
     void givenPut_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         String content = new ObjectMapper().writeValueAsString(bookDTO);
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(bookDTO); // Existing
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(bookDTO); // Existing
         Mockito
-            .when(service.update(any(BookDTO.class)))
-            .thenReturn(true);
+                .when(booksServiceMock.update(any(BookDTO.class)))
+                .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .put(PATH)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON);
+                .put(PATH)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
-        verify(service, times(1)).update(any(BookDTO.class));
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).update(any(BookDTO.class));
     }
 
     @Test
     void givenPut_whenRequestBodyContainsExistingInvalidBook_thenShouldReturnStatusBadRequest()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
         String content = new ObjectMapper().writeValueAsString(bookDTO);
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(bookDTO); // Existing
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(bookDTO); // Existing
         Mockito
-            .when(service.update(any(BookDTO.class)))
-            .thenReturn(false);
+                .when(booksServiceMock.update(any(BookDTO.class)))
+                .thenReturn(false);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .put(PATH)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON);
+                .put(PATH)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
-        verify(service, times(1)).update(any(BookDTO.class));
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).update(any(BookDTO.class));
     }
 
     @Test
     void givenPut_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusNotFound()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         String content = new ObjectMapper().writeValueAsString(bookDTO);
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(null); // New
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(null); // New
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .put(PATH)
-            .content(content)
-            .contentType(MediaType.APPLICATION_JSON);
+                .put(PATH)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
     }
 
-    /* --------------------------------------------------------------------------------------------
+    /*
+     * -------------------------------------------------------------------------
      * HTTP DELETE
-     * ----------------------------------------------------------------------------------------- */
+     * -------------------------------------------------------------------------
+     */
 
     @Test
     void givenDelete_whenRequestBodyContainsExistingValidBook_thenShouldReturnStatusNoContent()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(bookDTO); // Existing
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(bookDTO); // Existing
         Mockito
-            .when(service.delete(anyString()))
-            .thenReturn(true);
+                .when(booksServiceMock.delete(anyString()))
+                .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .delete(PATH + "/{isbn}", bookDTO.getIsbn());
+                .delete(PATH + "/{isbn}", bookDTO.getIsbn());
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
-        verify(service, times(1)).delete(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).delete(anyString());
     }
 
     @Test
     void givenDelete_whenRequestBodyContainsExistingInvalidBook_thenShouldReturnStatusBadRequest()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(bookDTO); // Existing
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(bookDTO); // Existing
         Mockito
-            .when(service.delete(anyString()))
-            .thenReturn(false);
+                .when(booksServiceMock.delete(anyString()))
+                .thenReturn(false);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .delete(PATH + "/{isbn}", bookDTO.getIsbn());
+                .delete(PATH + "/{isbn}", bookDTO.getIsbn());
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
-        verify(service, times(1)).delete(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).delete(anyString());
     }
 
     @Test
     void givenDelete_whenRequestBodyContainsNewValidBook_thenShouldReturnStatusNotFound()
-        throws Exception {
+            throws Exception {
         // Arrange
         BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
         Mockito
-            .when(service.retrieveByIsbn(anyString()))
-            .thenReturn(null); // New
+                .when(booksServiceMock.retrieveByIsbn(anyString()))
+                .thenReturn(null); // New
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .delete(PATH + "/{isbn}", bookDTO.getIsbn());
+                .delete(PATH + "/{isbn}", bookDTO.getIsbn());
         // Act
-        MockHttpServletResponse response = mockMvc
-            .perform(request)
-            .andReturn()
-            .getResponse();
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
         // Assert
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-        verify(service, times(1)).retrieveByIsbn(anyString());
+        verify(booksServiceMock, times(1)).retrieveByIsbn(anyString());
     }
 }
