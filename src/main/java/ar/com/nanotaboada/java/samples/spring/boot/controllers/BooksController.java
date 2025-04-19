@@ -1,9 +1,13 @@
 package ar.com.nanotaboada.java.samples.spring.boot.controllers;
 
+import static org.springframework.http.HttpHeaders.LOCATION;
+
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpHeaders;
+import jakarta.validation.Valid;
+
+import org.hibernate.validator.constraints.ISBN;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 
@@ -52,22 +57,18 @@ public class BooksController {
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
     })
-    public ResponseEntity<String> post(@RequestBody BookDTO bookDTO) {
-        if (booksService.retrieveByIsbn(bookDTO.getIsbn()) != null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
-            if (booksService.create(bookDTO)) {
-                URI location = MvcUriComponentsBuilder
-                        .fromMethodName(BooksController.class, "getByIsbn", bookDTO.getIsbn())
-                        .build()
-                        .toUri();
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setLocation(location);
-                return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+    public ResponseEntity<Void> post(@RequestBody @Valid BookDTO bookDTO) {
+        boolean created = booksService.create(bookDTO);
+        if (!created) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+        URI location = MvcUriComponentsBuilder
+                .fromMethodCall(MvcUriComponentsBuilder.on(BooksController.class).getByIsbn(bookDTO.getIsbn()))
+                .build()
+                .toUri();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(LOCATION, location.toString())
+                .build();
     }
 
     /*
@@ -77,18 +78,16 @@ public class BooksController {
      */
 
     @GetMapping("/books/{isbn}")
-    @Operation(summary = "Retrieves a book by its ID")
+    @Operation(summary = "Retrieves a book by its ISBN")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookDTO.class))),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<BookDTO> getByIsbn(@PathVariable String isbn) {
         BookDTO bookDTO = booksService.retrieveByIsbn(isbn);
-        if (bookDTO != null) {
-            return new ResponseEntity<>(bookDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return (bookDTO != null)
+                ? ResponseEntity.status(HttpStatus.OK).body(bookDTO)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("/books")
@@ -98,7 +97,7 @@ public class BooksController {
     })
     public ResponseEntity<List<BookDTO>> getAll() {
         List<BookDTO> books = booksService.retrieveAll();
-        return new ResponseEntity<>(books, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
     /*
@@ -108,22 +107,17 @@ public class BooksController {
      */
 
     @PutMapping("/books")
-    @Operation(summary = "Updates (entirely) a book by its ID")
+    @Operation(summary = "Updates (entirely) a book by its ISBN")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<String> put(@RequestBody BookDTO bookDTO) {
-        if (booksService.retrieveByIsbn(bookDTO.getIsbn()) != null) {
-            if (booksService.update(bookDTO)) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> put(@RequestBody @Valid BookDTO bookDTO) {
+        boolean updated = booksService.update(bookDTO);
+        return (updated)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     /*
@@ -133,21 +127,16 @@ public class BooksController {
      */
 
     @DeleteMapping("/books/{isbn}")
-    @Operation(summary = "Deletes a book by its ID")
+    @Operation(summary = "Deletes a book by its ISBN")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<String> delete(@PathVariable String isbn) {
-        if (booksService.retrieveByIsbn(isbn) != null) {
-            if (booksService.delete(isbn)) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> delete(@PathVariable @ISBN String isbn) {
+        boolean deleted = booksService.delete(isbn);
+        return (deleted)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
