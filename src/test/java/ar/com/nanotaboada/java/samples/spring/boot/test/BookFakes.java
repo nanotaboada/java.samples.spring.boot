@@ -6,9 +6,9 @@ import java.util.List;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 
-public class BooksBuilder {
+public class BookFakes {
 
-    public static Book buildOneValid() {
+    public static Book createOneValid() {
         Book book = new Book();
         book.setIsbn("9781484200773");
         book.setTitle("Pro Git");
@@ -28,7 +28,7 @@ public class BooksBuilder {
         return book;
     }
 
-    public static Book buildOneInvalid() {
+    public static Book createOneInvalid() {
         Book book = new Book();
         book.setIsbn("9781234567890"); // Invalid (invalid ISBN)
         book.setTitle("Title");
@@ -42,7 +42,7 @@ public class BooksBuilder {
         return book;
     }
 
-    public static List<Book> buildManyValid() {
+    public static List<Book> createManyValid() {
         ArrayList<Book> books = new ArrayList<>();
         Book book9781838986698 = new Book();
         book9781838986698.setIsbn("9781838986698");

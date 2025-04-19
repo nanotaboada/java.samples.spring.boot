@@ -3,18 +3,12 @@ package ar.com.nanotaboada.java.samples.spring.boot.test.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +23,8 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
-import ar.com.nanotaboada.java.samples.spring.boot.test.BookDTOsBuilder;
-import ar.com.nanotaboada.java.samples.spring.boot.test.BooksBuilder;
+import ar.com.nanotaboada.java.samples.spring.boot.test.BookDTOFakes;
+import ar.com.nanotaboada.java.samples.spring.boot.test.BookFakes;
 
 @DisplayName("CRUD Operations on Service")
 @ExtendWith(MockitoExtension.class)
@@ -38,9 +32,6 @@ class BooksServiceTests {
 
     @Mock
     private BooksRepository booksRepositoryMock;
-
-    @Mock
-    private Validator validatorMock;
 
     @Mock
     private ModelMapper modelMapperMock;
@@ -55,84 +46,37 @@ class BooksServiceTests {
      */
 
     @Test
-    void givenCreate_whenBookExistsInRepositoryAndIsValid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenCreate_whenRepositoryExistsByIdReturnsTrue_thenRepositoryNeverSaveBookAndResultIsFalse() {
         // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
+        BookDTO bookDTO = BookDTOFakes.createOneInvalid();
         Mockito
                 .when(booksRepositoryMock.existsById(anyString()))
                 .thenReturn(true);
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(new HashSet<ConstraintViolation<BookDTO>>());
         // Act
-        result = booksService.create(bookDTO);
+        boolean result = booksService.create(bookDTO);
         // Assert
         verify(booksRepositoryMock, never()).save(any(Book.class));
+        verify(modelMapperMock, never()).map(bookDTO, Book.class);
         assertThat(result).isFalse();
     }
 
     @Test
-    void givenCreate_whenBookExistsInRepositoryAndIsNotValid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenCreate_whenRepositoryExistsByIdReturnsFalse_thenRepositorySaveBookAndResultIsTrue() {
         // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
-        Mockito
-                .when(booksRepositoryMock.existsById(anyString()))
-                .thenReturn(true);
-        @SuppressWarnings("unchecked")
-        Set<ConstraintViolation<BookDTO>> constraintViolations = Set.of(mock(ConstraintViolation.class));
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(constraintViolations);
-        // Act
-        result = booksService.create(bookDTO);
-        // Assert
-        verify(booksRepositoryMock, never()).save(any(Book.class));
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void givenCreate_whenBookdDoesNotExistsInRepositoryAndIsValid_thenShouldSaveBookIntoRepositoryAndReturnTrue() {
-        // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
-        Book book = BooksBuilder.buildOneValid();
+        Book book = BookFakes.createOneValid();
+        BookDTO bookDTO = BookDTOFakes.createOneValid();
         Mockito
                 .when(booksRepositoryMock.existsById(anyString()))
                 .thenReturn(false);
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(new HashSet<ConstraintViolation<BookDTO>>());
         Mockito
                 .when(modelMapperMock.map(bookDTO, Book.class))
                 .thenReturn(book);
         // Act
-        result = booksService.create(bookDTO);
+        boolean result = booksService.create(bookDTO);
         // Assert
-        verify(modelMapperMock, times(1)).map(bookDTO, Book.class);
         verify(booksRepositoryMock, times(1)).save(any(Book.class));
+        verify(modelMapperMock, times(1)).map(bookDTO, Book.class);
         assertThat(result).isTrue();
-    }
-
-    @Test
-    void givenCreate_whenBookDoesNotExistsInRepositoryAndIsNotValid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
-        // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
-        Mockito
-                .when(booksRepositoryMock.existsById(anyString()))
-                .thenReturn(false);
-        @SuppressWarnings("unchecked")
-        Set<ConstraintViolation<BookDTO>> constraintViolations = Set.of(mock(ConstraintViolation.class));
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(constraintViolations);
-        // Act
-        result = booksService.create(bookDTO);
-        // Assert
-        verify(booksRepositoryMock, never()).save(any(Book.class));
-        assertThat(result).isFalse();
     }
 
     /*
@@ -142,10 +86,10 @@ class BooksServiceTests {
      */
 
     @Test
-    void givenRetrieveByIsbn_whenIsbnIsFoundInRepository_thenShouldReturnBook() {
+    void givenRetrieveByIsbn_whenRepositoryFindByIdReturnsBook_thenResultIsEqualToBook() {
         // Arrange
-        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
-        Book book = BooksBuilder.buildOneValid();
+        Book book = BookFakes.createOneValid();
+        BookDTO bookDTO = BookDTOFakes.createOneValid();
         Mockito
                 .when(booksRepositoryMock.findByIsbn(anyString()))
                 .thenReturn(Optional.of(book));
@@ -155,13 +99,13 @@ class BooksServiceTests {
         // Act
         BookDTO result = booksService.retrieveByIsbn(bookDTO.getIsbn());
         // Assert
+        verify(booksRepositoryMock, times(1)).findByIsbn(anyString());
         verify(modelMapperMock, times(1)).map(book, BookDTO.class);
         assertThat(result).usingRecursiveComparison().isEqualTo(bookDTO);
-        verify(booksRepositoryMock, times(1)).findByIsbn(anyString());
     }
 
     @Test
-    void givenRetrieveByIsbn_whenIsbnIsNotFoundInRepository_thenShouldReturnNull() {
+    void givenRetrieveByIsbn_whenRepositoryFindByIdReturnsEmpty_thenResultIsNull() {
         // Arrange
         String isbn = "9781484242216";
         Mockito
@@ -170,32 +114,32 @@ class BooksServiceTests {
         // Act
         BookDTO result = booksService.retrieveByIsbn(isbn);
         // Assert
-        assertThat(result).isNull();
-        verify(modelMapperMock, never()).map(any(Book.class), any(BookDTO.class));
         verify(booksRepositoryMock, times(1)).findByIsbn(anyString());
+        verify(modelMapperMock, never()).map(any(Book.class), any(BookDTO.class));
+        assertThat(result).isNull();
     }
 
     @Test
-    void givenRetrieveAll_whenRepositoryHasCollectionOfBooks_thenShouldReturnAllBooks() {
+    void givenRetrieveAll_whenRepositoryFindAllReturnsBooks_thenResultIsEqualToBooks() {
         // Arrange
-        List<BookDTO> expected = BookDTOsBuilder.buildManyValid();
-        List<Book> existing = BooksBuilder.buildManyValid();
+        List<Book> books = BookFakes.createManyValid();
+        List<BookDTO> bookDTOs = BookDTOFakes.createManyValid();
         Mockito
                 .when(booksRepositoryMock.findAll())
-                .thenReturn(existing);
-        for (int index = 0; index < existing.size(); index++) {
+                .thenReturn(books);
+        for (int index = 0; index < books.size(); index++) {
             Mockito
-                    .when(modelMapperMock.map(existing.get(index), BookDTO.class))
-                    .thenReturn(expected.get(index));
+                    .when(modelMapperMock.map(books.get(index), BookDTO.class))
+                    .thenReturn(bookDTOs.get(index));
         }
         // Act
-        List<BookDTO> actual = booksService.retrieveAll();
+        List<BookDTO> result = booksService.retrieveAll();
         // Assert
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-        for (Book book : existing) {
+        verify(booksRepositoryMock, times(1)).findAll();
+        for (Book book : books) {
             verify(modelMapperMock, times(1)).map(book, BookDTO.class);
         }
-        verify(booksRepositoryMock, times(1)).findAll();
+        assertThat(result).usingRecursiveComparison().isEqualTo(bookDTOs);
     }
 
     /*
@@ -205,83 +149,37 @@ class BooksServiceTests {
      */
 
     @Test
-    void givenUpdate_whenBookExistsInRepositoryAndIsValid_thenShouldSaveBookIntoRepositoryAndReturnTrue() {
+    void givenUpdate_whenRepositoryExistsByIdReturnsTrue_thenRepositorySaveBookAndResultIsTrue() {
         // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
-        Book book = BooksBuilder.buildOneValid();
+        Book book = BookFakes.createOneValid();
+        BookDTO bookDTO = BookDTOFakes.createOneValid();
+
         Mockito
                 .when(booksRepositoryMock.existsById(anyString()))
                 .thenReturn(true);
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(new HashSet<ConstraintViolation<BookDTO>>());
         Mockito
                 .when(modelMapperMock.map(bookDTO, Book.class))
                 .thenReturn(book);
         // Act
-        result = booksService.update(bookDTO);
+        boolean result = booksService.update(bookDTO);
         // Assert
-        verify(modelMapperMock, times(1)).map(bookDTO, Book.class);
         verify(booksRepositoryMock, times(1)).save(any(Book.class));
+        verify(modelMapperMock, times(1)).map(bookDTO, Book.class);
         assertThat(result).isTrue();
     }
 
     @Test
-    void givenUodate_whenBookExistsInRepositoryAndIsNotValid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
+    void givenUpdate_whenRepositoryExistsByIdReturnsFalse_thenRepositoryNeverSaveBookAndResultIsFalse() {
         // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
-        Mockito
-                .when(booksRepositoryMock.existsById(anyString()))
-                .thenReturn(true);
-        @SuppressWarnings("unchecked")
-        Set<ConstraintViolation<BookDTO>> constraintViolations = Set.of(mock(ConstraintViolation.class));
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(constraintViolations);
-        // Act
-        result = booksService.update(bookDTO);
-        // Assert
-        verify(booksRepositoryMock, never()).save(any(Book.class));
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void givenUpdate_whenBookDoesNotExistsInRepositoryAndIsValid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
-        // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
+        BookDTO bookDTO = BookDTOFakes.createOneValid();
         Mockito
                 .when(booksRepositoryMock.existsById(anyString()))
                 .thenReturn(false);
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(new HashSet<ConstraintViolation<BookDTO>>());
         // Act
-        result = booksService.update(bookDTO);
+        boolean result = booksService.update(bookDTO);
         // Assert
         verify(booksRepositoryMock, never()).save(any(Book.class));
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void givenUodate_whenBookDoesNotExistsInRepositoryAndIsNotValid_thenShouldNeverSaveBookIntoRepositoryAndReturnFalse() {
-        // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
-        Mockito
-                .when(booksRepositoryMock.existsById(anyString()))
-                .thenReturn(false);
-        @SuppressWarnings("unchecked")
-        Set<ConstraintViolation<BookDTO>> constraintViolations = Set.of(mock(ConstraintViolation.class));
-        Mockito
-                .when(validatorMock.validate(any(BookDTO.class)))
-                .thenReturn(constraintViolations);
-        // Act
-        result = booksService.update(bookDTO);
-        // Assert
-        verify(booksRepositoryMock, never()).save(any(Book.class));
+        verify(modelMapperMock, never()).map(bookDTO, Book.class);
         assertThat(result).isFalse();
     }
 
@@ -292,45 +190,32 @@ class BooksServiceTests {
      */
 
     @Test
-    void givenDelete_whenIsbnIsBlank_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
+    void givenDelete_whenRepositoryExistsByIdReturnsFalse_thenRepositoryNeverDeleteBookAndResultIsFalse() {
         // Arrange
-        boolean result = false;
-        Book book = BooksBuilder.buildOneValid();
-        book.setIsbn("");
-        // Act
-        result = booksService.delete(book.getIsbn());
-        // Assert
-        verify(booksRepositoryMock, never()).deleteById(anyString());
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void givenDelete_whenIsbnIsNotBlankButDoesNotExistInRepository_thenShouldNeverDeleteBookFromRepositoryAndReturnFalse() {
-        // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneInvalid();
+        BookDTO bookDTO = BookDTOFakes.createOneInvalid();
         Mockito
                 .when(booksRepositoryMock.existsById(anyString()))
                 .thenReturn(false);
         // Act
-        result = booksService.delete(bookDTO.getIsbn());
+        boolean result = booksService.delete(bookDTO.getIsbn());
         // Assert
         verify(booksRepositoryMock, never()).deleteById(anyString());
+        verify(modelMapperMock, never()).map(bookDTO, Book.class);
         assertThat(result).isFalse();
     }
 
     @Test
-    void givenDelete_whenIsbnIsNotBlankAndExistInRepository_thenShouldDeleteBookFromRepositoryAndReturnTrue() {
+    void givenDelete_whenRepositoryExistsByIdReturnsTrue_thenRepositoryDeleteBookAndResultIsTrue() {
         // Arrange
-        boolean result = false;
-        BookDTO bookDTO = BookDTOsBuilder.buildOneValid();
+        BookDTO bookDTO = BookDTOFakes.createOneValid();
         Mockito
                 .when(booksRepositoryMock.existsById(anyString()))
                 .thenReturn(true);
         // Act
-        result = booksService.delete(bookDTO.getIsbn());
+        boolean result = booksService.delete(bookDTO.getIsbn());
         // Assert
         verify(booksRepositoryMock, times(1)).deleteById(anyString());
+        verify(modelMapperMock, never()).map(bookDTO, Book.class);
         assertThat(result).isTrue();
     }
 }

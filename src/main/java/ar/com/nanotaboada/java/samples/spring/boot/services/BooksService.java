@@ -1,10 +1,9 @@
 package ar.com.nanotaboada.java.samples.spring.boot.services;
 
-import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.stream.StreamSupport;
+
+import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,7 +20,6 @@ import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
 public class BooksService {
 
     private final BooksRepository booksRepository;
-    private final Validator validator;
     private final ModelMapper modelMapper;
 
     /*
@@ -32,14 +30,14 @@ public class BooksService {
 
     @CachePut(value = "books", key = "#bookDTO.isbn")
     public boolean create(BookDTO bookDTO) {
-        boolean notExists = !booksRepository.existsById(bookDTO.getIsbn());
-        boolean valid = validator.validate(bookDTO).isEmpty();
-        if (notExists && valid) {
+        if (booksRepository.existsById(bookDTO.getIsbn())) {
+            return false;
+        } else {
             Book book = mapFrom(bookDTO);
             booksRepository.save(book);
             return true;
         }
-        return false;
+
     }
 
     /*
@@ -70,14 +68,13 @@ public class BooksService {
 
     @CachePut(value = "books", key = "#bookDTO.isbn")
     public boolean update(BookDTO bookDTO) {
-        boolean exists = booksRepository.existsById(bookDTO.getIsbn());
-        boolean valid = validator.validate(bookDTO).isEmpty();
-        if (exists && valid) {
+        if (booksRepository.existsById(bookDTO.getIsbn())) {
             Book book = mapFrom(bookDTO);
             booksRepository.save(book);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /*
@@ -91,8 +88,9 @@ public class BooksService {
         if (booksRepository.existsById(isbn)) {
             booksRepository.deleteById(isbn);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private BookDTO mapFrom(Book book) {

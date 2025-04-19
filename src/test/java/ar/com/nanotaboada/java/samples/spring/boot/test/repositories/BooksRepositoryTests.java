@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.BooksRepository;
-import ar.com.nanotaboada.java.samples.spring.boot.test.BooksBuilder;
+import ar.com.nanotaboada.java.samples.spring.boot.test.BookFakes;
 
 @DisplayName("Derived Query Methods on Repository")
 @DataJpaTest
@@ -22,9 +22,9 @@ class BooksRepositoryTests {
     private BooksRepository repository;
 
     @Test
-    void givenFindByIsbn_whenIsbnAlreadyExists_thenShouldReturnExistingBook() {
+    void givenFindByIsbn_whenISBNAlreadyExists_thenShouldReturnExistingBook() {
         // Arrange
-        Book existing = BooksBuilder.buildOneValid();
+        Book existing = BookFakes.createOneValid();
         repository.save(existing); // Exists
         // Act
         Optional<Book> actual = repository.findByIsbn(existing.getIsbn());
@@ -34,9 +34,9 @@ class BooksRepositoryTests {
     }
 
     @Test
-    void givenFindByIsbn_whenIsbnDoesNotExist_thenShouldReturnEmptyOptional() {
+    void givenFindByIsbn_whenISBNDoesNotExist_thenShouldReturnEmptyOptional() {
         // Arrange
-        Book expected = BooksBuilder.buildOneValid();
+        Book expected = BookFakes.createOneValid();
         // Act
         Optional<Book> actual = repository.findByIsbn(expected.getIsbn());
         // Assert
