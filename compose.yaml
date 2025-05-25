@@ -1,0 +1,16 @@
+name: java-samples-spring-boot
+
+services:
+  api:
+    image: java-samples-spring-boot
+    container_name: spring-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=9000
+    restart: unless-stopped
