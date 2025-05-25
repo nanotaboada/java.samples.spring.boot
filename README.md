@@ -1,4 +1,4 @@
-# Sample RESTful Web Service with Spring Boot
+# 🧪 RESTful Web Service with Spring Boot
 
 ## Status
 
@@ -26,6 +26,30 @@ http://localhost:9000/swagger/index.html
 ```
 
 ![API Documentation](assets/images/swagger.png)
+
+## Container
+
+### Docker Compose
+
+This setup uses [Docker Compose](https://docs.docker.com/compose/) to build and run the app
+
+#### Build the image
+
+```bash
+docker compose build
+```
+
+#### Start the app
+
+```bash
+docker compose up
+```
+
+#### Stop the app
+
+```bash
+docker compose down
+```
 
 ## Credits
 
