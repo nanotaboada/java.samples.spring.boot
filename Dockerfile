@@ -6,11 +6,13 @@ FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 
-# Copy pom.xml and source code
+# Copy pom.xml and download dependencies. This will be cached until pom.xml
+# changes, speeding up the build process.
 COPY pom.xml    .
-COPY src        ./src
+RUN mvn dependency:go-offline -B
 
-# Build the application and skip tests for faster build
+# Copy source code and build the application, skipping tests for faster builds.
+COPY src        ./src
 RUN mvn clean package -DskipTests
 
 # ------------------------------------------------------------------------------
@@ -33,14 +35,14 @@ LABEL org.opencontainers.image.source="https://github.com/nanotaboada/java.sampl
 # https://rules.sonarsource.com/docker/RSPEC-6504/
 
 # Copy application JAR file from the builder stage
-COPY --from=builder     /app/target/*.jar       ./app.jar
+COPY --from=builder     /app/target/*.jar           ./app.jar
 
 # Copy metadata docs for container registries (e.g.: GitHub Container Registry)
-COPY --chmod=444        README.md               ./
-COPY --chmod=555        assets/                 ./assets/
+COPY --chmod=444        README.md                   ./
+COPY --chmod=555        assets/                     ./assets/
 
 # Copy entrypoint and healthcheck scripts
-COPY --chmod=555        scripts/entrypoint.sh      ./entrypoint.sh
+COPY --chmod=555        scripts/entrypoint.sh       ./entrypoint.sh
 COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
 
 # Add system user
