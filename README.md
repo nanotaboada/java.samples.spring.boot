@@ -7,7 +7,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea6918db332642089ef420822267931b)](https://app.codacy.com/gh/nanotaboada/java.samples.spring.boot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
-[![codebeat badge](https://codebeat.co/badges/fedf65ac-45fa-4a3e-9151-13d459d71de0)](https://codebeat.co/projects/github-com-nanotaboada-java-samples-spring-boot-master)
 
 ## About
 
