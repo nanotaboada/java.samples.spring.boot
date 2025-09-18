@@ -25,7 +25,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <lombok.version>1.18.38</lombok.version>
+        <lombok.version>1.18.42</lombok.version>
     </properties>
     <dependencies>
         <!-- == Spring Boot Starter Web ==================================== -->
