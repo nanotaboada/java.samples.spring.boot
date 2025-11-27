@@ -218,4 +218,48 @@ class BooksServiceTests {
         verify(modelMapperMock, never()).map(bookDTO, Book.class);
         assertThat(result).isTrue();
     }
+
+    /*
+     * -------------------------------------------------------------------------
+     * Search
+     * -------------------------------------------------------------------------
+     */
+
+    @Test
+    void givenSearchByDescription_whenRepositoryReturnsMatchingBooks_thenResultIsEqualToBooks() {
+        // Arrange
+        List<Book> books = BookFakes.createManyValid();
+        List<BookDTO> bookDTOs = BookDTOFakes.createManyValid();
+        String keyword = "Java";
+        Mockito
+                .when(booksRepositoryMock.findByDescriptionContainingIgnoreCase(keyword))
+                .thenReturn(books);
+        for (int index = 0; index < books.size(); index++) {
+            Mockito
+                    .when(modelMapperMock.map(books.get(index), BookDTO.class))
+                    .thenReturn(bookDTOs.get(index));
+        }
+        // Act
+        List<BookDTO> result = booksService.searchByDescription(keyword);
+        // Assert
+        verify(booksRepositoryMock, times(1)).findByDescriptionContainingIgnoreCase(keyword);
+        for (Book book : books) {
+            verify(modelMapperMock, times(1)).map(book, BookDTO.class);
+        }
+        assertThat(result).usingRecursiveComparison().isEqualTo(bookDTOs);
+    }
+
+    @Test
+    void givenSearchByDescription_whenRepositoryReturnsEmptyList_thenResultIsEmptyList() {
+        // Arrange
+        String keyword = "nonexistentkeyword";
+        Mockito
+                .when(booksRepositoryMock.findByDescriptionContainingIgnoreCase(keyword))
+                .thenReturn(List.of());
+        // Act
+        List<BookDTO> result = booksService.searchByDescription(keyword);
+        // Assert
+        verify(booksRepositoryMock, times(1)).findByDescriptionContainingIgnoreCase(keyword);
+        assertThat(result).isEmpty();
+    }
 }
