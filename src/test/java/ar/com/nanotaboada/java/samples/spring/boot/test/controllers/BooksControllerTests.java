@@ -340,4 +340,96 @@ class BooksControllerTests {
         verify(booksServiceMock, never()).delete(anyString());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    /*
+     * -------------------------------------------------------------------------
+     * HTTP GET /books/search
+     * -------------------------------------------------------------------------
+     */
+
+    @Test
+    void givenSearchByDescription_whenRequestParamIsValidAndMatchingBooksExist_thenResponseStatusIsOKAndResultIsBooks()
+            throws Exception {
+        // Arrange
+        List<BookDTO> bookDTOs = BookDTOFakes.createManyValid();
+        String keyword = "Java";
+        Mockito
+                .when(booksServiceMock.searchByDescription(anyString()))
+                .thenReturn(bookDTOs);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(PATH + "/search")
+                .param("description", keyword);
+        // Act
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        response.setContentType("application/json;charset=UTF-8");
+        String content = response.getContentAsString();
+        List<BookDTO> result = new ObjectMapper().readValue(content, new TypeReference<List<BookDTO>>() {
+        });
+        // Assert
+        verify(booksServiceMock, times(1)).searchByDescription(anyString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result).usingRecursiveComparison().isEqualTo(bookDTOs);
+    }
+
+    @Test
+    void givenSearchByDescription_whenRequestParamIsValidAndNoMatchingBooks_thenResponseStatusIsOKAndResultIsEmptyList()
+            throws Exception {
+        // Arrange
+        String keyword = "nonexistentkeyword";
+        Mockito
+                .when(booksServiceMock.searchByDescription(anyString()))
+                .thenReturn(List.of());
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(PATH + "/search")
+                .param("description", keyword);
+        // Act
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        response.setContentType("application/json;charset=UTF-8");
+        String content = response.getContentAsString();
+        List<BookDTO> result = new ObjectMapper().readValue(content, new TypeReference<List<BookDTO>>() {
+        });
+        // Assert
+        verify(booksServiceMock, times(1)).searchByDescription(anyString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void givenSearchByDescription_whenRequestParamIsBlank_thenResponseStatusIsBadRequest()
+            throws Exception {
+        // Arrange
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(PATH + "/search")
+                .param("description", "");
+        // Act
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Assert
+        verify(booksServiceMock, never()).searchByDescription(anyString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void givenSearchByDescription_whenRequestParamIsMissing_thenResponseStatusIsBadRequest()
+            throws Exception {
+        // Arrange
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(PATH + "/search");
+        // Act
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Assert
+        verify(booksServiceMock, never()).searchByDescription(anyString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
@@ -97,6 +99,17 @@ public class BooksController {
     })
     public ResponseEntity<List<BookDTO>> getAll() {
         List<BookDTO> books = booksService.retrieveAll();
+        return ResponseEntity.status(HttpStatus.OK).body(books);
+    }
+
+    @GetMapping("/books/search")
+    @Operation(summary = "Searches books by description")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookDTO[].class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)
+    })
+    public ResponseEntity<List<BookDTO>> searchByDescription(@RequestParam @NotBlank String description) {
+        List<BookDTO> books = booksService.searchByDescription(description);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
