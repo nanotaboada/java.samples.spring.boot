@@ -62,6 +62,19 @@ public class BooksService {
 
     /*
      * -------------------------------------------------------------------------
+     * Search
+     * -------------------------------------------------------------------------
+     */
+
+    public List<BookDTO> searchByDescription(String keyword) {
+        return booksRepository.findByDescriptionContainingIgnoreCase(keyword)
+                .stream()
+                .map(this::mapFrom)
+                .toList();
+    }
+
+    /*
+     * -------------------------------------------------------------------------
      * Update
      * -------------------------------------------------------------------------
      */

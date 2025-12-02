@@ -16,18 +16,22 @@ public final class BookFakes {
         Book book = new Book();
         book.setIsbn("9781484200773");
         book.setTitle("Pro Git");
-        book.setSubtitle("Everything you neeed to know about Git");
-        book.setAuthor("Scott Chacon and Ben Straub");
-        book.setPublisher("lulu.com; First Edition");
+        book.setSubtitle("Everything You Need to Know About Git");
+        book.setAuthor("Scott Chacon, Ben Straub");
+        book.setPublisher("Apress");
         book.setPublished(LocalDate.of(2014, 11, 18));
-        book.setPages(458);
+        book.setPages(456);
         book.setDescription(
                 """
-                        Pro Git (Second Edition) is your fully-updated guide to Git and its \
-                        usage in the modern world. Git has come a long way since it was first developed by \
-                        Linus Torvalds for Linux kernel development. It has taken the open source world by \
-                        storm since its inception in 2005, and this book teaches you how to use it like a \
-                        pro.""");
+                        Pro Git is your fully-updated guide to Git and its usage in the modern world. \
+                        Git has come a long way since it was first developed by Linus Torvalds for Linux \
+                        kernel development. It has taken the open source world by storm since its \
+                        inception in 2005, and this book teaches you how to use it like a pro. Effective \
+                        and well-implemented version control is a necessity for successful web projects, \
+                        whether large or small. This book will help you master the fundamentals of Git, \
+                        including branching and merging, creating and managing repositories, customizing \
+                        your workflow, and using Git in a team environment. You'll also learn advanced \
+                        topics such as Git internals, debugging, automation, and customization.""");
         book.setWebsite("https://git-scm.com/book/en/v2");
         return book;
     }

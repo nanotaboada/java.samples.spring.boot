@@ -5,8 +5,6 @@ import static org.springframework.http.HttpHeaders.LOCATION;
 import java.net.URI;
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
+import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -29,9 +30,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import ar.com.nanotaboada.java.samples.spring.boot.models.BookDTO;
-import ar.com.nanotaboada.java.samples.spring.boot.services.BooksService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @Tag(name = "Books")
@@ -97,6 +97,18 @@ public class BooksController {
     })
     public ResponseEntity<List<BookDTO>> getAll() {
         List<BookDTO> books = booksService.retrieveAll();
+        return ResponseEntity.status(HttpStatus.OK).body(books);
+    }
+
+    @GetMapping("/books/search")
+    @Operation(summary = "Searches books by description keyword")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK - Returns matching books (or empty array if none found)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookDTO[].class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Missing or blank description parameter", content = @Content)
+    })
+    public ResponseEntity<List<BookDTO>> searchByDescription(
+            @RequestParam @NotBlank(message = "Description parameter must not be blank") String description) {
+        List<BookDTO> books = booksService.searchByDescription(description);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
