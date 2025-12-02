@@ -3,6 +3,7 @@ package ar.com.nanotaboada.java.samples.spring.boot.test.repositories;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -41,5 +42,43 @@ class BooksRepositoryTests {
         Optional<Book> actual = repository.findByIsbn(expected.getIsbn());
         // Assert
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void givenFindByDescriptionContainingIgnoreCase_whenKeywordMatchesDescription_thenShouldReturnMatchingBooks() {
+        // Arrange
+        List<Book> books = BookFakes.createManyValid();
+        for (Book book : books) {
+            repository.save(book);
+        }
+        // Act
+        List<Book> actual = repository.findByDescriptionContainingIgnoreCase("Java");
+        // Assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual).allMatch(book -> book.getDescription().toLowerCase().contains("java"));
+    }
+
+    @Test
+    void givenFindByDescriptionContainingIgnoreCase_whenKeywordDoesNotMatch_thenShouldReturnEmptyList() {
+        // Arrange
+        Book book = BookFakes.createOneValid();
+        repository.save(book);
+        // Act
+        List<Book> actual = repository.findByDescriptionContainingIgnoreCase("nonexistentkeyword");
+        // Assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void givenFindByDescriptionContainingIgnoreCase_whenKeywordIsDifferentCase_thenShouldStillMatch() {
+        // Arrange
+        Book book = BookFakes.createOneValid();
+        book.setDescription("This book covers Advanced PRAGMATISM topics");
+        repository.save(book);
+        // Act
+        List<Book> actual = repository.findByDescriptionContainingIgnoreCase("pragmatism");
+        // Assert
+        assertThat(actual).hasSize(1);
+        assertThat(actual.get(0).getIsbn()).isEqualTo(book.getIsbn());
     }
 }
