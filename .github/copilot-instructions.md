@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a RESTful Web Service proof-of-concept built with **Spring Boot 4** targeting **JDK 25 (LTS)**. The application demonstrates a clean, layered architecture implementing a CRUD API for managing books. It uses an in-memory H2 database for data persistence and includes comprehensive test coverage.
+This is a RESTful Web Service proof-of-concept built with **Spring Boot 4** targeting **JDK 25 (LTS)**. The application demonstrates a clean, layered architecture implementing a CRUD API for managing books. It uses a **SQLite database** for runtime persistence (with a pre-seeded database in Docker) and **H2 in-memory** for fast test execution.
 
 **Key URLs:**
 
@@ -17,7 +17,7 @@ This is a RESTful Web Service proof-of-concept built with **Spring Boot 4** targ
 - **Java**: JDK 25 (LTS) - use modern Java features where appropriate
 - **Spring Boot**: 4.0.0 with modular starter dependencies (WebMVC, Data JPA, Validation, Cache, Actuator)
 - **Build Tool**: Maven 3.9+ (use `./mvnw` wrapper, NOT system Maven)
-- **Database**: H2 in-memory database (runtime scope)
+- **Database**: SQLite (runtime) with Xerial JDBC driver; H2 in-memory (test scope only)
 
 ### Key Dependencies
 
@@ -26,6 +26,8 @@ This is a RESTful Web Service proof-of-concept built with **Spring Boot 4** targ
 - **SpringDoc OpenAPI** 2.8.14: API documentation (Swagger UI)
 - **JaCoCo** 0.8.14: Code coverage reporting
 - **AssertJ** 3.27.6: Fluent test assertions
+- **SQLite JDBC** 3.47.1.0: SQLite database driver (Xerial)
+- **Hibernate Community Dialects**: Provides `SQLiteDialect` for JPA/Hibernate
 
 ### Testing
 
@@ -36,8 +38,8 @@ This is a RESTful Web Service proof-of-concept built with **Spring Boot 4** targ
 
 ### DevOps & CI/CD
 
-- **Docker**: Multi-stage build with Eclipse Temurin Alpine images
-- **Docker Compose**: Local containerized deployment
+- **Docker**: Multi-stage build with Eclipse Temurin Alpine images and pre-seeded SQLite database
+- **Docker Compose**: Local containerized deployment with persistent storage volume
 - **GitHub Actions**: CI pipeline with coverage reporting (Codecov, Codacy)
 
 ## Project Structure
@@ -54,7 +56,7 @@ src/main/java/ar/com/nanotaboada/java/samples/spring/boot/
 └── models/                       # Domain entities & DTOs
     ├── Book.java                 # JPA entity
     ├── BookDTO.java              # Data Transfer Object with validation
-    └── BooksDataInitializer.java # Seed data
+    └── UnixTimestampConverter.java # JPA converter for LocalDate ↔ Unix timestamp
 
 src/test/java/.../test/
 ├── controllers/                  # Controller tests (@WebMvcTest)
@@ -64,12 +66,18 @@ src/test/java/.../test/
 └── BookDTOFakes.java            # Test data factory for BookDTO
 
 src/main/resources/
-├── application.properties        # Application configuration
+├── application.properties        # Application configuration (SQLite)
 └── logback-spring.xml           # Logging configuration
 
+src/test/resources/
+└── application.properties        # Test configuration (H2 in-memory)
+
 scripts/
-├── entrypoint.sh                 # Docker container entrypoint
+├── entrypoint.sh                 # Docker entrypoint (copies seed DB on first run)
 └── healthcheck.sh               # Docker health check using Actuator
+
+storage/
+└── books-sqlite3.db             # Pre-seeded SQLite database with sample books
 ```
 
 **Package Naming Convention**: `ar.com.nanotaboada.java.samples.spring.boot.<layer>`
@@ -164,6 +172,15 @@ docker compose logs -f
 - `9000`: Main API server
 - `9001`: Actuator management endpoints
 
+**Persistent Storage**:
+
+The Docker container uses a "hold" pattern for the pre-seeded SQLite database:
+
+1. Build stage copies `storage/books-sqlite3.db` to `/app/hold/` in the image
+2. On first container run, `entrypoint.sh` copies the database to `/storage/` volume
+3. Subsequent runs use the existing database from the volume
+4. To reset: `docker compose down -v` removes volumes, next `up` restores seed data
+
 ## Common Tasks & Patterns
 
 ### Adding a New REST Endpoint
@@ -203,15 +220,18 @@ docker compose logs -f
 ### Build Failures
 
 - **Lombok not working**: Ensure annotation processor is enabled in IDE and `maven-compiler-plugin` includes Lombok path
-- **Tests failing**: Check if H2 database is properly initialized; review `BooksDataInitializer.seed()`
+- **Tests failing**: Tests use H2 in-memory database via `src/test/resources/application.properties`
 - **Port already in use**: Change `server.port` in `application.properties` or kill process using ports 9000/9001
 - **JAVA_HOME not set**: Run `export JAVA_HOME=$(/usr/libexec/java_home -v 25)` on macOS or set to JDK 25 path on other systems
 - **CacheManager errors in tests**: Add `@AutoConfigureCache` annotation to slice tests (`@WebMvcTest`, `@DataJpaTest`)
+- **SQLite file not found**: Ensure `storage/books-sqlite3.db` exists for local development
 
 ### Docker Issues
 
 - **Container health check failing**: Verify Actuator is accessible at `http://localhost:9001/actuator/health`
 - **Build context too large**: Ensure `.dockerignore` excludes `target/` and `.git/`
+- **Database not persisting**: Check that `java-samples-spring-boot_storage` volume exists (`docker volume ls`)
+- **Stale seed data**: Run `docker compose down -v` to remove volumes and restore fresh seed data on next `up`
 
 ### Common Pitfalls
 
@@ -220,6 +240,13 @@ docker compose logs -f
 - **Don't test Lombok-generated code**: Focus on business logic
 - **Repository interfaces**: Custom query methods may not show in coverage (JaCoCo limitation)
 - **Spring Boot 4.0 modular packages**: Test annotations like `@WebMvcTest`, `@DataJpaTest`, and `@AutoConfigureCache` are now in modular packages (e.g., `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest`)
+
+### SQLite Configuration Notes
+
+- **Date storage**: LocalDate fields are stored as Unix timestamps (INTEGER) for robustness - no parsing issues
+- **Converter**: `UnixTimestampConverter` handles LocalDate ↔ epoch seconds conversion via JPA `@Convert`
+- **DDL auto**: Use `ddl-auto=none` since the database is pre-seeded (SQLite has limited ALTER TABLE support)
+- **Tests use H2**: The converter works seamlessly with both H2 and SQLite databases
 
 ## CI/CD Pipeline
 
