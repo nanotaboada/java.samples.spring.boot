@@ -10,6 +10,13 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+    volumes:
+      - storage:/storage/
     environment:
       - SPRING_PROFILES_ACTIVE=production
+      - STORAGE_PATH=/storage/books-sqlite3.db
     restart: unless-stopped
+
+volumes:
+  storage:
+    name: java-samples-spring-boot_storage

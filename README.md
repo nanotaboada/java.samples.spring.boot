@@ -31,12 +31,12 @@ A proof-of-concept RESTful Web Service built with **Spring Boot 4** targeting **
 The service showcases:
 
 - Multi-layer architecture (Controllers → Services → Repositories)
-- In-memory H2 database with JPA/Hibernate
+- SQLite database with JPA/Hibernate (H2 for tests)
 - Spring Cache abstraction for performance optimization
 - Comprehensive test coverage with JUnit 5, Mockito, and AssertJ
 - OpenAPI 3.0 documentation with Swagger UI
 - Production-ready monitoring with Spring Boot Actuator
-- Containerized deployment with Docker
+- Containerized deployment with Docker and persistent storage
 
 ## Features
 
@@ -47,7 +47,7 @@ The service showcases:
 - ✅ **API Documentation** - Interactive Swagger UI powered by SpringDoc OpenAPI
 - ✅ **Health Monitoring** - Spring Boot Actuator endpoints
 - ✅ **Test Coverage** - JaCoCo reports with Codecov/Codacy integration
-- ✅ **Docker Support** - Multi-stage builds with Eclipse Temurin Alpine images
+- ✅ **Docker Support** - Multi-stage builds with pre-seeded SQLite database
 - ✅ **CI/CD Ready** - GitHub Actions with automated testing and container builds
 
 ## Architecture
@@ -130,6 +130,17 @@ docker compose down
 - `9000` - Main API server
 - `9001` - Actuator management endpoints
 
+**Persistent Storage:**
+
+The Docker container uses a pre-seeded SQLite database with sample book data. On first run, the database is copied from the image to a named volume (`java-samples-spring-boot_storage`) ensuring data persistence across container restarts.
+
+To reset the database to its initial state:
+
+```bash
+docker compose down -v  # Remove volumes
+docker compose up       # Fresh start with seed data
+```
+
 ## API Reference
 
 The Books API provides standard CRUD operations:
@@ -180,6 +191,7 @@ open target/site/jacoco/index.html
 **Test Structure:**
 
 - **Unit Tests** - `@WebMvcTest`, `@DataJpaTest` for isolated layer testing (with `@AutoConfigureCache` for caching support)
+- **Test Database** - H2 in-memory database for fast, isolated test execution
 - **Mocking** - Mockito with `@MockitoBean` for dependency mocking
 - **Assertions** - AssertJ fluent assertions
 - **Naming Convention** - BDD style: `given<Condition>_when<Action>_then<Expected>`
@@ -189,6 +201,13 @@ open target/site/jacoco/index.html
 - Controllers: 100%
 - Services: 100%
 - Repositories: Custom query methods (interfaces excluded by JaCoCo design)
+
+**SQLite Configuration Notes:**
+
+- Dates are stored as Unix timestamps (INTEGER) for robustness - no date format parsing issues
+- A JPA `AttributeConverter` handles LocalDate ↔ epoch seconds conversion transparently
+- Use `ddl-auto=none` since the database is pre-seeded (SQLite has limited ALTER TABLE support)
+- Tests use H2 in-memory database - the converter works seamlessly with both databases
 
 ## Documentation
 

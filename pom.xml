@@ -146,18 +146,40 @@
             <artifactId>spring-boot-starter-data-jpa-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- SQLite JDBC Driver ============================================ -->
+        <!--
+            SQLite JDBC is a library for accessing SQLite databases through
+            the JDBC API. It provides a lightweight, file-based database that
+            persists data across application restarts.
+            https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+        -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.47.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Hibernate Community Dialects ==================================== -->
+        <!--
+            Provides SQLite dialect for Hibernate ORM. Required for JPA/Hibernate
+            to correctly generate SQL statements for SQLite databases.
+            https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-community-dialects
+        -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+        </dependency>
         <!-- H2 Database Engine ============================================ -->
         <!--
-            Provides a fast in-memory database that supports JDBC API and R2DBC
-            access, with a small (2mb) footprint. Supports embedded and server
-            modes as well as a browser based console application.
+            Provides a fast in-memory database for testing. Used only in test
+            scope for fast unit and integration test execution.
             https://mvnrepository.com/artifact/com.h2database/h2
         -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>2.4.240</version>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
         <!-- =============================================================== -->
         <!-- Operations                                                      -->

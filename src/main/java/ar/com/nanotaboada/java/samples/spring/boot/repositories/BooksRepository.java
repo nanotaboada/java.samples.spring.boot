@@ -1,14 +1,14 @@
 package ar.com.nanotaboada.java.samples.spring.boot.repositories;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Book;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BooksRepository extends CrudRepository<Book, String> {
@@ -22,11 +22,11 @@ public interface BooksRepository extends CrudRepository<Book, String> {
 
     /**
      * Finds books whose description contains the given keyword (case-insensitive).
-     * Uses JPQL with CAST to handle CLOB description field.
+     * SQLite handles TEXT fields natively, so no CAST operation is needed.
      *
      * @param keyword the keyword to search for in the description
      * @return a list of books matching the search criteria
      */
-    @Query("SELECT b FROM Book b WHERE LOWER(CAST(b.description AS string)) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT b FROM Book b WHERE LOWER(b.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Book> findByDescriptionContainingIgnoreCase(@Param("keyword") String keyword);
 }
