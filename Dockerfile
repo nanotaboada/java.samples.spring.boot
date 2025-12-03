@@ -2,7 +2,7 @@
 # Stage 1: Builder
 # This stage builds the application and its dependencies.
 # ------------------------------------------------------------------------------
-FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+FROM maven:3.9-eclipse-temurin-25-alpine AS builder
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ RUN mvn clean package -DskipTests
 # Stage 2: Runtime
 # This stage creates the final, minimal image to run the application.
 # ------------------------------------------------------------------------------
-FROM eclipse-temurin:21-jdk-alpine AS runtime
+FROM eclipse-temurin:25-jdk-alpine AS runtime
 
 WORKDIR /app
 
@@ -28,7 +28,7 @@ RUN apk add --no-cache curl
 
 # Metadata labels for the image. These are useful for registries and inspection.
 LABEL org.opencontainers.image.title="🧪 RESTful Web Service with Spring Boot"
-LABEL org.opencontainers.image.description="Proof of Concept for a RESTful Web Service made with JDK 21 (LTS) and Spring Boot 3"
+LABEL org.opencontainers.image.description="Proof of Concept for a RESTful Web Service made with JDK 25 (LTS) and Spring Boot 4"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.source="https://github.com/nanotaboada/java.samples.spring.boot"
 
