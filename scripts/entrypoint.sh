@@ -12,8 +12,13 @@ if [ ! -f "$VOLUME_STORAGE_PATH" ]; then
   echo "⚠️ No existing database file found in volume."
   if [ -f "$IMAGE_STORAGE_PATH" ]; then
     echo "Copying database file to writable volume..."
-    cp "$IMAGE_STORAGE_PATH" "$VOLUME_STORAGE_PATH"
-    echo "✔ Database initialized at $VOLUME_STORAGE_PATH"
+    if cp "$IMAGE_STORAGE_PATH" "$VOLUME_STORAGE_PATH"; then
+      echo "✔ Database initialized at $VOLUME_STORAGE_PATH"
+    else
+      echo "❌ Failed to copy database from $IMAGE_STORAGE_PATH to $VOLUME_STORAGE_PATH"
+      echo "   Check file permissions and available disk space."
+      exit 1
+    fi
   else
     echo "⚠️ Database file missing at $IMAGE_STORAGE_PATH"
     exit 1

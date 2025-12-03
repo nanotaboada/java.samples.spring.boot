@@ -243,7 +243,7 @@ The Docker container uses a "hold" pattern for the pre-seeded SQLite database:
 
 ### SQLite Configuration Notes
 
-- **Date storage**: Dates are stored as Unix timestamps (INTEGER) for robustness - no parsing issues
+- **Date storage**: LocalDate fields are stored as Unix timestamps (INTEGER) for robustness - no parsing issues
 - **Converter**: `UnixTimestampConverter` handles LocalDate ↔ epoch seconds conversion via JPA `@Convert`
 - **DDL auto**: Use `ddl-auto=none` since the database is pre-seeded (SQLite has limited ALTER TABLE support)
 - **Tests use H2**: The converter works seamlessly with both H2 and SQLite databases

@@ -205,7 +205,7 @@ open target/site/jacoco/index.html
 **SQLite Configuration Notes:**
 
 - Dates are stored as Unix timestamps (INTEGER) for robustness - no date format parsing issues
-- A JPA `AttributeConverter` handles LocalDate ↔ epoch seconds conversion transparently
+- A JPA `AttributeConverter` handles LocalDate ↔ epoch seconds conversion transparently (UTC-based)
 - Use `ddl-auto=none` since the database is pre-seeded (SQLite has limited ALTER TABLE support)
 - Tests use H2 in-memory database - the converter works seamlessly with both databases
 

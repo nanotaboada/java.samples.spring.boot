@@ -12,8 +12,7 @@ import jakarta.persistence.Converter;
  * (seconds since epoch).
  *
  * This converter stores dates as INTEGER in SQLite, which is more robust than
- * TEXT-based
- * date formats because:
+ * TEXT-based date formats because:
  * - No parsing ambiguity or locale-dependent formatting issues
  * - Works consistently across all SQLite clients and tools
  * - More efficient for date comparisons and indexing
