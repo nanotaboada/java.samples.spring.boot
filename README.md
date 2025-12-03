@@ -7,7 +7,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> A production-ready RESTful Web Service demonstrating clean architecture patterns with Spring Boot 3, comprehensive testing, and containerized deployment.
+> A production-ready RESTful Web Service demonstrating clean architecture patterns with Spring Boot 4, comprehensive testing, and containerized deployment.
 
 ## Table of Contents
 
@@ -26,7 +26,7 @@
 
 ## About
 
-A proof-of-concept RESTful Web Service built with **Spring Boot 3** targeting **JDK 21 (LTS)**. This project demonstrates best practices for building a layered, testable, and maintainable API implementing CRUD operations for a Books resource.
+A proof-of-concept RESTful Web Service built with **Spring Boot 4** targeting **JDK 25 (LTS)**. This project demonstrates best practices for building a layered, testable, and maintainable API implementing CRUD operations for a Books resource.
 
 The service showcases:
 
@@ -48,7 +48,7 @@ The service showcases:
 - ✅ **Health Monitoring** - Spring Boot Actuator endpoints
 - ✅ **Test Coverage** - JaCoCo reports with Codecov/Codacy integration
 - ✅ **Docker Support** - Multi-stage builds with Eclipse Temurin Alpine images
-- ✅ **CI/CD Ready** - GitHub Actions and Azure Pipelines configurations
+- ✅ **CI/CD Ready** - GitHub Actions with automated testing and container builds
 
 ## Architecture
 
@@ -66,8 +66,7 @@ _Figure: Simplified, conceptual project structure and main application flow. Not
 
 Before you begin, ensure you have the following installed:
 
-- **Java Development Kit (JDK) 21** - [Download](https://adoptium.net/temurin/releases/?version=21)
-  - ⚠️ **Critical**: JDK 21 is required. Newer versions (22+) cause Mockito/ByteBuddy compatibility issues.
+- **Java Development Kit (JDK) 25** - [Download](https://adoptium.net/temurin/releases/?version=25)
   - Verify with: `java -version`
 - **Maven 3.9+** (optional) - Project includes Maven wrapper (`./mvnw`)
 - **Docker** (optional) - For containerized deployment
@@ -75,7 +74,7 @@ Before you begin, ensure you have the following installed:
 **macOS Users**: Set `JAVA_HOME` if needed:
 
 ```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+export JAVA_HOME=$(/usr/libexec/java_home -v 25)
 ```
 
 ## Getting Started
@@ -180,8 +179,8 @@ open target/site/jacoco/index.html
 
 **Test Structure:**
 
-- **Unit Tests** - `@WebMvcTest`, `@DataJpaTest` for isolated layer testing
-- **Mocking** - Mockito for dependency mocking
+- **Unit Tests** - `@WebMvcTest`, `@DataJpaTest` for isolated layer testing (with `@AutoConfigureCache` for caching support)
+- **Mocking** - Mockito with `@MockitoBean` for dependency mocking
 - **Assertions** - AssertJ fluent assertions
 - **Naming Convention** - BDD style: `given<Condition>_when<Action>_then<Expected>`
 

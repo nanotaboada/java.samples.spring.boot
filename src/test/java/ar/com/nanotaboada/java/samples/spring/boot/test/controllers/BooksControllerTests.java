@@ -13,12 +13,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.cache.test.autoconfigure.AutoConfigureCache;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,6 +35,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.test.BookDTOFakes;
 
 @DisplayName("HTTP Methods on Controller")
 @WebMvcTest(BooksController.class)
+@AutoConfigureCache
 class BooksControllerTests {
 
     private static final String PATH = "/books";
@@ -41,10 +43,10 @@ class BooksControllerTests {
     @Autowired
     private MockMvc application;
 
-    @MockBean
+    @MockitoBean
     private BooksService booksServiceMock;
 
-    @MockBean
+    @MockitoBean
     private BooksRepository booksRepositoryMock;
 
     /*

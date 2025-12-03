@@ -6,59 +6,59 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <!-- == Spring Boot Starter Parent ================================= -->
+        <!-- Spring Boot Starter Parent ==================================== -->
         <!--
             Parent pom providing dependency and plugin management for
             applications built with Maven
         -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>4.0.0</version>
         <relativePath/>
     </parent>
 
     <groupId>ar.com.nanotaboada</groupId>
     <artifactId>java.samples.spring.boot</artifactId>
-    <version>3.2.2024</version>
+    <version>4.0.2025</version>
     <name>java.samples.spring.boot</name>
-    <description>PoC for a REST API made with Spring Boot using Initializr</description>
+    <description>A RESTful Web Service demonstrating clean architecture patterns with Spring Boot 4</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <lombok.version>1.18.42</lombok.version>
     </properties>
+
     <dependencies>
-        <!-- == Spring Boot Starter Web ==================================== -->
+        <!-- =============================================================== -->
+        <!-- Controllers                                                     -->
+        <!-- =============================================================== -->
+        <!-- REST endpoints, request/response handling, API documentation    -->
+
+        <!-- Spring Boot Starter WebMVC ==================================== -->
         <!--
             Starter for building web, including RESTful, applications using
             Spring MVC. Uses Tomcat as the default embedded container.
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+            Note: Renamed from spring-boot-starter-web in Spring Boot 4.0
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webmvc
         -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
-        <!-- == Spring Boot Starter Test =================================== -->
+        <!-- Spring Boot Starter WebMVC Test =============================== -->
         <!--
-            Starter for testing Spring Boot applications with libraries
-            including JUnit Jupiter, Hamcrest and Mockito
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+            Test support for Spring Boot web MVC applications.
+            New in Spring Boot 4.0: Modular architecture requires separate test
+            starters. Provides @WebMvcTest which is now located in the package:
+            org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webmvc-test
         -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- == Spring Boot Starter Data JPA =============================== -->
-        <!--
-            Starter for using Spring Data JPA with Hibernate
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <!-- == Spring Boot Starter Validation ============================= -->
+        <!-- Spring Boot Starter Validation ================================ -->
         <!--
             Starter for using Java Bean Validation with Hibernate Validator
             https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
@@ -67,26 +67,86 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-        <!-- ============== =Spring Boot Starter Cache ===================== -->
+        <!-- SpringDoc OpenAPI Starter WebMVC UI =========================== -->
         <!--
-            Starter for using Spring Framework's caching support
+            Interactive API documentation with Swagger UI powered by OpenAPI 3.
+            https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+        -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.14</version>
+        </dependency>
+        <!-- =============================================================== -->
+        <!-- Services                                                        -->
+        <!-- =============================================================== -->
+        <!-- Business logic, caching, entity-to-DTO mapping                  -->
+
+        <!-- Spring Boot Starter Cache ===================================== -->
+        <!--
+            Starter for using Spring Framework's caching support.
+            Enables @EnableCaching and cache annotations (@Cacheable, @CachePut,
+            @CacheEvict). When using caching with slice tests, also add the
+            spring-boot-starter-cache-test dependency and @AutoConfigureCache.
             https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache
         -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-        <!-- == Spring Boot Starter Actuator =============================== -->
+        <!-- Spring Boot Starter Cache Test ================================ -->
         <!--
-            Starter for using Spring Boot's Actuator which provides production
-            ready features to help you monitor and manage your application
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+            Test support for Spring Boot Cache applications.
+            New in Spring Boot 4.0: Modular architecture requires separate test
+            starters. Provides @AutoConfigureCache which is now located in:
+            org.springframework.boot.cache.test.autoconfigure.AutoConfigureCache
+            Required when using @EnableCaching with slice tests like @WebMvcTest
+            or @DataJpaTest to provide a CacheManager bean in the test context.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache-test
         -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-cache-test</artifactId>
+            <scope>test</scope>
         </dependency>
-        <!-- == H2 Database Engine ========================================= -->
+        <!-- ModelMapper =================================================== -->
+        <!--
+            Simple, Intelligent, Object Mapping for Entity-to-DTO conversion.
+            https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+        -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.2.6</version>
+        </dependency>
+        <!-- =============================================================== -->
+        <!-- Repositories                                                    -->
+        <!-- =============================================================== -->
+        <!-- Data access, JPA/Hibernate, database connectivity               -->
+
+        <!-- Spring Boot Starter Data JPA ================================== -->
+        <!--
+            Starter for using Spring Data JPA with Hibernate.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- Spring Boot Starter Data JPA Test ============================= -->
+        <!--
+            Test support for Spring Boot Data JPA applications.
+            New in Spring Boot 4.0: Modular architecture requires separate test
+            starters. Provides @DataJpaTest which is now located in the package:
+            org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa-test
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- H2 Database Engine ============================================ -->
         <!--
             Provides a fast in-memory database that supports JDBC API and R2DBC
             access, with a small (2mb) footprint. Supports embedded and server
@@ -99,9 +159,40 @@
             <version>2.4.240</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- == AssertJ Fluent Assertions ================================== -->
+        <!-- =============================================================== -->
+        <!-- Operations                                                      -->
+        <!-- =============================================================== -->
+        <!-- Monitoring, health checks, production-ready features            -->
+
+        <!-- Spring Boot Starter Actuator ================================== -->
         <!--
-            Rich and fluent assertions for testing in Java
+            Starter for using Spring Boot's Actuator which provides production
+            ready features to help you monitor and manage your application.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- =============================================================== -->
+        <!-- Testing                                                         -->
+        <!-- =============================================================== -->
+        <!-- Test framework, assertions, mocking                             -->
+
+        <!-- Spring Boot Starter Test ====================================== -->
+        <!--
+            Starter for testing Spring Boot applications with libraries
+            including JUnit Jupiter, Hamcrest and Mockito.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- AssertJ Fluent Assertions ===================================== -->
+        <!--
+            Rich and fluent assertions for testing in Java.
             https://mvnrepository.com/artifact/org.assertj/assertj-core
         -->
         <dependency>
@@ -110,28 +201,13 @@
             <version>3.27.6</version>
             <scope>test</scope>
         </dependency>
-        <!-- == ModelMapper ================================================ -->
+        <!-- =============================================================== -->
+        <!-- Tools                                                           -->
+        <!-- =============================================================== -->
+        <!-- Code generation, boilerplate reduction                          -->
+
+        <!-- Project Lombok ================================================ -->
         <!--
-            Simple, Intelligent, Object Mapping.
-            https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-        -->
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.6</version>
-        </dependency>
-        <!-- == SpringDoc OpenAPI Starter WebMVC UI ======================== -->
-        <!--
-            SpringDoc OpenAPI Starter WebMVC UI
-            https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
-        -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.8.14</version>
-        </dependency>
-        <!--
-            Project Lombok
             Lombok is a Java library that provides annotations to simplify
             Java development by automating the generation of boilerplate code.
             Key features include automatic generation of getters, setters,
@@ -148,6 +224,7 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <!-- Apache Maven Compiler Plugin ============================== -->
@@ -172,7 +249,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-            <!-- == Spring Boot Maven Plugin =============================== -->
+            <!-- Spring Boot Maven Plugin ================================== -->
             <!--
                 https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin
             -->
@@ -180,7 +257,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- == JaCoCo :: Maven Plugin ================================= -->
+            <!-- JaCoCo :: Maven Plugin ==================================== -->
             <!--
                 The JaCoCo Maven Plugin provides the JaCoCo runtime agent to
                 your tests and allows basic report creation.

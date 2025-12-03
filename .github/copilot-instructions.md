@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a RESTful Web Service proof-of-concept built with **Spring Boot 3** targeting **JDK 21 (LTS)**. The application demonstrates a clean, layered architecture implementing a CRUD API for managing books. It uses an in-memory H2 database for data persistence and includes comprehensive test coverage.
+This is a RESTful Web Service proof-of-concept built with **Spring Boot 4** targeting **JDK 25 (LTS)**. The application demonstrates a clean, layered architecture implementing a CRUD API for managing books. It uses an in-memory H2 database for data persistence and includes comprehensive test coverage.
 
 **Key URLs:**
 
@@ -14,8 +14,8 @@ This is a RESTful Web Service proof-of-concept built with **Spring Boot 3** targ
 
 ### Core Framework & Runtime
 
-- **Java**: JDK 21 (LTS) - use modern Java features where appropriate
-- **Spring Boot**: 3.4.4 with starter dependencies (Web, Data JPA, Validation, Cache, Actuator)
+- **Java**: JDK 25 (LTS) - use modern Java features where appropriate
+- **Spring Boot**: 4.0.0 with modular starter dependencies (WebMVC, Data JPA, Validation, Cache, Actuator)
 - **Build Tool**: Maven 3.9+ (use `./mvnw` wrapper, NOT system Maven)
 - **Database**: H2 in-memory database (runtime scope)
 
@@ -31,7 +31,7 @@ This is a RESTful Web Service proof-of-concept built with **Spring Boot 3** targ
 
 - **JUnit 5** (Jupiter): Test framework
 - **Mockito**: Mocking framework
-- **Spring Boot Test**: `@WebMvcTest`, `@DataJpaTest`, etc.
+- **Spring Boot Test**: `@WebMvcTest`, `@DataJpaTest`, `@AutoConfigureCache`, etc.
 - **AssertJ**: Preferred assertion library (use over standard JUnit assertions)
 
 ### DevOps & CI/CD
@@ -39,7 +39,6 @@ This is a RESTful Web Service proof-of-concept built with **Spring Boot 3** targ
 - **Docker**: Multi-stage build with Eclipse Temurin Alpine images
 - **Docker Compose**: Local containerized deployment
 - **GitHub Actions**: CI pipeline with coverage reporting (Codecov, Codacy)
-- **Azure Pipelines**: Alternative CI configuration
 
 ## Project Structure
 
@@ -90,7 +89,7 @@ scripts/
 
 - **Lombok**: Prefer `@Data`, `@RequiredArgsConstructor`, `@NoArgsConstructor`, `@AllArgsConstructor` over manual code
 - **Streams**: Use Java Streams API for collection processing (see `BooksService.retrieveAll()`)
-- **Modern Java**: Leverage JDK 21 features (records, pattern matching, etc.) where beneficial
+- **Modern Java**: Leverage JDK 25 features (records, pattern matching, sealed classes, etc.) where beneficial
 - **Comments**: Section dividers used in controllers/services (e.g., `/* HTTP POST */`)
 
 ### Testing Conventions
@@ -98,9 +97,10 @@ scripts/
 - **Test Class Naming**: `<ClassName>Tests` (plural, e.g., `BooksControllerTests`)
 - **Test Method Naming**: `given<Condition>_when<Action>_then<Expected>` (BDD style)
 - **Assertions**: Use AssertJ fluent assertions (`assertThat(...).isEqualTo(...)`)
-- **Mocking**: Use `@MockBean` for Spring beans, verify interactions with `verify()`
+- **Mocking**: Use `@MockitoBean` for Spring beans (new in Spring Boot 4.0), verify interactions with `verify()`
 - **Test Data**: Use fake data factories (`BookFakes`, `BookDTOFakes`) for consistent test data
 - **Display Names**: Use `@DisplayName` for readable test descriptions
+- **Caching in Tests**: Add `@AutoConfigureCache` to slice tests (`@WebMvcTest`, `@DataJpaTest`) when caching is needed
 
 ### Coverage Exclusions
 
@@ -137,8 +137,8 @@ JaCoCo excludes from coverage (see `pom.xml` and `codecov.yml`):
 **Critical Requirements**:
 
 - **ALWAYS use `./mvnw` wrapper** (Unix/macOS) or `mvnw.cmd` (Windows), NOT `mvn`
-- **JDK 21 is REQUIRED**: The project targets JDK 21 (LTS). Using newer JDKs (22+) will cause Mockito/ByteBuddy compatibility issues in tests
-- **JAVA_HOME must be set**: Maven wrapper requires JAVA_HOME pointing to JDK 21 installation
+- **JDK 25 is REQUIRED**: The project targets JDK 25 (LTS)
+- **JAVA_HOME must be set**: Maven wrapper requires JAVA_HOME pointing to JDK 25 installation
 
 ### Docker Commands
 
@@ -205,8 +205,8 @@ docker compose logs -f
 - **Lombok not working**: Ensure annotation processor is enabled in IDE and `maven-compiler-plugin` includes Lombok path
 - **Tests failing**: Check if H2 database is properly initialized; review `BooksDataInitializer.seed()`
 - **Port already in use**: Change `server.port` in `application.properties` or kill process using ports 9000/9001
-- **JAVA_HOME not set**: Run `export JAVA_HOME=$(/usr/libexec/java_home -v 21)` on macOS or set to JDK 21 path on other systems
-- **JDK version errors**: Project requires JDK 21 (LTS). Using JDK 22+ causes Mockito/ByteBuddy failures like "Java 25 (69) is not supported"
+- **JAVA_HOME not set**: Run `export JAVA_HOME=$(/usr/libexec/java_home -v 25)` on macOS or set to JDK 25 path on other systems
+- **CacheManager errors in tests**: Add `@AutoConfigureCache` annotation to slice tests (`@WebMvcTest`, `@DataJpaTest`)
 
 ### Docker Issues
 
@@ -216,10 +216,10 @@ docker compose logs -f
 ### Common Pitfalls
 
 - **Don't use system Maven**: Always use `./mvnw` wrapper
-- **Don't use newer JDKs**: Stick to JDK 21 - newer versions break Mockito in tests
 - **Don't modify `Application.java` coverage**: It's excluded by design
 - **Don't test Lombok-generated code**: Focus on business logic
 - **Repository interfaces**: Custom query methods may not show in coverage (JaCoCo limitation)
+- **Spring Boot 4.0 modular packages**: Test annotations like `@WebMvcTest`, `@DataJpaTest`, and `@AutoConfigureCache` are now in modular packages (e.g., `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest`)
 
 ## CI/CD Pipeline
 
@@ -234,11 +234,6 @@ docker compose logs -f
 - `CODECOV_TOKEN`: Codecov integration token
 - `CODACY_PROJECT_TOKEN`: Codacy integration token
 - `GITHUB_TOKEN`: Automatically provided for GHCR push
-
-### Azure Pipelines (`azure-pipelines.yml`)
-
-- Runs on `ubuntu-latest` with JDK 21
-- Executes `mvn package` and publishes test results
 
 ## Contributing
 
