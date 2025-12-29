@@ -1,29 +1,29 @@
 {
   "recommendations": [
     // Java Development
-    "vscjava.vscode-java-pack", // Extension Pack for Java - Language server, debugger, test runner, Maven
-    "vscjava.vscode-lombok", // Lombok Annotations Support - Boilerplate code generation
-    "vmware.vscode-boot-dev-pack", // Spring Boot Extension Pack - Spring Boot tooling and dashboard
-    "redhat.vscode-xml", // XML - Language support for XML files
+    "vscjava.vscode-java-pack",          // Extension Pack for Java - Language server, debugger, test runner, Maven
+    "vscjava.vscode-lombok",             // Lombok Annotations Support - Boilerplate code generation
+    "vmware.vscode-boot-dev-pack",       // Spring Boot Extension Pack - Spring Boot tooling and dashboard
+    "redhat.vscode-xml",                 // XML - Language support for XML files
 
     // Infrastructure & Workflow
-    "ms-azuretools.vscode-containers", // Container Tools - Docker and container management
-    "yy0931.vscode-sqlite3-editor", // SQLite3 Editor - Database viewer
-    "sonarsource.sonarlint-vscode", // SonarLint - Code quality and security analysis
-    "github.copilot-chat", // GitHub Copilot Chat - AI coding assistant
+    "ms-azuretools.vscode-containers",   // Container Tools - Docker and container management
+    "yy0931.vscode-sqlite3-editor",      // SQLite3 Editor - Database viewer
+    "sonarsource.sonarlint-vscode",      // SonarLint - Code quality and security analysis
+    "github.copilot-chat",               // GitHub Copilot Chat - AI coding assistant
     "github.vscode-pull-request-github", // GitHub Pull Requests and Issues - PR management
-    "github.vscode-github-actions", // GitHub Actions - CI/CD workflow support
-    "redhat.vscode-yaml", // YAML - Language support for YAML files
-    "davidanson.vscode-markdownlint", // MarkdownLint - Markdown linting
-    "foxundermoon.shell-format", // Shell Format - Shell script formatter
-    "codezombiech.gitignore", // Gitignore - .gitignore file support
+    "github.vscode-github-actions",      // GitHub Actions - CI/CD workflow support
+    "redhat.vscode-yaml",                // YAML - Language support for YAML files
+    "davidanson.vscode-markdownlint",    // MarkdownLint - Markdown linting
+    "foxundermoon.shell-format",         // Shell Format - Shell script formatter
+    "codezombiech.gitignore",            // Gitignore - .gitignore file support
     "ryanluker.vscode-coverage-gutters", // Coverage Gutters - Test coverage visualization
-    "usernamehw.errorlens" // Error Lens - Inline error and warning display
+    "usernamehw.errorlens"               // Error Lens - Inline error and warning display
   ],
   "unwantedRecommendations": [
-    "vscjava.vscode-gradle", // Gradle for Java - Project uses Maven exclusively
-    "ms-azuretools.vscode-docker", // Docker (legacy) - Use vscode-containers instead
-    "docker.docker", // Docker DX - Use ms-azuretools.vscode-containers
-    "github.copilot" // Copilot (base) - Unified into copilot-chat
+    "vscjava.vscode-gradle",             // Gradle for Java - Project uses Maven exclusively
+    "ms-azuretools.vscode-docker",       // Docker (legacy) - Use vscode-containers instead
+    "docker.docker",                     // Docker DX - Use ms-azuretools.vscode-containers
+    "github.copilot"                     // Copilot (base) - Unified into copilot-chat
   ]
 }
