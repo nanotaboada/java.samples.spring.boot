@@ -1,17 +1,15 @@
+# CodeRabbit Configuration
+# Optimized for Java 25 (LTS) / Spring Boot 4 RESTful Web Service project
+
 language: en-US
-tone_instructions: ""
 early_access: true
 enable_free_tier: true
-inheritance: false
+
 reviews:
   profile: chill
   request_changes_workflow: false
   high_level_summary: true
-  high_level_summary_instructions: ""
   high_level_summary_placeholder: "@coderabbitai summary"
-  high_level_summary_in_walkthrough: false
-  auto_title_placeholder: "@coderabbitai"
-  auto_title_instructions: ""
   review_status: true
   commit_status: true
   fail_commit_status: false
@@ -21,175 +19,313 @@ reviews:
   estimate_code_review_effort: true
   assess_linked_issues: true
   related_issues: true
-  related_prs: false
-  suggested_labels: false
-  labeling_instructions: []
+  related_prs: true
+  suggested_labels: true
   auto_apply_labels: false
   suggested_reviewers: false
   auto_assign_reviewers: false
   in_progress_fortune: true
   poem: false
-  enable_prompt_for_ai_agents: true
-  path_filters: []
-  path_instructions: []
   abort_on_close: true
-  disable_cache: false
+
+  # Path-based review instructions for this Java/Spring Boot project
+  path_instructions:
+    - path: "src/main/java/**/*.java"
+      instructions: |
+        - Follow Java naming conventions (PascalCase for classes, camelCase for methods/variables)
+        - Use Lombok annotations to reduce boilerplate (@Data, @RequiredArgsConstructor, etc.)
+        - Verify modern Java 25 features are used where beneficial
+        - Check proper dependency injection (constructor injection preferred)
+        - Ensure async operations use proper Spring async patterns
+        - Validate proper exception handling
+
+    - path: "src/main/java/**/controllers/**/*.java"
+      instructions: |
+        - Controllers should be thin - delegate to services
+        - Verify @RestController and proper mapping annotations
+        - Check OpenAPI annotations (@Operation, @ApiResponses)
+        - Ensure proper HTTP status codes (200, 201, 204, 400, 404, 409)
+        - Validate request/response use DTOs, not entities
+        - Check that @Valid is used for request validation
+
+    - path: "src/main/java/**/services/**/*.java"
+      instructions: |
+        - Services should contain business logic
+        - Verify @Service annotation and proper DI
+        - Check Spring Cache annotations (@Cacheable, @CachePut, @CacheEvict)
+        - Ensure proper use of ModelMapper for entity-DTO conversion
+        - Validate proper error handling and logging
+        - Check async operations if used
+
+    - path: "src/main/java/**/repositories/**/*.java"
+      instructions: |
+        - Repositories should extend CrudRepository or JpaRepository
+        - Verify @Repository annotation is present
+        - Check custom query methods follow Spring Data naming conventions
+        - Ensure proper return types (Optional, List, etc.)
+        - Validate that queries are optimized
+
+    - path: "src/main/java/**/models/**/*.java"
+      instructions: |
+        - Separate entities (@Entity) from DTOs
+        - Verify proper Lombok annotations
+        - Check JPA annotations for entities (@Table, @Column, @Id, etc.)
+        - Ensure validation annotations on DTOs (@NotBlank, @ISBN, @URL)
+        - Validate proper use of LocalDate converter for SQLite
+
+    - path: "src/main/java/**/Application.java"
+      instructions: |
+        - Verify @SpringBootApplication annotation
+        - Check main method follows standard Spring Boot pattern
+        - Ensure proper component scanning configuration
+
+    - path: "src/test/java/**/*Tests.java"
+      instructions: |
+        - Test classes should use JUnit 5 (Jupiter)
+        - Verify proper Spring test annotations (@WebMvcTest, @DataJpaTest, etc.)
+        - Check use of @MockitoBean (Spring Boot 4.0 style)
+        - Ensure test naming follows given_when_then pattern
+        - Validate use of AssertJ for fluent assertions
+        - Check @DisplayName for readable test descriptions
+        - Ensure @AutoConfigureCache when testing cached operations
+        - Verify test data uses fake factories (BookFakes, BookDTOFakes)
+
+    - path: "src/test/java/**/BookFakes.java"
+      instructions: |
+        - Verify test data factory pattern
+        - Check consistency of test data generation
+        - Ensure variety of test data for edge cases
+
+    - path: "src/main/resources/application.properties"
+      instructions: |
+        - Verify no sensitive data is committed
+        - Check SQLite database configuration
+        - Ensure proper JPA/Hibernate settings (ddl-auto=none for seeded DB)
+        - Validate server port configuration (9000, 9001 for actuator)
+        - Check logging configuration references logback-spring.xml
+
+    - path: "src/test/resources/application.properties"
+      instructions: |
+        - Verify H2 in-memory database for tests
+        - Check test-specific configurations
+        - Ensure proper test isolation settings
+
+    - path: "src/main/resources/logback-spring.xml"
+      instructions: |
+        - Verify proper logging configuration
+        - Check file and console appenders
+        - Ensure appropriate log levels
+
+    - path: "pom.xml"
+      instructions: |
+        - Verify Spring Boot version is 4.0.0
+        - Check Java version is 25 in maven.compiler properties
+        - Ensure dependencies are up to date
+        - Validate JaCoCo plugin configuration excludes appropriate paths
+        - Check that Lombok is configured with annotation processor path
+        - Verify SQLite and Hibernate Community Dialects are present
+
+    - path: "**/Dockerfile"
+      instructions: |
+        - Verify multi-stage build with Eclipse Temurin Alpine images
+        - Check Java 25 runtime is used
+        - Ensure non-root user for security
+        - Validate HEALTHCHECK instruction using Actuator endpoint
+        - Check database seed copy pattern (hold → storage)
+
+    - path: "scripts/entrypoint.sh"
+      instructions: |
+        - Verify database seed copy logic on first run
+        - Check proper file existence checks
+        - Ensure proper error handling
+
+    - path: "**/*.sh"
+      instructions: |
+        - Verify shell script best practices
+        - Check proper shebang and error handling
+        - Ensure proper permissions handling
+
+  # Ignore patterns for this project
+  path_filters:
+    - "!**/target/**"
+    - "!**/storage/**"
+    - "!**/*.db"
+    - "!**/*.db-shm"
+    - "!**/*.db-wal"
+    - "!**/.mvn/**"
+    - "!**/mvnw"
+    - "!**/mvnw.cmd"
+
   auto_review:
     enabled: true
     auto_incremental_review: true
-    ignore_title_keywords: []
-    labels:
-      - planning
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT REVIEW"
     drafts: false
-    base_branches: []
-    ignore_usernames: []
+    base_branches:
+      - master
+      - main
+
   finishing_touches:
     docstrings:
       enabled: true
     unit_tests:
       enabled: true
+
   pre_merge_checks:
     docstrings:
       mode: warning
       threshold: 80
     title:
       mode: warning
-      requirements: ""
+      requirements: |
+        - Use Conventional Commits format (feat:, fix:, chore:, docs:, test:, refactor:)
+        - Keep under 80 characters
+        - Be descriptive and specific
     description:
       mode: warning
     issue_assessment:
       mode: warning
-    custom_checks: []
+
   tools:
-    ast-grep:
-      rule_dirs: []
-      util_dirs: []
-      essential_rules: true
-      packages: []
-    shellcheck:
-      enabled: true
-    ruff:
-      enabled: true
-    markdownlint:
-      enabled: true
-    github-checks:
-      enabled: true
-      timeout_ms: 90000
-    languagetool:
-      enabled: true
-      enabled_rules: []
-      disabled_rules: []
-      enabled_categories: []
-      disabled_categories: []
-      enabled_only: false
-      level: default
-    biome:
-      enabled: true
-    hadolint:
-      enabled: true
-    swiftlint:
-      enabled: true
-    phpstan:
-      enabled: true
-      level: default
-    phpmd:
-      enabled: true
-    phpcs:
-      enabled: true
-    golangci-lint:
-      enabled: true
-    yamllint:
+    # Relevant tools for Java/Spring Boot projects
+    pmd:
       enabled: true
     gitleaks:
       enabled: true
     checkov:
       enabled: true
-    detekt:
+    hadolint:
       enabled: true
-    eslint:
-      enabled: true
-    flake8:
-      enabled: true
-    fortitudeLint:
-      enabled: true
-    rubocop:
-      enabled: true
-    buf:
-      enabled: true
-    regal:
+    yamllint:
       enabled: true
     actionlint:
       enabled: true
-    pmd:
-      enabled: true
-    clang:
-      enabled: true
-    cppcheck:
-      enabled: true
     semgrep:
       enabled: true
-    circleci:
+    markdownlint:
       enabled: true
-    clippy:
+    github-checks:
       enabled: true
-    sqlfluff:
-      enabled: true
-    prismaLint:
-      enabled: true
-    pylint:
-      enabled: true
-    oxc:
-      enabled: true
-    shopifyThemeCheck:
-      enabled: true
-    luacheck:
-      enabled: true
-    brakeman:
-      enabled: true
+      timeout_ms: 120000
     dotenvLint:
-      enabled: true
-    htmlhint:
       enabled: true
     checkmake:
       enabled: true
     osvScanner:
       enabled: true
+    shellcheck:
+      enabled: true
+
+    # Disable irrelevant tools for Java project
+    ruff:
+      enabled: false
+    biome:
+      enabled: false
+    swiftlint:
+      enabled: false
+    phpstan:
+      enabled: false
+    phpmd:
+      enabled: false
+    phpcs:
+      enabled: false
+    golangci-lint:
+      enabled: false
+    detekt:
+      enabled: false
+    eslint:
+      enabled: false
+    flake8:
+      enabled: false
+    rubocop:
+      enabled: false
+    buf:
+      enabled: false
+    regal:
+      enabled: false
+    clang:
+      enabled: false
+    cppcheck:
+      enabled: false
+    clippy:
+      enabled: false
+    sqlfluff:
+      enabled: false
+    prismaLint:
+      enabled: false
+    pylint:
+      enabled: false
+    oxc:
+      enabled: false
+    shopifyThemeCheck:
+      enabled: false
+    luacheck:
+      enabled: false
+    brakeman:
+      enabled: false
+    htmlhint:
+      enabled: false
+    languagetool:
+      enabled: false
+    circleci:
+      enabled: false
+    fortitudeLint:
+      enabled: false
+
 chat:
   art: true
   auto_reply: true
-  integrations:
-    jira:
-      usage: disabled
-    linear:
-      usage: disabled
+
 knowledge_base:
   opt_out: false
   web_search:
     enabled: true
   code_guidelines:
     enabled: true
-    filePatterns: []
+    filePatterns:
+      - "src/**/*.java"
+      - "**/pom.xml"
+      - "**/application.properties"
+      - "**/logback-spring.xml"
+      - "**/Dockerfile"
+      - "**/*.yml"
+      - "**/*.yaml"
+      - "**/*.sh"
   learnings:
     scope: auto
   issues:
     scope: auto
-  jira:
-    usage: disabled
-    project_keys: []
-  linear:
-    usage: disabled
-    team_keys: []
   pull_requests:
     scope: auto
   mcp:
     usage: auto
-    disabled_servers: []
+
 code_generation:
   docstrings:
     language: en-US
-    path_instructions: []
+    path_instructions:
+      - path: "src/main/java/**/*.java"
+        instructions: |
+          - Use Javadoc comments for public APIs
+          - Include @param, @return, @throws tags
+          - Add OpenAPI annotations for controllers (@Operation, @ApiResponses)
+          - Keep documentation concise and meaningful
+          - Document Lombok-reduced boilerplate when needed for clarity
   unit_tests:
-    path_instructions: []
+    path_instructions:
+      - path: "src/test/java/**/*Tests.java"
+        instructions: |
+          - Use JUnit 5 (Jupiter) framework
+          - Follow given_when_then naming for test methods
+          - Use @DisplayName for readable descriptions
+          - Use @MockitoBean for Spring beans (Spring Boot 4.0 style)
+          - Use AssertJ for fluent assertions
+          - Include @AutoConfigureCache for slice tests with caching
+          - Use test data factories for consistent test data
+          - Target 80% coverage (exclude Application.java and models)
+
 issue_enrichment:
   auto_enrich:
     enabled: true
