@@ -3,9 +3,6 @@
 
 name: Java CI
 
-permissions:
-    contents: read
-
 on:
     push:
         branches: [master]
@@ -18,6 +15,8 @@ env:
 jobs:
     verify:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
         steps:
             - name: Checkout repository
               uses: actions/checkout@v6.0.1
@@ -41,6 +40,8 @@ jobs:
     coverage:
         needs: verify
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
         strategy:
             matrix:
                 service: [codecov, codacy]
@@ -97,6 +98,8 @@ jobs:
                   push: true
                   platforms: linux/amd64
                   provenance: false
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
                   tags: |
                       ghcr.io/${{ github.repository }}:latest
                       ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
