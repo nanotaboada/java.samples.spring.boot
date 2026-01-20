@@ -1,25 +1,53 @@
 {
   "recommendations": [
-    // Java Development
+    // Language & Frameworks
+    "redhat.java",                       // Language Support for Java - Java language server
     "vscjava.vscode-java-pack",          // Extension Pack for Java - Language server, debugger, test runner, Maven
+    "vscjava.vscode-java-debug",         // Debugger for Java - Debug support
+    "vscjava.vscode-java-dependency",    // Java Dependency Viewer - View and manage dependencies
+    "vscjava.vscode-java-test",          // Test Runner for Java - Run and debug tests
     "vscjava.vscode-lombok",             // Lombok Annotations Support - Boilerplate code generation
-    "vmware.vscode-boot-dev-pack",       // Spring Boot Extension Pack - Spring Boot tooling and dashboard
-    "redhat.vscode-xml",                 // XML - Language support for XML files
+    "vscjava.vscode-maven",              // Maven for Java - Maven project management
+    "vmware.vscode-boot-dev-pack",       // Spring Boot Extension Pack - Spring Boot tooling
+    "vmware.vscode-spring-boot",         // Spring Boot Tools - Spring Boot language server
+    "vscjava.vscode-spring-boot-dashboard", // Spring Boot Dashboard - Manage Spring Boot apps
+    "vscjava.vscode-spring-initializr",  // Spring Initializr - Generate Spring Boot projects
 
-    // Infrastructure & Workflow
-    "ms-azuretools.vscode-containers",   // Container Tools - Docker and container management
-    "yy0931.vscode-sqlite3-editor",      // SQLite3 Editor - Database viewer
+    // AI Assistance
+    "github.copilot-chat",               // GitHub Copilot Chat - AI-powered coding assistant
+    "coderabbit.coderabbit-vscode",      // CodeRabbit - AI-powered code review
+
+    // Code Quality
     "sonarsource.sonarlint-vscode",      // SonarLint - Code quality and security analysis
-    "github.copilot-chat",               // GitHub Copilot Chat - AI coding assistant
-    "github.vscode-pull-request-github", // GitHub Pull Requests and Issues - PR management
-    "github.vscode-github-actions",      // GitHub Actions - CI/CD workflow support
-    "redhat.vscode-yaml",                // YAML - Language support for YAML files
-    "davidanson.vscode-markdownlint",    // MarkdownLint - Markdown linting
+
+    // Formatting & Linting
+    "redhat.vscode-xml",                 // XML Language Support - XML language server
+    "redhat.vscode-yaml",                // YAML Language Support - YAML language server
+    "davidanson.vscode-markdownlint",    // MarkdownLint - Markdown linting and style checking
     "foxundermoon.shell-format",         // Shell Format - Shell script formatter
-    "codezombiech.gitignore",            // Gitignore - .gitignore file support
-    "ryanluker.vscode-coverage-gutters", // Coverage Gutters - Test coverage visualization
-    "usernamehw.errorlens"               // Error Lens - Inline error and warning display
+
+    // Version Control & Collaboration
+    "github.vscode-pull-request-github", // GitHub Pull Requests - Manage pull requests and issues
+    "github.vscode-github-actions",      // GitHub Actions - Manage CI/CD workflows
+    "github.remotehub",                  // Remote Repositories - Browse and edit GitHub repos remotely
+    "ms-vscode.remote-repositories",     // Remote Repositories - Remote repository infrastructure
+    "ms-vscode.azure-repos",             // Azure Repos - Azure DevOps repository support
+    "codezombiech.gitignore",            // gitignore - Generate .gitignore files
+
+    // Containers & Configuration
+    "ms-azuretools.vscode-containers",   // Container Tools - Docker and container management
+    "yy0931.vscode-sqlite3-editor",      // SQLite3 Editor - View and edit SQLite databases
+    "mechatroner.rainbow-csv",           // Rainbow CSV - Colorize CSV and TSV files
+
+    // UI Enhancements
+    "github.github-vscode-theme",        // GitHub Theme - GitHub color themes
+    "pkief.material-icon-theme",         // Material Icon Theme - Material Design file icons
+    "oderwat.indent-rainbow",            // Indent Rainbow - Colorize indentation levels
+    "bierner.markdown-emoji",            // Markdown Emoji - Emoji support in Markdown
+    "bierner.markdown-mermaid",          // Markdown Mermaid - Mermaid diagram support in Markdown
+    "bierner.markdown-preview-github-styles" // Markdown Preview GitHub Styling - GitHub-style Markdown preview
   ],
+  // Prevent conflicting, deprecated, or alternative extensions from being recommended
   "unwantedRecommendations": [
     "vscjava.vscode-gradle",             // Gradle for Java - Project uses Maven exclusively
     "ms-azuretools.vscode-docker",       // Docker (legacy) - Use vscode-containers instead
