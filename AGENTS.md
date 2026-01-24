@@ -1,8 +1,8 @@
 # AGENTS.md
 
-> **⚡ Token Efficiency Note**: This file contains complete operational instructions (~2,500 tokens).  
-> **Auto-loaded**: NO (load explicitly with `#file:AGENTS.md` when you need detailed procedures)  
-> **When to load**: Complex workflows, troubleshooting, CI/CD setup, detailed architecture questions  
+> **⚡ Token Efficiency Note**: This file contains complete operational instructions (~2,500 tokens).
+> **Auto-loaded**: NO (load explicitly with `#file:AGENTS.md` when you need detailed procedures)
+> **When to load**: Complex workflows, troubleshooting, CI/CD setup, detailed architecture questions
 > **Related files**: See `#file:.github/copilot-instructions.md` for quick context (auto-loaded, ~500 tokens)
 
 ---
@@ -76,6 +76,7 @@ open target/site/jacoco/index.html
 ```
 
 **Pre-commit checklist**:
+
 1. Run `./mvnw clean install` - must pass all tests and build successfully
 2. Check JaCoCo coverage report - maintain existing coverage levels
 3. Ensure code compiles without warnings
@@ -85,11 +86,13 @@ open target/site/jacoco/index.html
 ### Build Artifacts
 
 After building, JAR file is located at:
+
 ```
 target/java.samples.spring.boot-{version}.jar
 ```
 
 Run the JAR directly:
+
 ```bash
 java -jar target/java.samples.spring.boot-*.jar
 ```
@@ -99,21 +102,24 @@ java -jar target/java.samples.spring.boot-*.jar
 This project uses **H2 in-memory database for tests** and **SQLite for runtime**.
 
 **Runtime (SQLite)**:
+
 ```bash
 # Database auto-initializes on first startup
-# Pre-seeded database ships in storage/books.db
+# Pre-seeded database ships in storage/books-sqlite3.db
 
 # To reset database to seed state
-rm storage/books.db
-# Next app startup will recreate via JPA
+rm storage/books-sqlite3.db
+# WARNING: spring.jpa.hibernate.ddl-auto=none disables schema generation
+# Deleting the DB will cause startup failure - restore from backup or manually reinitialize
 
-# Database location: storage/books.db
+# Database location: storage/books-sqlite3.db
 ```
 
 **Tests (H2)**:
+
 - In-memory database per test run
 - Automatically cleared after each test
-- Configuration in `src/test/resources/application-test.properties`
+- Configuration in `src/test/resources/application.properties`
 
 ## Docker Workflow
 
@@ -149,6 +155,7 @@ curl http://localhost:8080/actuator/health
 **Trigger**: Push to `master` or PR to `master`
 
 **Jobs**:
+
 1. **Setup**: JDK 25 installation, Maven dependency caching
 2. **Lint**: Commit message validation (commitlint)
 3. **Build**: `./mvnw clean install` (compile + test + package)
@@ -156,6 +163,7 @@ curl http://localhost:8080/actuator/health
 5. **Coverage**: JaCoCo report upload to Codecov and Codacy
 
 **Local validation** (run this before pushing):
+
 ```bash
 # Matches CI exactly
 ./mvnw clean install
@@ -193,6 +201,7 @@ src/test/java/                    # Test classes
 ```
 
 **Key patterns**:
+
 - Spring Boot 4 with Spring MVC
 - Spring Data JPA for database operations
 - Custom validation annotations for ISBN and URL
@@ -219,12 +228,14 @@ src/test/java/                    # Test classes
 ## Troubleshooting
 
 ### Port already in use
+
 ```bash
 # Kill process on port 8080
 lsof -ti:8080 | xargs kill -9
 ```
 
 ### Maven dependency issues
+
 ```bash
 # Force update dependencies
 ./mvnw clean install -U
@@ -235,6 +246,7 @@ rm -rf ~/.m2/repository
 ```
 
 ### Compilation errors
+
 ```bash
 # Verify Java version
 java --version  # Should be 25.x
@@ -247,6 +259,7 @@ java --version  # Should be 25.x
 ```
 
 ### Database locked errors
+
 ```bash
 # Stop all running instances
 pkill -f "spring-boot:run"
@@ -256,6 +269,7 @@ rm storage/books.db
 ```
 
 ### Test failures
+
 ```bash
 # Run tests with verbose output
 ./mvnw test -X
@@ -265,6 +279,7 @@ rm storage/books.db
 ```
 
 ### Maven wrapper issues
+
 ```bash
 # Make wrapper executable
 chmod +x mvnw
@@ -274,6 +289,7 @@ mvn clean install
 ```
 
 ### Docker issues
+
 ```bash
 # Clean slate
 docker compose down -v
@@ -284,9 +300,11 @@ docker compose up
 ## Testing the API
 
 ### Using Swagger UI (Recommended)
-Open http://localhost:8080/swagger-ui.html - Interactive documentation with "Try it out"
+
+Open <http://localhost:8080/swagger-ui.html> - Interactive documentation with "Try it out"
 
 ### Using curl
+
 ```bash
 # Health check
 curl http://localhost:8080/actuator/health
