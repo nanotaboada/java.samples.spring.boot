@@ -2,7 +2,6 @@
 .mvn
 .vscode
 target
-.codacy.yml
 .gitignore
 azure-pipelines.yml
 CODE_OF_CONDUCT.md
