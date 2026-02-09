@@ -42,9 +42,6 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: read
-        strategy:
-            matrix:
-                service: [codecov, codacy]
         steps:
             - name: Checkout repository
               uses: actions/checkout@v6.0.2
@@ -55,18 +52,10 @@ jobs:
                   name: jacoco.xml
 
             - name: Upload JaCoCo coverage report to Codecov
-              if: matrix.service == 'codecov'
               uses: codecov/codecov-action@v5.5.2
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: jacoco.xml
-
-            - name: Upload JaCoCo coverage report to Codacy
-              if: matrix.service == 'codacy'
-              uses: codacy/codacy-coverage-reporter-action@v1.3.0
-              with:
-                  project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-                  force-coverage-parser: jacoco -r jacoco.xml
 
     container:
         needs: coverage

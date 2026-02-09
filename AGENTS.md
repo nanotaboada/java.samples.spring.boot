@@ -160,7 +160,7 @@ curl http://localhost:8080/actuator/health
 2. **Lint**: Commit message validation (commitlint)
 3. **Build**: `./mvnw clean install` (compile + test + package)
 4. **Test**: Tests already run during install, coverage reports generated
-5. **Coverage**: JaCoCo report upload to Codecov and Codacy
+5. **Coverage**: JaCoCo report upload to Codecov
 
 **Local validation** (run this before pushing):
 

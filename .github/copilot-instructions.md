@@ -1,17 +1,17 @@
 # GitHub Copilot Instructions
 
-> **⚡ Token Efficiency Note**: This is a minimal pointer file (~500 tokens, auto-loaded by Copilot).  
-> For complete operational details, reference: `#file:AGENTS.md` (~2,500 tokens, loaded on-demand)  
+> **Token Efficiency Note**: This is a minimal pointer file (~500 tokens, auto-loaded by Copilot).
+> For complete operational details, reference: `#file:AGENTS.md` (~2,500 tokens, loaded on-demand)
 > For specialized knowledge, use: `#file:SKILLS/<skill-name>/SKILL.md` (loaded on-demand when needed)
 
-## 🎯 Quick Context
+## Quick Context
 
-**Project**: Spring Boot REST API demonstrating modern Java patterns  
-**Stack**: Java 25 (LTS) • Spring Boot 4 • JPA/Hibernate • SQLite • Maven • Docker  
-**Pattern**: Controller → Service → Repository → JPA (layered architecture)  
+**Project**: Spring Boot REST API demonstrating modern Java patterns
+**Stack**: Java 25 (LTS) • Spring Boot 4 • JPA/Hibernate • SQLite • Maven • Docker
+**Pattern**: Controller → Service → Repository → JPA (layered architecture)
 **Philosophy**: Learning-focused PoC emphasizing Spring Boot best practices
 
-## 📐 Core Conventions
+## Core Conventions
 
 - **Naming**: camelCase (methods/variables), PascalCase (classes)
 - **Annotations**: Use Spring stereotypes (@RestController, @Service, @Repository)
@@ -19,8 +19,12 @@
 - **Dependency Injection**: Constructor injection (Lombok @RequiredArgsConstructor)
 - **Testing**: JUnit 5 + AssertJ for fluent assertions
 - **Build**: Use `./mvnw` wrapper, NOT system Maven
+- **Commit Messages**: Follow Conventional Commits with issue number suffix
+  - Format: `type(scope): description (#issue)` (max 80 chars)
+  - Example: `docs: optimize AI agent instructions for token efficiency (#259)`
+  - Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`
 
-## 🏗️ Architecture at a Glance
+## Architecture at a Glance
 
 ```
 Controller → Service → Repository → JPA → Database
@@ -34,7 +38,7 @@ Validation  Cache    Query Methods
 - **DTOs**: ModelMapper for entity ↔ DTO transformations
 - **Cache**: Spring Cache abstraction (1-hour TTL)
 
-## ✅ Copilot Should
+## Copilot Should
 
 - Generate idiomatic Spring Boot code with proper annotations
 - Use JPA repository patterns (derived queries, @Query)
@@ -44,7 +48,7 @@ Validation  Cache    Query Methods
 - Use ModelMapper for DTO transformations
 - Implement proper exception handling with @ControllerAdvice
 
-## 🚫 Copilot Should Avoid
+## Copilot Should Avoid
 
 - Field injection (use constructor injection)
 - Using `new` for services (breaks DI)
@@ -53,7 +57,7 @@ Validation  Cache    Query Methods
 - System.out.println (use SLF4J logging)
 - Hardcoded configuration (use @Value or application.yml)
 
-## ⚡ Quick Commands
+## Quick Commands
 
 ```bash
 # Run with hot reload
@@ -69,12 +73,12 @@ docker compose up
 # Actuator: http://localhost:9001/actuator/health
 ```
 
-## 📚 Need More Detail?
+## Need More Detail?
 
-**For operational procedures**: Load `#file:AGENTS.md`  
-**For Docker expertise**: *(Planned)* `#file:SKILLS/docker-containerization/SKILL.md`  
+**For operational procedures**: Load `#file:AGENTS.md`
+**For Docker expertise**: *(Planned)* `#file:SKILLS/docker-containerization/SKILL.md`
 **For testing patterns**: *(Planned)* `#file:SKILLS/testing-patterns/SKILL.md`
 
 ---
 
-💡 **Why this structure?** Copilot auto-loads this file on every chat (~500 tokens). Loading `AGENTS.md` or `SKILLS/` explicitly gives you deep context only when needed, saving 80% of your token budget!
+**Why this structure?** Copilot auto-loads this file on every chat (~500 tokens). Loading `AGENTS.md` or `SKILLS/` explicitly gives you deep context only when needed, saving 80% of your token budget!
