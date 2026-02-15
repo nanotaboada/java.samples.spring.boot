@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.services.PlayersService;
@@ -97,9 +97,10 @@ public class PlayersController {
         if (createdPlayer == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        URI location = MvcUriComponentsBuilder
-                .fromMethodCall(MvcUriComponentsBuilder.on(PlayersController.class).getById(createdPlayer.getId()))
-                .build()
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdPlayer.getId())
                 .toUri();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header(LOCATION, location.toString())

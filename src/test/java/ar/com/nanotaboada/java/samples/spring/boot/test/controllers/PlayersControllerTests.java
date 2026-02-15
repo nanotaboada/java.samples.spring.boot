@@ -482,6 +482,36 @@ class PlayersControllerTests {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    /**
+     * Given the body ID is null (ID only in path)
+     * When PUT /players/{id} is called
+     * Then the ID is set from the path and the update proceeds normally
+     */
+    @Test
+    void put_nullBodyId_setsIdFromPath()
+            throws Exception {
+        // Arrange
+        PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
+        playerDTO.setId(null); // Body has null ID
+        Long pathId = 1L;
+        String body = objectMapper.writeValueAsString(playerDTO);
+        Mockito
+                .when(playersServiceMock.update(any(PlayerDTO.class)))
+                .thenReturn(true);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(PATH + "/{id}", pathId)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON);
+        // Act
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Assert
+        verify(playersServiceMock, times(1)).update(any(PlayerDTO.class));
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     /*
      * -------------------------------------------------------------------------
      * HTTP DELETE

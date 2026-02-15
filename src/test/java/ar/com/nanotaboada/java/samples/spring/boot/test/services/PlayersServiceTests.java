@@ -25,6 +25,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.repositories.PlayersRepositor
 import ar.com.nanotaboada.java.samples.spring.boot.services.PlayersService;
 import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerDTOFakes;
 import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerFakes;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @DisplayName("CRUD Operations on Service")
 @ExtendWith(MockitoExtension.class)
@@ -95,6 +96,33 @@ class PlayersServiceTests {
         // Assert
         verify(playersRepositoryMock, times(1)).findBySquadNumber(playerDTO.getSquadNumber());
         verify(playersRepositoryMock, never()).save(any(Player.class));
+        assertThat(result).isNull();
+    }
+
+    /**
+     * Given a race condition occurs where another request creates the same squad number
+     * When create() is called and save() throws DataIntegrityViolationException
+     * Then null is returned (conflict detected via exception)
+     */
+    @Test
+    void create_raceConditionOnSave_returnsNull() {
+        // Arrange
+        PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
+        Player player = PlayerFakes.createOneValid();
+        Mockito
+                .when(playersRepositoryMock.findBySquadNumber(playerDTO.getSquadNumber()))
+                .thenReturn(Optional.empty()); // No conflict initially
+        Mockito
+                .when(modelMapperMock.map(playerDTO, Player.class))
+                .thenReturn(player);
+        Mockito
+                .when(playersRepositoryMock.save(any(Player.class)))
+                .thenThrow(new DataIntegrityViolationException("Unique constraint violation"));
+        // Act
+        PlayerDTO result = playersService.create(playerDTO);
+        // Assert
+        verify(playersRepositoryMock, times(1)).findBySquadNumber(playerDTO.getSquadNumber());
+        verify(playersRepositoryMock, times(1)).save(any(Player.class));
         assertThat(result).isNull();
     }
 
