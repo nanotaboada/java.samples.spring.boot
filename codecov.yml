@@ -4,6 +4,7 @@ ignore:
   - "test/**"
   - "src/main/resources/**"
   - "src/main/**/models/**"
+  - "src/main/**/converters/**"
   - "src/main/**/Application.java"
 coverage:
   status:

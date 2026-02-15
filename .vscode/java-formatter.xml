@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<profiles version="13">
+    <profile kind="CodeFormatterProfile" name="Spring Boot 127 Column" version="13">
+        <!-- Line wrapping -->
+        <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="127" />
+        <setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="127" />
+
+        <!-- Indentation -->
+        <setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space" />
+        <setting id="org.eclipse.jdt.core.formatter.tabulation.size" value="4" />
+        <setting id="org.eclipse.jdt.core.formatter.indentation.size" value="4" />
+        <setting id="org.eclipse.jdt.core.formatter.use_tabs_only_for_leading_indentations"
+            value="false" />
+
+        <!-- Blank lines -->
+        <setting id="org.eclipse.jdt.core.formatter.blank_lines_before_package" value="0" />
+        <setting id="org.eclipse.jdt.core.formatter.blank_lines_after_package" value="1" />
+        <setting id="org.eclipse.jdt.core.formatter.blank_lines_before_imports" value="1" />
+        <setting id="org.eclipse.jdt.core.formatter.blank_lines_after_imports" value="1" />
+        <setting id="org.eclipse.jdt.core.formatter.blank_lines_between_import_groups" value="1" />
+
+        <!-- Braces -->
+        <setting id="org.eclipse.jdt.core.formatter.brace_position_for_type_declaration"
+            value="end_of_line" />
+        <setting id="org.eclipse.jdt.core.formatter.brace_position_for_method_declaration"
+            value="end_of_line" />
+        <setting id="org.eclipse.jdt.core.formatter.brace_position_for_block" value="end_of_line" />
+        <setting id="org.eclipse.jdt.core.formatter.brace_position_for_anonymous_type_declaration"
+            value="end_of_line" />
+
+        <!-- Comments (preserve formatting) -->
+        <setting id="org.eclipse.jdt.core.formatter.comment.format_javadoc_comments" value="true" />
+        <setting id="org.eclipse.jdt.core.formatter.comment.format_block_comments" value="false" />
+        <setting id="org.eclipse.jdt.core.formatter.comment.format_line_comments" value="false" />
+        <setting
+            id="org.eclipse.jdt.core.formatter.comment.preserve_white_space_between_code_and_line_comments"
+            value="true" />
+
+        <!-- New lines -->
+        <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_parameter"
+            value="do not insert" />
+        <setting
+            id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_local_variable"
+            value="insert" />
+        <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_field"
+            value="insert" />
+        <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_method"
+            value="insert" />
+        <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_type"
+            value="insert" />
+
+        <!-- Join wrapped lines -->
+        <setting id="org.eclipse.jdt.core.formatter.join_wrapped_lines" value="false" />
+        <setting id="org.eclipse.jdt.core.formatter.join_lines_in_comments" value="false" />
+    </profile>
+</profiles>

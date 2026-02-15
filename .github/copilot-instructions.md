@@ -24,6 +24,34 @@
   - Example: `docs: optimize AI agent instructions for token efficiency (#259)`
   - Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`
 
+## Test Naming Convention
+
+**Pattern**: `method_scenario_outcome`
+
+- **method**: The method being tested (e.g., `post`, `findById`, `create`)
+- **scenario**: The context or condition (e.g., `playerExists`, `invalidData`, `noMatches`)
+- **outcome**: The expected result (e.g., `returnsPlayer`, `returnsConflict`, `returnsEmpty`)
+
+**Examples**:
+```java
+// Controller: post_squadNumberExists_returnsConflict()
+// Service:    create_noConflict_returnsPlayerDTO()
+// Repository: findById_playerExists_returnsPlayer()
+```
+
+**JavaDoc**: Use proper BDD (Given/When/Then) structure in comments:
+```java
+/**
+ * Given a player with squad number 5 already exists in the database
+ * When POST /players is called with a new player using squad number 5
+ * Then response status is 409 Conflict
+ */
+@Test
+void post_squadNumberExists_returnsConflict() { ... }
+```
+
+**Benefits**: Concise method names for IDE test runners, full BDD context in JavaDoc for code readability.
+
 ## Architecture at a Glance
 
 ```

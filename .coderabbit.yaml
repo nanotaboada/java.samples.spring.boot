@@ -70,8 +70,8 @@ reviews:
         - Separate entities (@Entity) from DTOs
         - Verify proper Lombok annotations
         - Check JPA annotations for entities (@Table, @Column, @Id, etc.)
-        - Ensure validation annotations on DTOs (@NotBlank, @ISBN, @URL)
-        - Validate proper use of LocalDate converter for SQLite
+        - Ensure validation annotations on DTOs (@NotBlank, @Past, @Positive, @URL)
+        - Validate proper use of IsoDateConverter for SQLite (ISO-8601 TEXT format)
 
     - path: "src/main/java/**/Application.java"
       instructions: |
@@ -84,13 +84,14 @@ reviews:
         - Test classes should use JUnit 5 (Jupiter)
         - Verify proper Spring test annotations (@WebMvcTest, @DataJpaTest, etc.)
         - Check use of @MockitoBean (Spring Boot 4.0 style)
-        - Ensure test naming follows given_when_then pattern
+        - Ensure test naming follows method_scenario_outcome pattern (concise)
+        - Validate BDD semantics in JavaDoc comments (Given/When/Then)
         - Validate use of AssertJ for fluent assertions
         - Check @DisplayName for readable test descriptions
         - Ensure @AutoConfigureCache when testing cached operations
-        - Verify test data uses fake factories (BookFakes, BookDTOFakes)
+        - Verify test data uses fake factories (PlayerFakes, PlayerDTOFakes)
 
-    - path: "src/test/java/**/BookFakes.java"
+    - path: "src/test/java/**/PlayerFakes.java"
       instructions: |
         - Verify test data factory pattern
         - Check consistency of test data generation
