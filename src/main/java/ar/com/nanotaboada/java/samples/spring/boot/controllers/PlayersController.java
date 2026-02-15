@@ -41,7 +41,7 @@ import lombok.RequiredArgsConstructor;
  * <li><b>GET</b> {@code /players/search/league/{league}} - Search players by league name</li>
  * <li><b>GET</b> {@code /players/search/squadnumber/{number}} - Search player by squad number</li>
  * <li><b>POST</b> {@code /players} - Create a new player</li>
- * <li><b>PUT</b> {@code /players} - Update an existing player</li>
+ * <li><b>PUT</b> {@code /players/{id}} - Update an existing player</li>
  * <li><b>DELETE</b> {@code /players/{id}} - Delete a player by ID</li>
  * </ul>
  *

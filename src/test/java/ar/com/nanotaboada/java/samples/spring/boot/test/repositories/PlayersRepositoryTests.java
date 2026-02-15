@@ -35,7 +35,6 @@ class PlayersRepositoryTests {
     void findById_playerExists_returnsPlayer() {
         // Arrange
         Player leandro = PlayerFakes.createOneValid();
-        leandro.setId(null);
         Player saved = repository.save(leandro);
         // Act
         Optional<Player> actual = repository.findById(saved.getId());

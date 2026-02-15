@@ -5,6 +5,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.PlayersRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service layer for managing Player business logic.
@@ -46,6 +48,7 @@ import lombok.RequiredArgsConstructor;
  * @see org.modelmapper.ModelMapper
  * @since 4.0.2025
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlayersService {
@@ -66,8 +69,10 @@ public class PlayersService {
      * ID. The result is automatically cached using the player's ID as the cache key.
      * </p>
      * <p>
-     * <b>Conflict Detection:</b> Before creating, checks if a player with the same squad number already exists.
-     * Squad numbers are unique identifiers (jersey numbers).
+     * <b>Conflict Detection:</b> Checks if a player with the same squad number already exists (optimization).
+     * Squad numbers are unique identifiers (jersey numbers). Database constraint ensures uniqueness even under
+     * concurrent operations. If a race condition occurs between check and save, DataIntegrityViolationException
+     * is caught and null is returned to indicate conflict.
      * </p>
      *
      * @param playerDTO the player data to create (must not be null)
@@ -77,13 +82,26 @@ public class PlayersService {
     @Transactional
     @CacheEvict(value = "players", allEntries = true)
     public PlayerDTO create(PlayerDTO playerDTO) {
-        // Check if squad number already exists
+        log.debug("Creating new player with squad number: {}", playerDTO.getSquadNumber());
+
+        // Check if squad number already exists (optimization to avoid unnecessary DB write)
         if (playersRepository.findBySquadNumber(playerDTO.getSquadNumber()).isPresent()) {
+            log.warn("Cannot create player - squad number {} already exists", playerDTO.getSquadNumber());
             return null; // Conflict: squad number already taken
         }
-        Player player = mapFrom(playerDTO);
-        Player savedPlayer = playersRepository.save(player);
-        return mapFrom(savedPlayer);
+
+        try {
+            Player player = mapFrom(playerDTO);
+            Player savedPlayer = playersRepository.save(player);
+            PlayerDTO result = mapFrom(savedPlayer);
+            log.info("Player created successfully - ID: {}, Squad Number: {}", result.getId(), result.getSquadNumber());
+            return result;
+        } catch (DataIntegrityViolationException _) {
+            // Handle race condition: concurrent request created player with same squad number
+            // between our check and save operation
+            log.warn("Cannot create player - squad number {} already exists (race condition)", playerDTO.getSquadNumber());
+            return null;
+        }
     }
 
     /*
@@ -188,11 +206,15 @@ public class PlayersService {
     @Transactional
     @CacheEvict(value = "players", allEntries = true)
     public boolean update(PlayerDTO playerDTO) {
+        log.debug("Updating player with ID: {}", playerDTO.getId());
+
         if (playerDTO.getId() != null && playersRepository.existsById(playerDTO.getId())) {
             Player player = mapFrom(playerDTO);
             playersRepository.save(player);
+            log.info("Player updated successfully - ID: {}", playerDTO.getId());
             return true;
         } else {
+            log.warn("Cannot update player - ID {} not found", playerDTO.getId());
             return false;
         }
     }
@@ -217,10 +239,14 @@ public class PlayersService {
     @Transactional
     @CacheEvict(value = "players", allEntries = true)
     public boolean delete(Long id) {
+        log.debug("Deleting player with ID: {}", id);
+
         if (playersRepository.existsById(id)) {
             playersRepository.deleteById(id);
+            log.info("Player deleted successfully - ID: {}", id);
             return true;
         } else {
+            log.warn("Cannot delete player - ID {} not found", id);
             return false;
         }
     }

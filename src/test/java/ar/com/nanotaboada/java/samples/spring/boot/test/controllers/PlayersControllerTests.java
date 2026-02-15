@@ -14,7 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.cache.test.autoconfigure.AutoConfigureCache;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,6 +39,7 @@ import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerDTOFakes;
 @DisplayName("HTTP Methods on Controller")
 @WebMvcTest(PlayersController.class)
 @AutoConfigureCache
+@AutoConfigureJsonTesters
 class PlayersControllerTests {
 
     private static final String PATH = "/players";
@@ -48,6 +52,17 @@ class PlayersControllerTests {
 
     @MockitoBean
     private PlayersRepository playersRepositoryMock;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @TestConfiguration
+    static class ObjectMapperTestConfig {
+        @Bean
+        public ObjectMapper objectMapper() {
+            return new ObjectMapper().findAndRegisterModules();
+        }
+    }
 
     /*
      * -------------------------------------------------------------------------
@@ -67,7 +82,7 @@ class PlayersControllerTests {
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
         PlayerDTO savedPlayer = PlayerDTOFakes.createOneValid();
         savedPlayer.setId(19L); // Simulating auto-generated ID
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        String body = objectMapper.writeValueAsString(playerDTO);
         Mockito
                 .when(playersServiceMock.create(any(PlayerDTO.class)))
                 .thenReturn(savedPlayer);
@@ -80,7 +95,6 @@ class PlayersControllerTests {
                 .perform(request)
                 .andReturn()
                 .getResponse();
-        response.setContentType("application/json;charset=UTF-8");
         // Assert
         verify(playersServiceMock, times(1)).create(any(PlayerDTO.class));
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
@@ -98,7 +112,7 @@ class PlayersControllerTests {
             throws Exception {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneInvalid();
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        String body = objectMapper.writeValueAsString(playerDTO);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(PATH)
                 .content(body)
@@ -123,7 +137,7 @@ class PlayersControllerTests {
             throws Exception {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        String body = objectMapper.writeValueAsString(playerDTO);
         Mockito
                 .when(playersServiceMock.create(any(PlayerDTO.class)))
                 .thenReturn(null); // Conflict: squad number already exists
@@ -159,7 +173,7 @@ class PlayersControllerTests {
         PlayerDTO playerDTO = PlayerDTOFakes.createOneForUpdate();
         Long id = 1L;
         Mockito
-                .when(playersServiceMock.retrieveById(1L))
+                .when(playersServiceMock.retrieveById(id))
                 .thenReturn(playerDTO);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(PATH + "/{id}", id);
@@ -168,11 +182,11 @@ class PlayersControllerTests {
                 .perform(request)
                 .andReturn()
                 .getResponse();
-        response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
-        PlayerDTO result = new ObjectMapper().readValue(content, PlayerDTO.class);
+        PlayerDTO result = objectMapper.readValue(content, PlayerDTO.class);
         // Assert
-        verify(playersServiceMock, times(1)).retrieveById(1L);
+        assertThat(response.getContentType()).contains("application/json");
+        verify(playersServiceMock, times(1)).retrieveById(id);
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result).usingRecursiveComparison().isEqualTo(playerDTO);
     }
@@ -222,11 +236,11 @@ class PlayersControllerTests {
                 .perform(request)
                 .andReturn()
                 .getResponse();
-        response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
-        List<PlayerDTO> result = new ObjectMapper().readValue(content, new TypeReference<List<PlayerDTO>>() {
+        List<PlayerDTO> result = objectMapper.readValue(content, new TypeReference<List<PlayerDTO>>() {
         });
         // Assert
+        assertThat(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).retrieveAll();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result).hasSize(26);
@@ -255,11 +269,11 @@ class PlayersControllerTests {
                 .perform(request)
                 .andReturn()
                 .getResponse();
-        response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
-        List<PlayerDTO> result = new ObjectMapper().readValue(content, new TypeReference<List<PlayerDTO>>() {
+        List<PlayerDTO> result = objectMapper.readValue(content, new TypeReference<List<PlayerDTO>>() {
         });
         // Assert
+        assertThat(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).searchByLeague(any());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result).hasSize(7);
@@ -285,11 +299,11 @@ class PlayersControllerTests {
                 .perform(request)
                 .andReturn()
                 .getResponse();
-        response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
-        List<PlayerDTO> result = new ObjectMapper().readValue(content, new TypeReference<List<PlayerDTO>>() {
+        List<PlayerDTO> result = objectMapper.readValue(content, new TypeReference<List<PlayerDTO>>() {
         });
         // Assert
+        assertThat(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).searchByLeague(any());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result).isEmpty();
@@ -315,10 +329,10 @@ class PlayersControllerTests {
                 .perform(request)
                 .andReturn()
                 .getResponse();
-        response.setContentType("application/json;charset=UTF-8");
         String content = response.getContentAsString();
-        PlayerDTO result = new ObjectMapper().readValue(content, PlayerDTO.class);
+        PlayerDTO result = objectMapper.readValue(content, PlayerDTO.class);
         // Assert
+        assertThat(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).searchBySquadNumber(10);
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result).usingRecursiveComparison().isEqualTo(playerDTO);
@@ -367,7 +381,7 @@ class PlayersControllerTests {
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
         playerDTO.setId(1L); // Set ID for update operation
         Long id = playerDTO.getId();
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        String body = objectMapper.writeValueAsString(playerDTO);
         Mockito
                 .when(playersServiceMock.update(any(PlayerDTO.class)))
                 .thenReturn(true);
@@ -397,7 +411,7 @@ class PlayersControllerTests {
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
         playerDTO.setId(999L); // Set ID for update operation
         Long id = playerDTO.getId();
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        String body = objectMapper.writeValueAsString(playerDTO);
         Mockito
                 .when(playersServiceMock.update(any(PlayerDTO.class)))
                 .thenReturn(false);
@@ -425,8 +439,8 @@ class PlayersControllerTests {
             throws Exception {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneInvalid();
-        Long id = 1L;
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        Long id = playerDTO.getId();
+        String body = objectMapper.writeValueAsString(playerDTO);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(PATH + "/{id}", id)
                 .content(body)
@@ -453,7 +467,7 @@ class PlayersControllerTests {
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
         playerDTO.setId(999L); // Body has different ID
         Long pathId = 1L; // Path has different ID
-        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        String body = objectMapper.writeValueAsString(playerDTO);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(PATH + "/{id}", pathId)
                 .content(body)
