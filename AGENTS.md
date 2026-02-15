@@ -45,10 +45,10 @@ Maven wrapper (`./mvnw`) is included, so Maven installation is optional.
 open target/site/jacoco/index.html
 
 # Run specific test class
-./mvnw test -Dtest=BooksControllerTest
+./mvnw test -Dtest=PlayersControllerTests
 
 # Run specific test method
-./mvnw test -Dtest=BooksControllerTest#testGetAllBooks
+./mvnw test -Dtest=PlayersControllerTests#getAll_playersExist_returnsOkWithAllPlayers
 
 # Run tests without rebuilding
 ./mvnw surefire:test
@@ -99,25 +99,25 @@ java -jar target/java.samples.spring.boot-*.jar
 
 ### Database Management
 
-This project uses **H2 in-memory database for tests** and **SQLite for runtime**.
+This project uses **SQLite in-memory database for tests** and **SQLite for runtime**.
 
 **Runtime (SQLite)**:
 
 ```bash
 # Database auto-initializes on first startup
-# Pre-seeded database ships in storage/books-sqlite3.db
+# Pre-seeded database ships in storage/players-sqlite3.db
 
 # To reset database to seed state
-rm storage/books-sqlite3.db
+rm storage/players-sqlite3.db
 # WARNING: spring.jpa.hibernate.ddl-auto=none disables schema generation
 # Deleting the DB will cause startup failure - restore from backup or manually reinitialize
 
-# Database location: storage/books-sqlite3.db
+# Database location: storage/players-sqlite3.db
 ```
 
-**Tests (H2)**:
+**Tests (SQLite)**:
 
-- In-memory database per test run
+- In-memory database per test run (jdbc:sqlite::memory:)
 - Automatically cleared after each test
 - Configuration in `src/test/resources/application.properties`
 
@@ -181,34 +181,37 @@ src/main/java/ar/com/nanotaboada/java/samples/spring/boot/
 ├── Application.java              # @SpringBootApplication entry point
 
 ├── controllers/                  # REST endpoints
-│   └── BooksController.java      # @RestController, OpenAPI annotations
+│   └── PlayersController.java    # @RestController, OpenAPI annotations
 
 ├── services/                     # Business logic
-│   └── BooksService.java         # @Service, @Cacheable
+│   └── PlayersService.java       # @Service, @Cacheable
 
 ├── repositories/                 # Data access
-│   └── BooksRepository.java      # @Repository, Spring Data JPA
+│   └── PlayersRepository.java    # @Repository, Spring Data JPA
 
-└── models/                       # Domain models
-    ├── Book.java                 # @Entity, JPA model
-    ├── BookDTO.java              # Data Transfer Object, validation
-    └── UnixTimestampConverter.java  # JPA converter
+├── models/                       # Domain models
+│   ├── Player.java               # @Entity, JPA model
+│   └── PlayerDTO.java            # Data Transfer Object, validation
+
+└── converters/                   # Infrastructure converters
+    └── IsoDateConverter.java     # JPA converter for ISO-8601 dates
 
 src/test/java/                    # Test classes
-  ├── BooksControllerTest.java
-  ├── BooksServiceTest.java
-  └── BooksRepositoryTest.java
+  ├── PlayersControllerTests.java
+  ├── PlayersServiceTests.java
+  └── PlayersRepositoryTests.java
 ```
 
 **Key patterns**:
 
 - Spring Boot 4 with Spring MVC
 - Spring Data JPA for database operations
-- Custom validation annotations for ISBN and URL
+- Custom validation annotations for PlayerDTO
 - OpenAPI 3.0 annotations for Swagger docs
 - `@Cacheable` for in-memory caching
 - DTOs with Bean Validation (JSR-380)
 - Actuator for health monitoring and metrics
+- JPA derived queries and custom JPQL examples
 - Maven multi-module support ready
 
 ## API Endpoints
@@ -217,11 +220,13 @@ src/test/java/                    # Test classes
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/books` | Get all books |
-| `GET` | `/books/{id}` | Get book by ID |
-| `POST` | `/books` | Create new book |
-| `PUT` | `/books/{id}` | Update book |
-| `DELETE` | `/books/{id}` | Delete book |
+| `GET` | `/players` | Get all players |
+| `GET` | `/players/{id}` | Get player by ID |
+| `GET` | `/players/search/league/{league}` | Search players by league |
+| `GET` | `/players/search/squadnumber/{squadNumber}` | Get player by squad number |
+| `POST` | `/players` | Create new player |
+| `PUT` | `/players/{id}` | Update player |
+| `DELETE` | `/players/{id}` | Delete player |
 | `GET` | `/actuator/health` | Health check |
 | `GET` | `/swagger-ui.html` | API documentation |
 
@@ -265,7 +270,7 @@ java --version  # Should be 25.x
 pkill -f "spring-boot:run"
 
 # Reset database
-rm storage/books.db
+rm storage/players-sqlite3.db
 ```
 
 ### Test failures
@@ -275,7 +280,7 @@ rm storage/books.db
 ./mvnw test -X
 
 # Run single test for debugging
-./mvnw test -Dtest=BooksControllerTest#testGetAllBooks -X
+./mvnw test -Dtest=PlayersControllerTests#getAll_playersExist_returnsOkWithAllPlayers -X
 ```
 
 ### Maven wrapper issues
@@ -309,40 +314,53 @@ Open <http://localhost:8080/swagger-ui.html> - Interactive documentation with "T
 # Health check
 curl http://localhost:8080/actuator/health
 
-# Get all books
-curl http://localhost:8080/books
+# Get all players
+curl http://localhost:8080/players
 
-# Get book by ID
-curl http://localhost:8080/books/1
+# Get player by ID
+curl http://localhost:8080/players/1
 
-# Create book
-curl -X POST http://localhost:8080/books \
+# Search players by league (Premier League)
+curl http://localhost:8080/players/search/league/Premier
+
+# Get player by squad number (Messi #10)
+curl http://localhost:8080/players/search/squadnumber/10
+
+# Create player
+curl -X POST http://localhost:8080/players \
   -H "Content-Type: application/json" \
   -d '{
-    "isbn": "9780132350884",
-    "title": "Clean Code",
-    "author": "Robert C. Martin",
-    "published": 1217548800,
-    "pages": 464,
-    "description": "A Handbook of Agile Software Craftsmanship",
-    "website": "https://www.pearson.com/en-us/subject-catalog/p/clean-code-a-handbook-of-agile-software-craftsmanship/P200000009044"
+    "firstName": "Leandro",
+    "middleName": "Daniel",
+    "lastName": "Paredes",
+    "dateOfBirth": "1994-06-29",
+    "squadNumber": 5,
+    "position": "Defensive Midfield",
+    "abbrPosition": "DM",
+    "team": "AS Roma",
+    "league": "Serie A",
+    "starting11": false
   }'
 
-# Update book
-curl -X PUT http://localhost:8080/books/1 \
+# Update player
+curl -X PUT http://localhost:8080/players/1 \
   -H "Content-Type: application/json" \
   -d '{
-    "isbn": "9780132350884",
-    "title": "Clean Code - Updated",
-    "author": "Robert C. Martin",
-    "published": 1217548800,
-    "pages": 464,
-    "description": "Updated description",
-    "website": "https://www.pearson.com/example"
+    "id": 1,
+    "firstName": "Emiliano",
+    "middleName": null,
+    "lastName": "Martínez",
+    "dateOfBirth": "1992-09-02",
+    "squadNumber": 23,
+    "position": "Goalkeeper",
+    "abbrPosition": "GK",
+    "team": "Aston Villa FC",
+    "league": "Premier League",
+    "starting11": true
   }'
 
-# Delete book
-curl -X DELETE http://localhost:8080/books/1
+# Delete player
+curl -X DELETE http://localhost:8080/players/21
 ```
 
 ## Important Notes
@@ -353,8 +371,10 @@ curl -X DELETE http://localhost:8080/books/1
 - **Java version**: Must use JDK 25 for consistency with CI/CD
 - **Maven wrapper**: Always use `./mvnw` instead of `mvn` for consistency
 - **Database**: SQLite is for demo/development only - not production-ready
-- **H2 for tests**: Tests use in-memory H2, runtime uses SQLite
+- **SQLite for tests**: Tests use in-memory SQLite (jdbc:sqlite::memory:), runtime uses file-based SQLite
 - **OpenAPI annotations**: Required for all new endpoints (Swagger docs)
 - **Caching**: Uses Spring's `@Cacheable` - clears on updates/deletes
-- **Validation**: Custom ISBN and URL validators in BookDTO
-- **Unix timestamps**: Published dates stored as Unix timestamps (seconds since epoch)
+- **Validation**: Bean Validation (JSR-380) annotations in PlayerDTO
+- **ISO-8601 dates**: Dates stored as ISO-8601 strings for SQLite compatibility
+- **Search methods**: Demonstrates JPA derived queries (findBySquadNumber) and custom JPQL (findByLeagueContainingIgnoreCase)
+- **Squad numbers**: Jersey numbers (natural key) separate from database IDs

@@ -3,8 +3,8 @@ set -e
 
 echo "✔ Executing entrypoint script..."
 
-IMAGE_STORAGE_PATH="/app/hold/books-sqlite3.db"
-VOLUME_STORAGE_PATH="/storage/books-sqlite3.db"
+IMAGE_STORAGE_PATH="/app/hold/players-sqlite3.db"
+VOLUME_STORAGE_PATH="/storage/players-sqlite3.db"
 
 echo "✔ Starting container..."
 
@@ -29,4 +29,9 @@ fi
 
 echo "✔ Ready!"
 echo "🚀 Launching app..."
+echo ""
+echo "🔌 Endpoints:"
+echo "   Health:  http://localhost:9001/actuator/health"
+echo "   Players: http://localhost:9000/players"
+echo ""
 exec "$@"

@@ -14,7 +14,7 @@ services:
       - storage:/storage/
     environment:
       - SPRING_PROFILES_ACTIVE=production
-      - STORAGE_PATH=/storage/books-sqlite3.db
+      - STORAGE_PATH=/storage/players-sqlite3.db
     restart: unless-stopped
 
 volumes:

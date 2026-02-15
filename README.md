@@ -6,7 +6,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-white.svg)](https://opensource.org/licenses/MIT)
 
-Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targeting **JDK 25 (LTS)**. This project demonstrates best practices for building a layered, testable, and maintainable API implementing CRUD operations for a Books resource.
+Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targeting **JDK 25 (LTS)**. This project demonstrates best practices for building a layered, testable, and maintainable API implementing CRUD operations for a Players resource (Argentina 2022 FIFA World Cup squad).
 
 ## Table of Contents
 
@@ -33,10 +33,11 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 
 ## Features
 
-- 🔌 **RESTful API** - Full CRUD operations for Books resource
+- 🔌 **RESTful API** - Full CRUD operations for Players resource
 - 📚 **Clean Architecture** - Layered design with clear separation of concerns
-- 🚦 **Input Validation** - Custom constraints for ISBN and URL formats
+- 🚦 **Input Validation** - Bean Validation (JSR-380) constraints
 - ⚡ **Performance Caching** - Optimized data retrieval with cache annotations
+- 🔍 **Advanced Search** - League search with JPQL and squad number lookup with derived queries
 - 📝 **Interactive Documentation** - Live API exploration and testing interface
 - 🩺 **Health Monitoring** - Application health and metrics endpoints
 - ✅ **Comprehensive Testing** - High code coverage with automated reporting
@@ -51,7 +52,7 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 | **Runtime** | [Java](https://github.com/openjdk/jdk) (JDK 25 LTS) |
 | **Build Tool** | [Maven](https://github.com/apache/maven) |
 | **Database (Runtime)** | [SQLite](https://github.com/sqlite/sqlite) |
-| **Database (Tests)** | [H2 Database](https://github.com/h2database/h2database) |
+| **Database (Tests)** | [SQLite](https://github.com/sqlite/sqlite) (in-memory) |
 | **ORM** | [Hibernate](https://github.com/hibernate/hibernate-orm) / [Spring Data JPA](https://github.com/spring-projects/spring-data-jpa) |
 | **API Documentation** | [SpringDoc OpenAPI](https://github.com/springdoc/springdoc-openapi) |
 | **Testing** | [JUnit 5](https://github.com/junit-team/junit5) + [Mockito](https://github.com/mockito/mockito) + [AssertJ](https://github.com/assertj/assertj) |
@@ -67,22 +68,23 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 src/main/java/ar/com/nanotaboada/java/samples/spring/boot/
 ├── Application.java              # Main entry point, @SpringBootApplication
 ├── controllers/                  # REST endpoints (@RestController)
-│   └── BooksController.java
+│   └── PlayersController.java
 ├── services/                     # Business logic (@Service, caching)
-│   └── BooksService.java
+│   └── PlayersService.java
 ├── repositories/                 # Data access (@Repository, Spring Data JPA)
-│   └── BooksRepository.java
-└── models/                       # Domain entities & DTOs
-    ├── Book.java                 # JPA entity
-    ├── BookDTO.java              # Data Transfer Object with validation
-    └── UnixTimestampConverter.java # JPA converter for LocalDate ↔ Unix timestamp
+│   └── PlayersRepository.java
+├── models/                       # Domain entities & DTOs
+│   ├── Player.java               # JPA entity
+│   └── PlayerDTO.java            # Data Transfer Object with validation
+└── converters/                   # Infrastructure converters
+    └── IsoDateConverter.java     # JPA converter for ISO-8601 dates
 
 src/test/java/.../test/
 ├── controllers/                  # Controller tests (@WebMvcTest)
 ├── services/                     # Service layer tests
 ├── repositories/                 # Repository tests (@DataJpaTest)
-├── BookFakes.java                # Test data factory for Book entities
-└── BookDTOFakes.java            # Test data factory for BookDTO
+├── PlayerFakes.java              # Test data factory for Player entities
+└── PlayerDTOFakes.java           # Test data factory for PlayerDTO
 ```
 
 ## Architecture
@@ -166,11 +168,13 @@ Interactive API documentation is available via Swagger UI at `http://localhost:9
 
 **Quick Reference:**
 
-- `GET /books` - List all books
-- `GET /books/{isbn}` - Get book by ISBN
-- `POST /books` - Create new book
-- `PUT /books/{isbn}` - Update existing book
-- `DELETE /books/{isbn}` - Remove book
+- `GET /players` - List all players
+- `GET /players/{id}` - Get player by ID
+- `GET /players/search/league/{league}` - Search players by league
+- `GET /players/search/squadnumber/{squadNumber}` - Get player by squad number
+- `POST /players` - Create new player
+- `PUT /players/{id}` - Update existing player
+- `DELETE /players/{id}` - Remove player
 - `GET /actuator/health` - Health check
 
 For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](http://localhost:9000/swagger/index.html). You can also access the OpenAPI JSON specification at `http://localhost:9000/v3/api-docs`.
@@ -236,10 +240,13 @@ open target/site/jacoco/index.html
 **Test Structure:**
 
 - **Unit Tests** - `@WebMvcTest`, `@DataJpaTest` for isolated layer testing (with `@AutoConfigureCache` for caching support)
-- **Test Database** - H2 in-memory database for fast, isolated test execution
+- **Test Database** - SQLite in-memory (jdbc:sqlite::memory:) for fast, isolated test execution
 - **Mocking** - Mockito with `@MockitoBean` for dependency mocking
 - **Assertions** - AssertJ fluent assertions
-- **Naming Convention** - BDD style: `given<Condition>_when<Action>_then<Expected>`
+- **Naming Convention** - `method_scenario_outcome` pattern:
+  - `getAll_playersExist_returnsOkWithAllPlayers()`
+  - `post_squadNumberExists_returnsConflict()`
+  - `findById_playerExists_returnsPlayer()`
 
 **Coverage Targets:**
 
@@ -247,7 +254,7 @@ open target/site/jacoco/index.html
 - Services: 100%
 - Repositories: Custom query methods (interfaces excluded by JaCoCo design)
 
-> 💡 **Note:** Dates are stored as Unix timestamps (INTEGER) for robustness. A JPA `AttributeConverter` handles LocalDate ↔ epoch seconds conversion transparently (UTC-based). Tests use H2 in-memory database - the converter works seamlessly with both SQLite and H2.
+> 💡 **Note:** Dates are stored as ISO-8601 strings for SQLite compatibility. A JPA `AttributeConverter` handles LocalDate ↔ ISO-8601 string conversion transparently. Tests use SQLite in-memory database (jdbc:sqlite::memory:) - the converter works seamlessly with both file-based and in-memory SQLite.
 
 ## Docker
 
@@ -264,7 +271,7 @@ docker compose up -d
 - `9000` - Main API server
 - `9001` - Actuator management endpoints
 
-> 💡 **Note:** The Docker container uses a pre-seeded SQLite database with sample book data. On first run, the database is copied from the image to a named volume (`java-samples-spring-boot_storage`) ensuring data persistence across container restarts.
+> 💡 **Note:** The Docker container uses a pre-seeded SQLite database with Argentina 2022 FIFA World Cup squad data. On first run, the database is copied from the image to a named volume (`java-samples-spring-boot_storage`) ensuring data persistence across container restarts.
 
 ### Stop
 
@@ -293,7 +300,7 @@ server.port=9000
 management.server.port=9001
 
 # Database Configuration (SQLite)
-spring.datasource.url=jdbc:sqlite:storage/books-sqlite3.db
+spring.datasource.url=jdbc:sqlite:storage/players-sqlite3.db
 spring.datasource.driver-class-name=org.sqlite.JDBC
 spring.jpa.database-platform=org.hibernate.community.dialect.SQLiteDialect
 spring.jpa.hibernate.ddl-auto=none
@@ -311,14 +318,14 @@ springdoc.swagger-ui.path=/swagger/index.html
 Configuration in `src/test/resources/application.properties`:
 
 ```properties
-# Test Database (H2 in-memory)
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driver-class-name=org.h2.Driver
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+# Test Database (SQLite in-memory)
+spring.datasource.url=jdbc:sqlite::memory:
+spring.datasource.driver-class-name=org.sqlite.JDBC
+spring.jpa.database-platform=org.hibernate.community.dialect.SQLiteDialect
 spring.jpa.hibernate.ddl-auto=create-drop
 ```
 
-> 💡 **Note:** Tests use H2 in-memory database for fast, isolated execution. The Unix timestamp converter works with both SQLite (production) and H2 (tests).
+> 💡 **Note:** Tests use SQLite in-memory database (jdbc:sqlite::memory:) for fast, isolated execution. The ISO-8601 date converter works identically with both file-based and in-memory SQLite.
 
 ## Command Summary
 
