@@ -48,7 +48,7 @@ open target/site/jacoco/index.html
 ./mvnw test -Dtest=PlayersControllerTests
 
 # Run specific test method
-./mvnw test -Dtest=PlayersControllerTests#givenGetAll_whenServiceRetrieveAllReturnsPlayers_thenResponseIsOkAndResultIsPlayers
+./mvnw test -Dtest=PlayersControllerTests#getAll_playersExist_returnsOkWithAllPlayers
 
 # Run tests without rebuilding
 ./mvnw surefire:test
@@ -99,7 +99,7 @@ java -jar target/java.samples.spring.boot-*.jar
 
 ### Database Management
 
-This project uses **H2 in-memory database for tests** and **SQLite for runtime**.
+This project uses **SQLite in-memory database for tests** and **SQLite for runtime**.
 
 **Runtime (SQLite)**:
 
@@ -115,9 +115,9 @@ rm storage/players-sqlite3.db
 # Database location: storage/players-sqlite3.db
 ```
 
-**Tests (H2)**:
+**Tests (SQLite)**:
 
-- In-memory database per test run
+- In-memory database per test run (jdbc:sqlite::memory:)
 - Automatically cleared after each test
 - Configuration in `src/test/resources/application.properties`
 
@@ -281,7 +281,7 @@ rm storage/players-sqlite3.db
 ./mvnw test -X
 
 # Run single test for debugging
-./mvnw test -Dtest=PlayersControllerTests#givenGetAll_whenServiceRetrieveAllReturnsPlayers_thenResponseIsOkAndResultIsPlayers -X
+./mvnw test -Dtest=PlayersControllerTests#getAll_playersExist_returnsOkWithAllPlayers -X
 ```
 
 ### Maven wrapper issues

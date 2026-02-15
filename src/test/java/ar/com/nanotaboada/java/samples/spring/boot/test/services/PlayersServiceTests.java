@@ -325,6 +325,25 @@ class PlayersServiceTests {
         assertThat(result).isFalse();
     }
 
+    /**
+     * Given a PlayerDTO has null ID
+     * When update() is called
+     * Then false is returned without checking repository or saving
+     */
+    @Test
+    void update_nullId_returnsFalse() {
+        // Arrange
+        PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
+        playerDTO.setId(null);
+        // Act
+        boolean result = playersService.update(playerDTO);
+        // Assert
+        verify(playersRepositoryMock, never()).existsById(any());
+        verify(playersRepositoryMock, never()).save(any(Player.class));
+        verify(modelMapperMock, never()).map(any(), any());
+        assertThat(result).isFalse();
+    }
+
     /*
      * -----------------------------------------------------------------------------------------------------------------------
      * Delete

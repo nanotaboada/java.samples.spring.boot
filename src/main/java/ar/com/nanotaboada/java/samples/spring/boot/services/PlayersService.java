@@ -5,9 +5,9 @@ import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
@@ -31,9 +31,15 @@ import lombok.RequiredArgsConstructor;
  * <h3>Cache Strategy:</h3>
  * <ul>
  * <li><b>@Cacheable:</b> Retrieval operations (read-through cache)</li>
- * <li><b>@CachePut:</b> Create operations (update cache)</li>
- * <li><b>@CacheEvict:</b> Update/Delete operations (invalidate cache)</li>
+ * <li><b>@CacheEvict(allEntries=true):</b> Mutating operations (create/update/delete) - invalidates entire cache to maintain
+ * consistency</li>
  * </ul>
+ *
+ * <p>
+ * <b>Why invalidate all entries?</b> The {@code retrieveAll()} method caches the full player list under a single key.
+ * Individual cache evictions would leave this list stale. Using {@code allEntries=true} ensures both individual
+ * player caches and the list cache stay synchronized after any data modification.
+ * </p>
  *
  * @see PlayersRepository
  * @see PlayerDTO
@@ -67,9 +73,10 @@ public class PlayersService {
      *
      * @param playerDTO the player data to create (must not be null)
      * @return the created player with auto-generated ID, or null if squad number already exists
-     * @see org.springframework.cache.annotation.CachePut
+     * @see org.springframework.cache.annotation.CacheEvict
      */
-    @CachePut(value = "players", key = "#result.id", unless = "#result == null")
+    @Transactional
+    @CacheEvict(value = "players", allEntries = true)
     public PlayerDTO create(PlayerDTO playerDTO) {
         // Check if squad number already exists
         if (playersRepository.findBySquadNumber(playerDTO.getSquadNumber()).isPresent()) {
@@ -175,9 +182,10 @@ public class PlayersService {
      *
      * @param playerDTO the player data to update (must include a valid ID)
      * @return true if the player was updated successfully, false if not found
-     * @see org.springframework.cache.annotation.CachePut
+     * @see org.springframework.cache.annotation.CacheEvict
      */
-    @CachePut(value = "players", key = "#playerDTO.id")
+    @Transactional
+    @CacheEvict(value = "players", allEntries = true)
     public boolean update(PlayerDTO playerDTO) {
         if (playerDTO.getId() != null && playersRepository.existsById(playerDTO.getId())) {
             Player player = mapFrom(playerDTO);
@@ -205,7 +213,8 @@ public class PlayersService {
      * @return true if the player was deleted successfully, false if not found
      * @see org.springframework.cache.annotation.CacheEvict
      */
-    @CacheEvict(value = "players", key = "#id")
+    @Transactional
+    @CacheEvict(value = "players", allEntries = true)
     public boolean delete(Long id) {
         if (playersRepository.existsById(id)) {
             playersRepository.deleteById(id);

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
@@ -25,8 +26,8 @@ import lombok.Data;
  * <ul>
  * <li><b>firstName:</b> Required (not blank)</li>
  * <li><b>lastName:</b> Required (not blank)</li>
- * <li><b>dateOfBirth:</b> Must be a past date</li>
- * <li><b>squadNumber:</b> Must be a positive integer</li>
+ * <li><b>dateOfBirth:</b> Required (not null) and must be a past date</li>
+ * <li><b>squadNumber:</b> Required (not null) and must be a positive integer</li>
  * <li><b>position:</b> Required (not blank)</li>
  * <li><b>team:</b> Required (not blank)</li>
  * </ul>
@@ -38,6 +39,7 @@ import lombok.Data;
  *
  * @see Player
  * @see jakarta.validation.constraints.NotBlank
+ * @see jakarta.validation.constraints.NotNull
  * @see jakarta.validation.constraints.Past
  * @see jakarta.validation.constraints.Positive
  * @since 4.0.2025
@@ -50,10 +52,12 @@ public class PlayerDTO {
     private String middleName;
     @NotBlank
     private String lastName;
+    @NotNull
     @Past
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateOfBirth;
+    @NotNull
     @Positive
     private Integer squadNumber;
     @NotBlank
