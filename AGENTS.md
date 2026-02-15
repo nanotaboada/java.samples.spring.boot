@@ -191,11 +191,10 @@ src/main/java/ar/com/nanotaboada/java/samples/spring/boot/
 
 ├── models/                       # Domain models
 │   ├── Player.java               # @Entity, JPA model
-│   ├── PlayerDTO.java            # Data Transfer Object, validation
-│   └── IsoDateConverter.java     # JPA converter for ISO-8601 dates
+│   └── PlayerDTO.java            # Data Transfer Object, validation
 
 └── converters/                   # Infrastructure converters
-    └── IsoDateConverter.java     # JPA converter
+    └── IsoDateConverter.java     # JPA converter for ISO-8601 dates
 
 src/test/java/                    # Test classes
   ├── PlayersControllerTests.java
@@ -226,7 +225,7 @@ src/test/java/                    # Test classes
 | `GET` | `/players/search/league/{league}` | Search players by league |
 | `GET` | `/players/search/squadnumber/{squadNumber}` | Get player by squad number |
 | `POST` | `/players` | Create new player |
-| `PUT` | `/players` | Update player |
+| `PUT` | `/players/{id}` | Update player |
 | `DELETE` | `/players/{id}` | Delete player |
 | `GET` | `/actuator/health` | Health check |
 | `GET` | `/swagger-ui.html` | API documentation |
@@ -344,7 +343,7 @@ curl -X POST http://localhost:8080/players \
   }'
 
 # Update player
-curl -X PUT http://localhost:8080/players \
+curl -X PUT http://localhost:8080/players/1 \
   -H "Content-Type: application/json" \
   -d '{
     "id": 1,

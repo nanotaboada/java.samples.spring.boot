@@ -32,6 +32,6 @@ INSERT INTO players (id, firstName, middleName, lastName, dateOfBirth, squadNumb
 (21, 'Alejandro', 'Darío', 'Gómez', '1988-02-15T00:00:00.000Z', 17, 'Left Winger', 'LW', 'AC Monza', 'Serie A', 0),
 (22, 'Guido', NULL, 'Rodríguez', '1994-04-12T00:00:00.000Z', 18, 'Defensive Midfield', 'DM', 'Real Betis Balompié', 'La Liga', 0),
 (23, 'Ángel', 'Martín', 'Correa', '1995-03-09T00:00:00.000Z', 15, 'Right Winger', 'RW', 'Atlético Madrid', 'La Liga', 0),
-(24, 'Thiago', 'Ezequiel', 'Almada', '2001-04-26T00:00:00.000Z', 16,  'Attacking Midfield', 'AM', 'Atlanta United FC', 'Major League Soccer', 0),
+(24, 'Thiago', 'Ezequiel', 'Almada', '2001-04-26T00:00:00.000Z', 16, 'Attacking Midfield', 'AM', 'Atlanta United FC', 'Major League Soccer', 0),
 (25, 'Paulo', 'Exequiel', 'Dybala', '1993-11-15T00:00:00.000Z', 21, 'Second Striker', 'SS', 'AS Roma', 'Serie A', 0),
 (26, 'Lautaro', 'Javier', 'Martínez', '1997-08-22T00:00:00.000Z', 22, 'Centre-Forward', 'CF', 'Inter Milan', 'Serie A', 0);

@@ -1,7 +1,6 @@
 package ar.com.nanotaboada.java.samples.spring.boot.services;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -98,13 +97,14 @@ public class PlayersService {
      * <p>
      * This method uses caching to improve performance. If the player is found in the cache, it will be returned without
      * hitting the database. Otherwise, it queries the database and caches the result.
+     * Null results (player not found) are not cached to avoid serving stale misses.
      * </p>
      *
      * @param id the unique identifier of the player (must not be null)
      * @return the player DTO if found, null otherwise
      * @see org.springframework.cache.annotation.Cacheable
      */
-    @Cacheable(value = "players", key = "#id")
+    @Cacheable(value = "players", key = "#id", unless = "#result == null")
     public PlayerDTO retrieveById(Long id) {
         return playersRepository.findById(id)
                 .map(this::mapFrom)
@@ -123,7 +123,8 @@ public class PlayersService {
      */
     @Cacheable(value = "players")
     public List<PlayerDTO> retrieveAll() {
-        return StreamSupport.stream(playersRepository.findAll().spliterator(), false)
+        return playersRepository.findAll()
+                .stream()
                 .map(this::mapFrom)
                 .toList();
     }

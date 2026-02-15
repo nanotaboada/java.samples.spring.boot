@@ -3,8 +3,8 @@ package ar.com.nanotaboada.java.samples.spring.boot.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,12 +14,12 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
  * Spring Data JPA Repository for {@link Player} entities.
  * <p>
  * Provides data access methods for the {@code players} table using Spring Data's repository abstraction.
- * Extends {@link CrudRepository} for basic CRUD operations and defines custom queries for advanced search functionality.
+ * Extends {@link JpaRepository} for CRUD operations, batch operations, and query methods.
  * </p>
  *
  * <h3>Provided Methods:</h3>
  * <ul>
- * <li><b>Inherited from CrudRepository:</b> save, findAll, findById, delete, etc.</li>
+ * <li><b>Inherited from JpaRepository:</b> save, findAll (returns List), findById, delete, flush, etc.</li>
  * <li><b>Custom Query Methods:</b> League search with case-insensitive wildcard matching</li>
  * <li><b>Derived Queries:</b> findBySquadNumber (method name conventions)</li>
  * </ul>
@@ -31,28 +31,14 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
  * </ul>
  *
  * @see Player
- * @see org.springframework.data.repository.CrudRepository
+ * @see org.springframework.data.jpa.repository.JpaRepository
  * @see <a href=
  * "https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation">Query
  * Creation from Method Names</a>
  * @since 4.0.2025
  */
 @Repository
-public interface PlayersRepository extends CrudRepository<Player, Long> {
-    /**
-     * Finds a player by their unique identifier.
-     * <p>
-     * This is a derived query method - Spring Data JPA automatically implements it based on the method name convention.
-     * </p>
-     *
-     * @param id the unique identifier of the player
-     * @return an Optional containing the player if found, empty Optional otherwise
-     * @see <a href=
-     * "https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation">Query
-     * Creation from Method Names</a>
-     */
-    // Non-default methods in interfaces are not shown in coverage reports https://www.jacoco.org/jacoco/trunk/doc/faq.html
-    Optional<Player> findById(Long id);
+public interface PlayersRepository extends JpaRepository<Player, Long> {
 
     /**
      * Finds players by league name using case-insensitive wildcard matching.

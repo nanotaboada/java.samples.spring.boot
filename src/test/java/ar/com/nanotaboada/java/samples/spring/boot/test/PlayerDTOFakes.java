@@ -1,6 +1,8 @@
 package ar.com.nanotaboada.java.samples.spring.boot.test;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
 
@@ -126,8 +128,8 @@ public final class PlayerDTOFakes {
      * Note: Repository tests query real in-memory DB directly (25 players
      * pre-seeded)
      */
-    public static java.util.List<PlayerDTO> createAll() {
-        return java.util.Arrays.asList(
+    public static List<PlayerDTO> createAll() {
+        return Arrays.asList(
                 // Starting 11
                 createPlayerDTOWithId(1L, "Damián", "Emiliano", "Martínez", LocalDate.of(1992, 9, 2), 23, "Goalkeeper",
                         "GK", "Aston Villa FC", "Premier League", true),

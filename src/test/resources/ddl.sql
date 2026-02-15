@@ -10,7 +10,7 @@ CREATE TABLE players (
     middleName TEXT,
     lastName TEXT NOT NULL,
     dateOfBirth TEXT NOT NULL,
-    squadNumber INTEGER NOT NULL,
+    squadNumber INTEGER NOT NULL UNIQUE,
     position TEXT NOT NULL,
     abbrPosition TEXT NOT NULL,
     team TEXT NOT NULL,

@@ -1,7 +1,6 @@
 package ar.com.nanotaboada.java.samples.spring.boot.test.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,7 @@ class PlayersRepositoryTests {
         // Act
         Optional<Player> actual = repository.findById(saved.getId());
         // Assert
-        assertTrue(actual.isPresent());
+        assertThat(actual).isPresent();
         assertThat(actual.get()).usingRecursiveComparison().isEqualTo(saved);
     }
 

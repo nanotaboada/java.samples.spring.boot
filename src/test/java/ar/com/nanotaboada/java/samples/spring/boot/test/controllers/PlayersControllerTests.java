@@ -357,7 +357,7 @@ class PlayersControllerTests {
 
     /**
      * Given a player exists and valid update data is provided
-     * When PUT /players is called and the service successfully updates the player
+     * When PUT /players/{id} is called and the service successfully updates the player
      * Then response status is 204 No Content
      */
     @Test
@@ -365,12 +365,14 @@ class PlayersControllerTests {
             throws Exception {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
+        playerDTO.setId(1L); // Set ID for update operation
+        Long id = playerDTO.getId();
         String body = new ObjectMapper().writeValueAsString(playerDTO);
         Mockito
                 .when(playersServiceMock.update(any(PlayerDTO.class)))
                 .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH)
+                .put(PATH + "/{id}", id)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON);
         // Act
@@ -385,7 +387,7 @@ class PlayersControllerTests {
 
     /**
      * Given a player with the provided ID does not exist
-     * When PUT /players is called and the service returns false
+     * When PUT /players/{id} is called and the service returns false
      * Then response status is 404 Not Found
      */
     @Test
@@ -393,12 +395,14 @@ class PlayersControllerTests {
             throws Exception {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
+        playerDTO.setId(999L); // Set ID for update operation
+        Long id = playerDTO.getId();
         String body = new ObjectMapper().writeValueAsString(playerDTO);
         Mockito
                 .when(playersServiceMock.update(any(PlayerDTO.class)))
                 .thenReturn(false);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH)
+                .put(PATH + "/{id}", id)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON);
         // Act
@@ -413,7 +417,7 @@ class PlayersControllerTests {
 
     /**
      * Given invalid player data is provided (validation fails)
-     * When PUT /players is called
+     * When PUT /players/{id} is called
      * Then response status is 400 Bad Request and service is never called
      */
     @Test
@@ -421,9 +425,37 @@ class PlayersControllerTests {
             throws Exception {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneInvalid();
+        Long id = 1L;
         String body = new ObjectMapper().writeValueAsString(playerDTO);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH)
+                .put(PATH + "/{id}", id)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON);
+        // Act
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Assert
+        verify(playersServiceMock, never()).update(any(PlayerDTO.class));
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Given the path ID does not match the body ID
+     * When PUT /players/{id} is called
+     * Then response status is 400 Bad Request and service is never called
+     */
+    @Test
+    void put_idMismatch_returnsBadRequest()
+            throws Exception {
+        // Arrange
+        PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
+        playerDTO.setId(999L); // Body has different ID
+        Long pathId = 1L; // Path has different ID
+        String body = new ObjectMapper().writeValueAsString(playerDTO);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(PATH + "/{id}", pathId)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON);
         // Act

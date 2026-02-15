@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * REST Controller for managing Player resources.
@@ -59,13 +60,10 @@ import jakarta.validation.Valid;
  */
 @RestController
 @Tag(name = "Players")
+@RequiredArgsConstructor
 public class PlayersController {
 
     private final PlayersService playersService;
-
-    public PlayersController(PlayersService playersService) {
-        this.playersService = playersService;
-    }
 
     /*
      * -----------------------------------------------------------------------------------------------------------------------
@@ -203,20 +201,27 @@ public class PlayersController {
     /**
      * Updates an existing player resource (full update).
      * <p>
-     * Performs a complete replacement of the player entity. Requires a valid player ID in the request body.
+     * Performs a complete replacement of the player entity. The ID in the path must match the ID in the request body.
      * </p>
      *
-     * @param playerDTO the complete player data (must include valid ID and pass validation)
-     * @return 204 No Content if successful, 404 Not Found if player doesn't exist, or 400 Bad Request if validation fails
+     * @param id the unique identifier of the player to update
+     * @param playerDTO the complete player data (must pass validation)
+     * @return 204 No Content if successful, 404 Not Found if player doesn't exist, or 400 Bad Request if validation fails or
+     * ID mismatch
      */
-    @PutMapping("/players")
+    @PutMapping("/players/{id}")
     @Operation(summary = "Updates (entirely) a player by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<Void> put(@RequestBody @Valid PlayerDTO playerDTO) {
+    public ResponseEntity<Void> put(@PathVariable Long id, @RequestBody @Valid PlayerDTO playerDTO) {
+        // Ensure path ID matches body ID
+        if (playerDTO.getId() != null && !playerDTO.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        playerDTO.setId(id); // Set ID from path to ensure consistency
         boolean updated = playersService.update(playerDTO);
         return (updated)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()

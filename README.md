@@ -173,7 +173,7 @@ Interactive API documentation is available via Swagger UI at `http://localhost:9
 - `GET /players/search/league/{league}` - Search players by league
 - `GET /players/search/squadnumber/{squadNumber}` - Get player by squad number
 - `POST /players` - Create new player
-- `PUT /players` - Update existing player
+- `PUT /players/{id}` - Update existing player
 - `DELETE /players/{id}` - Remove player
 - `GET /actuator/health` - Health check
 

@@ -1,6 +1,8 @@
 package ar.com.nanotaboada.java.samples.spring.boot.converters;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.AttributeConverter;
@@ -26,7 +28,7 @@ import jakarta.persistence.Converter;
  * </ul>
  *
  * <h3>Usage Example:</h3>
- * 
+ *
  * <pre>
  * {
  *     &#64;code
@@ -45,7 +47,7 @@ import jakarta.persistence.Converter;
 @Converter
 public class IsoDateConverter implements AttributeConverter<LocalDate, String> {
 
-    private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+    private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     /**
      * Converts a {@link LocalDate} to an ISO-8601 formatted string for database
@@ -53,14 +55,14 @@ public class IsoDateConverter implements AttributeConverter<LocalDate, String> {
      *
      * @param date the LocalDate to convert (may be null)
      * @return ISO-8601 formatted string (e.g., "1992-09-02T00:00:00Z"), or null if
-     *         input is null
+     * input is null
      */
     @Override
     public String convertToDatabaseColumn(LocalDate date) {
         if (date == null) {
             return null;
         }
-        return date.atStartOfDay().format(ISO_FORMATTER) + "Z";
+        return date.atStartOfDay().atOffset(ZoneOffset.UTC).format(ISO_FORMATTER);
     }
 
     /**
@@ -72,7 +74,7 @@ public class IsoDateConverter implements AttributeConverter<LocalDate, String> {
      * </p>
      *
      * @param dateString the ISO-8601 formatted string from the database (may be
-     *                   null or blank)
+     * null or blank)
      * @return the corresponding LocalDate, or null if input is null or blank
      */
     @Override
@@ -82,8 +84,8 @@ public class IsoDateConverter implements AttributeConverter<LocalDate, String> {
         }
         // Handle both "YYYY-MM-DD" and "YYYY-MM-DDTHH:mm:ss.SSSZ" formats
         if (dateString.contains("T")) {
-            return LocalDate.parse(dateString.substring(0, 10));
+            return OffsetDateTime.parse(dateString, ISO_FORMATTER).toLocalDate();
         }
-        return LocalDate.parse(dateString);
+        return LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE);
     }
 }

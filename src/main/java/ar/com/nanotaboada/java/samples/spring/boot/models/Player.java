@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import ar.com.nanotaboada.java.samples.spring.boot.converters.IsoDateConverter;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -57,7 +58,17 @@ public class Player {
     @JsonSerialize(using = LocalDateSerializer.class)
     @Convert(converter = IsoDateConverter.class)
     private LocalDate dateOfBirth;
+
+    /**
+     * Squad number (jersey number) - unique natural key.
+     * <p>
+     * Used for player lookups via /players/search/squadnumber/{squadNumber}.
+     * Database constraint enforces uniqueness.
+     * </p>
+     */
+    @Column(unique = true)
     private Integer squadNumber;
+
     private String position;
     private String abbrPosition;
     private String team;
