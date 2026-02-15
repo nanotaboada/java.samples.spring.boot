@@ -318,7 +318,10 @@ class PlayersControllerTests {
     void searchBySquadNumber_playerExists_returnsOkWithPlayer()
             throws Exception {
         // Arrange
-        PlayerDTO playerDTO = PlayerDTOFakes.createAll().get(9); // Messi is at index 9
+        PlayerDTO playerDTO = PlayerDTOFakes.createAll().stream()
+                .filter(player -> player.getSquadNumber() == 10)
+                .findFirst()
+                .orElseThrow();
         Mockito
                 .when(playersServiceMock.searchBySquadNumber(10))
                 .thenReturn(playerDTO);
