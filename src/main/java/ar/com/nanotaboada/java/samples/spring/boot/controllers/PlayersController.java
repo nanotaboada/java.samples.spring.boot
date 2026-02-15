@@ -245,7 +245,6 @@ public class PlayersController {
     @Operation(summary = "Deletes a player by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<Void> delete(@PathVariable Long id) {

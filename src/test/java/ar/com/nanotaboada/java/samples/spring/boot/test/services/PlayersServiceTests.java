@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
@@ -25,7 +26,6 @@ import ar.com.nanotaboada.java.samples.spring.boot.repositories.PlayersRepositor
 import ar.com.nanotaboada.java.samples.spring.boot.services.PlayersService;
 import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerDTOFakes;
 import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerFakes;
-import org.springframework.dao.DataIntegrityViolationException;
 
 @DisplayName("CRUD Operations on Service")
 @ExtendWith(MockitoExtension.class)
@@ -87,7 +87,10 @@ class PlayersServiceTests {
     void create_squadNumberExists_returnsNull() {
         // Arrange
         PlayerDTO playerDTO = PlayerDTOFakes.createOneValid();
-        Player existingPlayer = PlayerFakes.createAll().get(4); // Squad number 5 already exists
+        Player existingPlayer = PlayerFakes.createAll().stream()
+                .filter(player -> player.getSquadNumber() == 10)
+                .findFirst()
+                .orElseThrow();
         Mockito
                 .when(playersRepositoryMock.findBySquadNumber(playerDTO.getSquadNumber()))
                 .thenReturn(Optional.of(existingPlayer));
@@ -264,8 +267,14 @@ class PlayersServiceTests {
     @Test
     void searchBySquadNumber_playerExists_returnsPlayerDTO() {
         // Arrange
-        Player player = PlayerFakes.createAll().get(9); // Messi is at index 9
-        PlayerDTO playerDTO = PlayerDTOFakes.createAll().get(9);
+        Player player = PlayerFakes.createAll().stream()
+                .filter(p -> p.getSquadNumber() == 10)
+                .findFirst()
+                .orElseThrow();
+        PlayerDTO playerDTO = PlayerDTOFakes.createAll().stream()
+                .filter(p -> p.getSquadNumber() == 10)
+                .findFirst()
+                .orElseThrow();
         Mockito
                 .when(playersRepositoryMock.findBySquadNumber(10))
                 .thenReturn(Optional.of(player));
