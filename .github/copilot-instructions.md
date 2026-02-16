@@ -1,112 +1,213 @@
-# GitHub Copilot Instructions
+# Copilot Instructions
 
-> **Token Efficiency Note**: This is a minimal pointer file (~500 tokens, auto-loaded by Copilot).
-> For complete operational details, reference: `#file:AGENTS.md` (~2,500 tokens, loaded on-demand)
-> For specialized knowledge, use: `#file:SKILLS/<skill-name>/SKILL.md` (loaded on-demand when needed)
+## Project Overview
 
-## Quick Context
+This is a Spring Boot REST API for managing football players, demonstrating modern Java patterns and clean architecture. It's a learning-focused proof-of-concept that follows Spring Boot best practices with layered architecture (Controller → Service → Repository).
 
-**Project**: Spring Boot REST API demonstrating modern Java patterns
-**Stack**: Java 25 (LTS) • Spring Boot 4 • JPA/Hibernate • SQLite • Maven • Docker
-**Pattern**: Controller → Service → Repository → JPA (layered architecture)
-**Philosophy**: Learning-focused PoC emphasizing Spring Boot best practices
+## Stack
 
-## Core Conventions
+- **Java**: 25 (LTS, required for consistency)
+- **Spring Boot**: 4.0.0 (with Spring MVC)
+- **ORM**: Spring Data JPA with Hibernate
+- **Database**: SQLite (file-based for runtime, in-memory for tests)
+- **Build Tool**: Maven 3 (use `./mvnw` wrapper, NOT system Maven)
+- **Containers**: Docker with Docker Compose
+- **Logging**: SLF4J with Logback
+- **Monitoring**: Spring Boot Actuator
+- **API Docs**: SpringDoc OpenAPI 3 (Swagger UI)
 
-- **Naming**: camelCase (methods/variables), PascalCase (classes)
-- **Annotations**: Use Spring stereotypes (@RestController, @Service, @Repository)
-- **Lombok**: Reduce boilerplate (@Data, @Builder, @AllArgsConstructor)
-- **Dependency Injection**: Constructor injection (Lombok @RequiredArgsConstructor)
-- **Testing**: JUnit 5 + AssertJ for fluent assertions
-- **Build**: Use `./mvnw` wrapper, NOT system Maven
-- **Commit Messages**: Follow Conventional Commits with issue number suffix
-  - Format: `type(scope): description (#issue)` (max 80 chars)
-  - Example: `docs: optimize AI agent instructions for token efficiency (#259)`
-  - Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`
+## Project Patterns
 
-## Test Naming Convention
+- **Layered architecture**: Controller → Service → Repository → Database
+- **Dependency injection**: Constructor injection via Lombok's @RequiredArgsConstructor
+- **DTO pattern**: Never expose entities in controllers, use DTOs with ModelMapper
+- **Caching**: Spring Cache abstraction (@Cacheable) with 1-hour TTL
+- **Error handling**: @ControllerAdvice for global exception handling
+- **Validation**: Bean Validation (JSR-380) in DTOs
+- **Repository queries**: Mix of derived queries (findBySquadNumber) and custom JPQL (@Query)
+- **Date handling**: ISO-8601 strings with custom JPA converter for SQLite compatibility
 
-**Pattern**: `method_scenario_outcome`
+## Code Conventions
 
-- **method**: The method being tested (e.g., `post`, `findById`, `create`)
-- **scenario**: The context or condition (e.g., `playerExists`, `invalidData`, `noMatches`)
-- **outcome**: The expected result (e.g., `returnsPlayer`, `returnsConflict`, `returnsEmpty`)
+### Naming
 
-**Examples**:
+- **Classes**: PascalCase (e.g., `PlayersController`, `PlayerDTO`)
+- **Methods/Variables**: camelCase (e.g., `findById`, `squadNumber`)
+- **Test methods**: `method_scenario_outcome` (e.g., `post_squadNumberExists_returnsConflict`)
+
+### Annotations
+
+- **Controllers**: @RestController (never @Controller for REST APIs)
+- **DTOs**: Lombok @Data, @Builder, @AllArgsConstructor
+- **Services**: @Service + @Transactional on mutating methods
+- **Repositories**: @Repository (extend JpaRepository)
+- **Entities**: @Entity with @Table, @Id, @GeneratedValue
+
+### Lombok usage
+
+- Reduce boilerplate with @Data, @Builder, @AllArgsConstructor
+- Use @RequiredArgsConstructor for constructor injection
+- Never use field injection
+
+### REST conventions
+
+- Return ResponseEntity<T> from controllers
+- Use proper HTTP status codes (201 Created, 204 No Content, 409 Conflict)
+- OpenAPI annotations required on all endpoints
+
+### Logging
+
+- Use SLF4J (injected via Lombok @Slf4j)
+- Never use System.out.println
+
+### Configuration
+
+- Externalize via @Value or application.yml
+- Never hardcode values in code
+
+## Testing
+
+### Framework
+
+- **Unit tests**: JUnit 5 with AssertJ for fluent assertions
+- **Integration tests**: @SpringBootTest with MockMvc
+- **Coverage**: JaCoCo reports (must maintain high coverage)
+
+### Test naming
+
+**Pattern**: `givenX_whenY_thenZ()` (BDD Given-When-Then)
+
+**Naming philosophy:**
+
+Use **semantic naming** that describes the business/domain state and behavior, not technical implementation details:
+
+- **Given** (precondition): Describe the state of the system or data
+  - `givenPlayerExists` - A player is present in the system
+  - `givenNoExistingPlayer` - No player matching criteria
+  - `givenInvalidPlayer` - Invalid data provided
+  - `givenRaceCondition` - Concurrent modification scenario
+  - `givenNullId` - Missing required identifier
+- **When** (action): The method/operation being tested
+  - `whenCreate` - Creating a new entity
+  - `whenRetrieveById` - Fetching by identifier
+  - `whenUpdate` - Updating existing entity
+  - `whenDelete` - Removing an entity
+  - `whenSearchByLeague` - Searching/filtering operation
+- **Then** (outcome): Expected result or behavior
+  - `thenReturnsPlayerDTO` - Returns the DTO object
+  - `thenReturnsNull` - Returns null (not found/conflict)
+  - `thenReturnsTrue` / `thenReturnsFalse` - Boolean success indicator
+  - `thenReturns26Players` - Specific count of results
+  - `thenReturnsEmptyList` - No results found
+  - `thenReturnsOk` - HTTP 200 response
+  - `thenReturnsNotFound` - HTTP 404 response
+  - `thenReturnsCreated` - HTTP 201 response
+
+**Code conventions:**
+
+- Comments: Use **Given/When/Then** (BDD pattern)
+- Assertions: Use `then()` from AssertJ BDDAssertions
+- Variables:
+  - Use `actual` for operation results
+  - Use `expected` for comparison values when verifying equality
+  - Use `existing` for pre-saved entities in database
+
+**Why BDD Given-When-Then?**
+
+- ✅ **Readable**: Natural language flow, accessible to all stakeholders
+- ✅ **Behavior-focused**: Tests business logic, not implementation details
+- ✅ **Self-documenting**: Method name clearly states test scenario
+- ✅ **Framework-aligned**: Matches Cucumber/SpecFlow patterns
+
 ```java
-// Controller: post_squadNumberExists_returnsConflict()
-// Service:    create_noConflict_returnsPlayerDTO()
-// Repository: findById_playerExists_returnsPlayer()
+// Examples across layers:
+givenNoExistingPlayer_whenCreate_thenReturnsPlayerDTO()     // Service: success case
+givenPlayerAlreadyExists_whenCreate_thenReturnsNull()       // Service: conflict case
+givenPlayerExists_whenFindById_thenReturnsPlayer()          // Repository: found
+givenPlayerDoesNotExist_whenFindById_thenReturnsEmpty()     // Repository: not found
+givenValidPlayer_whenPost_thenReturnsCreated()              // Controller: HTTP 201
+givenPlayerDoesNotExist_whenGetById_thenReturnsNotFound()   // Controller: HTTP 404
 ```
 
-**JavaDoc**: Use proper BDD (Given/When/Then) structure in comments:
+### Test structure
+
+Use BDD (Given/When/Then) consistently in JavaDoc comments, method names, and code sections:
+
 ```java
 /**
- * Given a player with squad number 5 already exists in the database
- * When POST /players is called with a new player using squad number 5
- * Then response status is 409 Conflict
+ * Given no existing player with the same squad number
+ * When create() is called with valid player data
+ * Then the player is saved and a PlayerDTO is returned
  */
 @Test
-void post_squadNumberExists_returnsConflict() { ... }
+void givenNoExistingPlayer_whenCreate_thenReturnsPlayerDTO() {
+    // Given
+    Player player = PlayerFakes.createOneValid();
+    PlayerDTO expected = PlayerDTOFakes.createOneValid();
+    // When
+    PlayerDTO actual = playersService.create(expected);
+    // Then
+    then(actual).isEqualTo(expected);
+}
 ```
 
-**Benefits**: Concise method names for IDE test runners, full BDD context in JavaDoc for code readability.
+### Test requirements
 
-## Architecture at a Glance
+- Unit tests required for all service and repository methods
+- Integration tests required for all controller endpoints
+- Tests use in-memory SQLite (jdbc:sqlite::memory:)
+- All tests must pass before PR (`./mvnw clean install`)
+- **Assertion quality**: Verify actual behavior, not just counts (e.g., verify league content, not just `hasSize()`)
 
+## Avoid
+
+- **Field injection** - Always use constructor injection
+- **Using `new` for Spring beans** - Breaks dependency injection
+- **Missing @Transactional** - Required on service methods that modify data
+- **Exposing entities in controllers** - Always use DTOs
+- **System.out.println** - Use SLF4J logging
+- **Hardcoded config** - Use @Value or application.yml
+- **System Maven** - Always use `./mvnw` wrapper for consistency
+- **SQLite in production** - This is a demo/development-only setup
+
+## Folder Structure
+
+```tree
+src/main/java/                    # Application code
+  ├── Application.java            # @SpringBootApplication entry point
+  ├── controllers/                # REST endpoints
+  ├── services/                   # Business logic + caching
+  ├── repositories/               # Data access (Spring Data JPA)
+  ├── models/                     # Entities (Player) and DTOs (PlayerDTO)
+  └── converters/                 # JPA converters (ISO date handling)
+src/test/java/                    # Test classes (mirrors main structure)
+storage/                          # SQLite database file (runtime)
+scripts/                          # Docker entrypoint and healthcheck
 ```
-Controller → Service → Repository → JPA → Database
-     ↓          ↓           ↓
-Validation  Cache    Query Methods
-```
 
-- **Controllers**: REST endpoints with @RestController
-- **Services**: Business logic with @Service + caching
-- **Repositories**: JpaRepository with derived queries
-- **DTOs**: ModelMapper for entity ↔ DTO transformations
-- **Cache**: Spring Cache abstraction (1-hour TTL)
-
-## Copilot Should
-
-- Generate idiomatic Spring Boot code with proper annotations
-- Use JPA repository patterns (derived queries, @Query)
-- Follow REST conventions with ResponseEntity<T>
-- Write tests with @SpringBootTest and MockMvc
-- Apply Lombok annotations to reduce boilerplate
-- Use ModelMapper for DTO transformations
-- Implement proper exception handling with @ControllerAdvice
-
-## Copilot Should Avoid
-
-- Field injection (use constructor injection)
-- Using `new` for services (breaks DI)
-- Missing @Transactional on service methods
-- Exposing entities directly in controllers (use DTOs)
-- System.out.println (use SLF4J logging)
-- Hardcoded configuration (use @Value or application.yml)
-
-## Quick Commands
+## Quick Reference
 
 ```bash
-# Run with hot reload
-./mvnw spring-boot:run
-
-# Test with coverage
-./mvnw clean test jacoco:report
+# Development
+./mvnw spring-boot:run              # Run with hot reload
+./mvnw clean test jacoco:report     # Test with coverage
 
 # Docker
-docker compose up
+docker compose up                   # Start in container
 
-# Swagger: http://localhost:9000/swagger-ui/index.html
-# Actuator: http://localhost:9001/actuator/health
+# Documentation
+http://localhost:8080/swagger-ui.html       # API docs
+http://localhost:8080/actuator/health       # Health check
 ```
 
-## Need More Detail?
+## Commit Messages
 
-**For operational procedures**: Load `#file:AGENTS.md`
-**For Docker expertise**: *(Planned)* `#file:SKILLS/docker-containerization/SKILL.md`
-**For testing patterns**: *(Planned)* `#file:SKILLS/testing-patterns/SKILL.md`
+Follow Conventional Commits with issue number suffix:
 
----
+- **Format**: `type(scope): description (#issue)` (max 80 chars)
+- **Types**: feat, fix, chore, docs, test, refactor
+- **Example**: `feat(api): add squad number search endpoint (#123)`
 
-**Why this structure?** Copilot auto-loads this file on every chat (~500 tokens). Loading `AGENTS.md` or `SKILLS/` explicitly gives you deep context only when needed, saving 80% of your token budget!
+## Additional Context
+
+For detailed operational procedures, workflows, and troubleshooting, see `AGENTS.md`.
