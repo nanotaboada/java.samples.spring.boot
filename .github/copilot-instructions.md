@@ -33,7 +33,7 @@ This is a Spring Boot REST API for managing football players, demonstrating mode
 
 - **Classes**: PascalCase (e.g., `PlayersController`, `PlayerDTO`)
 - **Methods/Variables**: camelCase (e.g., `findById`, `squadNumber`)
-- **Test methods**: `method_scenario_outcome` (e.g., `post_squadNumberExists_returnsConflict`)
+- **Test methods**: `givenX_whenY_thenZ` (e.g., `givenSquadNumberExists_whenPost_thenReturnsConflict`)
 
 ### Annotations
 

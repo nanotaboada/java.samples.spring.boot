@@ -62,7 +62,7 @@ Dockerfile                        - Container image definition
 - **All tests**: `./mvnw test`
 - **With coverage**: `./mvnw clean test jacoco:report` (view: `open target/site/jacoco/index.html`)
 - **Single test class**: `./mvnw test -Dtest=PlayersControllerTests`
-- **Single test method**: `./mvnw test -Dtest=PlayersControllerTests#getAll_playersExist_returnsOkWithAllPlayers`
+- **Single test method**: `./mvnw test -Dtest=PlayersControllerTests#givenPlayersExist_whenGetAll_thenReturnsOkWithAllPlayers`
 - **Integration tests require**: In-memory SQLite (automatic, no docker needed)
 - **Full CI pipeline locally**: `./mvnw clean install` (compile + test + package + jacoco)
 
@@ -72,9 +72,9 @@ Dockerfile                        - Container image definition
 2. **Packaged JAR**: `./mvnw clean package && java -jar target/java.samples.spring.boot-*.jar`
 3. **Docker**: `docker compose up` (or `docker compose up -d` for background)
 4. **Application URLs**:
-   - API: `http://localhost:8080/players`
-   - Swagger: `http://localhost:8080/swagger-ui.html`
-   - Health: `http://localhost:8080/actuator/health`
+   - API: `http://localhost:9000/players`
+   - Swagger: `http://localhost:9000/swagger/index.html`
+   - Health: `http://localhost:9001/actuator/health`
 
 ### Adding a search/query endpoint
 
@@ -97,10 +97,10 @@ Dockerfile                        - Container image definition
 
 ### Troubleshooting common issues
 
-**Port already in use (8080)**:
+**Port already in use (9000)**:
 
 ```bash
-lsof -ti:8080 | xargs kill -9
+lsof -ti:9000 | xargs kill -9
 ```
 
 **Maven dependency issues**:
@@ -198,8 +198,8 @@ Before committing code, ensure these pass:
 
 5. **Manual smoke test** (optional but recommended):
    - Start app: `./mvnw spring-boot:run`
-   - Test endpoint in Swagger UI: `http://localhost:8080/swagger-ui.html`
-   - Verify health endpoint: `http://localhost:8080/actuator/health`
+   - Test endpoint in Swagger UI: `http://localhost:9000/swagger/index.html`
+   - Verify health endpoint: `http://localhost:9001/actuator/health`
 
 ## Cross-repo Context
 
