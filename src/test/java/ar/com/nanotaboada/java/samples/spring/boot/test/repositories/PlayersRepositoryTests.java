@@ -1,6 +1,6 @@
 package ar.com.nanotaboada.java.samples.spring.boot.test.repositories;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,88 +27,98 @@ class PlayersRepositoryTests {
     private PlayersRepository repository;
 
     /**
-     * Given Leandro Paredes is created and saved to the database with an auto-generated ID
-     * When findById() is called with that ID
+     * Given a player exists in the database
+     * When findById() is called with that player's ID
      * Then the player is returned
      */
     @Test
-    void findById_playerExists_returnsPlayer() {
-        // Arrange
-        Player leandro = PlayerFakes.createOneValid();
-        Player saved = repository.save(leandro);
-        // Act
-        Optional<Player> actual = repository.findById(saved.getId());
-        // Assert
-        assertThat(actual).isPresent();
-        assertThat(actual.get()).usingRecursiveComparison().isEqualTo(saved);
+    void givenPlayerExists_whenFindById_thenReturnsPlayer() {
+        // Given
+        Player expected = repository.save(PlayerFakes.createOneValid());
+        // When
+        Optional<Player> actual = repository.findById(expected.getId());
+        // Then
+        then(actual).isPresent();
+        then(actual.get()).usingRecursiveComparison().isEqualTo(expected);
     }
 
     /**
-     * Given the database does not contain a player with ID 999
-     * When findById(999) is called
+     * Given the database does not contain a player with a specific ID
+     * When querying by that ID
      * Then an empty Optional is returned
      */
     @Test
-    void findById_playerNotFound_returnsEmpty() {
-        // Act
-        Optional<Player> actual = repository.findById(999L);
-        // Assert
-        assertThat(actual).isEmpty();
+    void givenPlayerDoesNotExist_whenFindById_thenReturnsEmpty() {
+        // Given
+        Long expected = 999L;
+        // When
+        Optional<Player> actual = repository.findById(expected);
+        // Then
+        then(actual).isEmpty();
     }
 
     /**
-     * Given the database contains 7 players in Premier League (pre-seeded in-memory database)
-     * When findByLeagueContainingIgnoreCase("Premier") is called
+     * Given players exist in a specific league
+     * When searching by league name
      * Then a list of matching players is returned
      */
     @Test
-    void findByLeague_matchingPlayersExist_returnsList() {
-        // Act
-        List<Player> actual = repository.findByLeagueContainingIgnoreCase("Premier");
-        // Assert
-        assertThat(actual).isNotEmpty()
-                .allMatch(player -> player.getLeague().toLowerCase().contains("premier"));
+    void givenPlayersExist_whenFindByLeague_thenReturnsList() {
+        // Given
+        String expected = "Premier";
+        // When
+        List<Player> actual = repository.findByLeagueContainingIgnoreCase(expected);
+        // Then
+        then(actual).isNotEmpty()
+                .allMatch(player -> player.getLeague().toLowerCase().contains(expected.toLowerCase()));
     }
 
     /**
-     * Given the database does not contain players in "nonexistentleague"
-     * When findByLeagueContainingIgnoreCase("nonexistentleague") is called
+     * Given the database does not contain players in a specific league
+     * When searching by that league name
      * Then an empty list is returned
      */
     @Test
-    void findByLeague_noMatches_returnsEmptyList() {
-        // Act
-        List<Player> actual = repository.findByLeagueContainingIgnoreCase("nonexistentleague");
-        // Assert
-        assertThat(actual).isEmpty();
+    void givenNoPlayersExist_whenFindByLeague_thenReturnsEmptyList() {
+        // Given
+        String expected = "Expected League";
+        // When
+        List<Player> actual = repository.findByLeagueContainingIgnoreCase(expected);
+        // Then
+        then(actual).isEmpty();
     }
 
     /**
-     * Given the database contains Messi with squad number 10 (pre-seeded at ID 10)
-     * When findBySquadNumber(10) is called
-     * Then Messi's player record is returned
+     * Given a player with a specific squad number exists in the database
+     * When querying by that squad number
+     * Then the player record is returned
      */
     @Test
-    void findBySquadNumber_playerExists_returnsPlayer() {
-        // Act
-        Optional<Player> actual = repository.findBySquadNumber(10);
-        // Assert
-        assertThat(actual).isPresent();
-        assertThat(actual.get())
-                .extracting(Player::getSquadNumber, Player::getLastName)
-                .containsExactly(10, "Messi");
+    void givenPlayerExists_whenFindBySquadNumber_thenReturnsPlayer() {
+        // Given
+        Player expected = PlayerFakes.createAll().stream()
+                .filter(p -> p.getId().equals(10L))
+                .findFirst()
+                .orElseThrow();
+        // When
+        Optional<Player> actual = repository.findBySquadNumber(expected.getSquadNumber());
+        // Then
+        then(actual).isPresent();
+        then(actual.get()).usingRecursiveComparison().isEqualTo(expected);
     }
 
     /**
-     * Given the database does not contain a player with squad number 99
-     * When findBySquadNumber(99) is called
+     * Given the database does not contain a player with a specific squad number
+     * When querying by that squad number
      * Then an empty Optional is returned
      */
     @Test
-    void findBySquadNumber_playerNotFound_returnsEmpty() {
-        // Act
-        Optional<Player> actual = repository.findBySquadNumber(99);
-        // Assert
-        assertThat(actual).isEmpty();
+    void givenPlayerDoesNotExist_whenFindBySquadNumber_thenReturnsEmpty() {
+        // Given
+        Integer expected = 99;
+        // When
+        Optional<Player> actual = repository.findBySquadNumber(expected);
+        // Then
+        then(actual).isEmpty();
     }
 }

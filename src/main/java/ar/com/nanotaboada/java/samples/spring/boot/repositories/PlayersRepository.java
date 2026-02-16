@@ -41,20 +41,6 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 public interface PlayersRepository extends JpaRepository<Player, Long> {
 
     /**
-     * Finds players by league name using case-insensitive wildcard matching.
-     * <p>
-     * This method uses a custom JPQL query with LIKE operator for partial matches.
-     * For example, searching for "Premier" will match "Premier League".
-     * </p>
-     *
-     * @param league the league name to search for (partial matches allowed)
-     * @return a list of players whose league name contains the search term (empty
-     * list if none found)
-     */
-    @Query("SELECT p FROM Player p WHERE LOWER(p.league) LIKE LOWER(CONCAT('%', :league, '%'))")
-    List<Player> findByLeagueContainingIgnoreCase(@Param("league") String league);
-
-    /**
      * Finds a player by their squad number (exact match).
      * <p>
      * This is a derived query method - Spring Data JPA generates the query automatically.
@@ -67,4 +53,18 @@ public interface PlayersRepository extends JpaRepository<Player, Long> {
      * @return an Optional containing the player if found, empty Optional otherwise
      */
     Optional<Player> findBySquadNumber(Integer squadNumber);
+
+    /**
+     * Finds players by league name using case-insensitive wildcard matching.
+     * <p>
+     * This method uses a custom JPQL query with LIKE operator for partial matches.
+     * For example, searching for "Premier" will match "Premier League".
+     * </p>
+     *
+     * @param league the league name to search for (partial matches allowed)
+     * @return a list of players whose league name contains the search term (empty
+     * list if none found)
+     */
+    @Query("SELECT p FROM Player p WHERE LOWER(p.league) LIKE LOWER(CONCAT('%', :league, '%'))")
+    List<Player> findByLeagueContainingIgnoreCase(@Param("league") String league);
 }

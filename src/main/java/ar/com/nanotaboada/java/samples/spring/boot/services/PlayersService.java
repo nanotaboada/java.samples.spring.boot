@@ -111,6 +111,24 @@ public class PlayersService {
      */
 
     /**
+     * Retrieves all players from the database.
+     * <p>
+     * This method returns the complete Argentina 2022 FIFA World Cup squad (26 players).
+     * Results are cached to improve performance on subsequent calls.
+     * </p>
+     *
+     * @return a list of all players (empty list if none found)
+     * @see org.springframework.cache.annotation.Cacheable
+     */
+    @Cacheable(value = "players")
+    public List<PlayerDTO> retrieveAll() {
+        return playersRepository.findAll()
+                .stream()
+                .map(this::mapFrom)
+                .toList();
+    }
+
+    /**
      * Retrieves a player by their unique identifier.
      * <p>
      * This method uses caching to improve performance. If the player is found in the cache, it will be returned without
@@ -130,21 +148,21 @@ public class PlayersService {
     }
 
     /**
-     * Retrieves all players from the database.
+     * Retrieves a player by their squad number (unique identifier).
      * <p>
-     * This method returns the complete Argentina 2022 FIFA World Cup squad (26 players).
-     * Results are cached to improve performance on subsequent calls.
+     * Squad numbers are unique jersey numbers (e.g., Messi is #10). This is a direct lookup by unique identifier,
+     * similar to retrieveById(). Results are cached to improve performance.
      * </p>
      *
-     * @return a list of all players (empty list if none found)
+     * @param squadNumber the squad number to retrieve (jersey number, typically 1-99)
+     * @return the player DTO if found, null otherwise
      * @see org.springframework.cache.annotation.Cacheable
      */
-    @Cacheable(value = "players")
-    public List<PlayerDTO> retrieveAll() {
-        return playersRepository.findAll()
-                .stream()
+    @Cacheable(value = "players", key = "'squad-' + #squadNumber", unless = "#result == null")
+    public PlayerDTO retrieveBySquadNumber(Integer squadNumber) {
+        return playersRepository.findBySquadNumber(squadNumber)
                 .map(this::mapFrom)
-                .toList();
+                .orElse(null);
     }
 
     /*
@@ -168,22 +186,6 @@ public class PlayersService {
                 .stream()
                 .map(this::mapFrom)
                 .toList();
-    }
-
-    /**
-     * Searches for a player by their squad number.
-     * <p>
-     * This method performs an exact match on the squad number field. Squad numbers are jersey numbers that users recognize
-     * (e.g., Messi is #10).
-     * </p>
-     *
-     * @param squadNumber the squad number to search for (jersey number, typically 1-99)
-     * @return the player DTO if found, null otherwise
-     */
-    public PlayerDTO searchBySquadNumber(Integer squadNumber) {
-        return playersRepository.findBySquadNumber(squadNumber)
-                .map(this::mapFrom)
-                .orElse(null);
     }
 
     /*

@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
  * <li><b>GET</b> {@code /players} - Retrieve all players</li>
  * <li><b>GET</b> {@code /players/{id}} - Retrieve player by ID</li>
  * <li><b>GET</b> {@code /players/search/league/{league}} - Search players by league name</li>
- * <li><b>GET</b> {@code /players/search/squadnumber/{number}} - Search player by squad number</li>
+ * <li><b>GET</b> {@code /players/squadnumber/{number}} - Retrieve player by squad number</li>
  * <li><b>POST</b> {@code /players} - Create a new player</li>
  * <li><b>PUT</b> {@code /players/{id}} - Update an existing player</li>
  * <li><b>DELETE</b> {@code /players/{id}} - Delete a player by ID</li>
@@ -114,6 +114,24 @@ public class PlayersController {
      */
 
     /**
+     * Retrieves all players in the squad.
+     * <p>
+     * Returns the complete Argentina 2022 FIFA World Cup squad (26 players).
+     * </p>
+     *
+     * @return 200 OK with array of all players (empty array if none found)
+     */
+    @GetMapping("/players")
+    @Operation(summary = "Retrieves all players")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO[].class)))
+    })
+    public ResponseEntity<List<PlayerDTO>> getAll() {
+        List<PlayerDTO> players = playersService.retrieveAll();
+        return ResponseEntity.status(HttpStatus.OK).body(players);
+    }
+
+    /**
      * Retrieves a single player by their unique identifier.
      *
      * @param id the unique identifier of the player
@@ -133,21 +151,26 @@ public class PlayersController {
     }
 
     /**
-     * Retrieves all players in the squad.
+     * Retrieves a player by their squad number (unique identifier).
      * <p>
-     * Returns the complete Argentina 2022 FIFA World Cup squad (26 players).
+     * Squad numbers are unique jersey numbers (e.g., Messi is #10). This is a direct lookup similar to getById().
+     * Example: {@code /players/squadnumber/10} returns Lionel Messi
      * </p>
      *
-     * @return 200 OK with array of all players (empty array if none found)
+     * @param squadNumber the squad number to retrieve (jersey number, typically 1-99)
+     * @return 200 OK with player data, or 404 Not Found if no player has that number
      */
-    @GetMapping("/players")
-    @Operation(summary = "Retrieves all players")
+    @GetMapping("/players/squadnumber/{squadNumber}")
+    @Operation(summary = "Retrieves a player by squad number")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO[].class)))
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<List<PlayerDTO>> getAll() {
-        List<PlayerDTO> players = playersService.retrieveAll();
-        return ResponseEntity.status(HttpStatus.OK).body(players);
+    public ResponseEntity<PlayerDTO> getBySquadNumber(@PathVariable Integer squadNumber) {
+        PlayerDTO player = playersService.retrieveBySquadNumber(squadNumber);
+        return (player != null)
+                ? ResponseEntity.status(HttpStatus.OK).body(player)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     /**
@@ -167,30 +190,6 @@ public class PlayersController {
     public ResponseEntity<List<PlayerDTO>> searchByLeague(@PathVariable String league) {
         List<PlayerDTO> players = playersService.searchByLeague(league);
         return ResponseEntity.status(HttpStatus.OK).body(players);
-    }
-
-    /**
-     * Searches for a player by their squad number.
-     * <p>
-     * Squad numbers are jersey numbers that users recognize (e.g., Messi is #10).
-     * Example: {@code /players/search/squadnumber/10} returns Lionel Messi
-     * </p>
-     *
-     * @param squadNumber the squad number to search for (jersey number, typically 1-99)
-     * @return 200 OK with player data, or 404 Not Found if no player has that
-     * number
-     */
-    @GetMapping("/players/search/squadnumber/{squadNumber}")
-    @Operation(summary = "Searches for a player by squad number")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-    })
-    public ResponseEntity<PlayerDTO> searchBySquadNumber(@PathVariable Integer squadNumber) {
-        PlayerDTO player = playersService.searchBySquadNumber(squadNumber);
-        return (player != null)
-                ? ResponseEntity.status(HttpStatus.OK).body(player)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     /*
