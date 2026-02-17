@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
@@ -65,6 +63,5 @@ public interface PlayersRepository extends JpaRepository<Player, Long> {
      * @return a list of players whose league name contains the search term (empty
      * list if none found)
      */
-    @Query("SELECT p FROM Player p WHERE LOWER(p.league) LIKE LOWER(CONCAT('%', :league, '%'))")
-    List<Player> findByLeagueContainingIgnoreCase(@Param("league") String league);
+    List<Player> findByLeagueContainingIgnoreCase(String league);
 }
