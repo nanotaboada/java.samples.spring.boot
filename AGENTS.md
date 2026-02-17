@@ -1,220 +1,209 @@
 # Agent Instructions
 
-## Project Overview
-
-This is a Spring Boot 4 REST API for managing football players, built as a learning-focused proof-of-concept demonstrating modern Java patterns, clean layered architecture, and Spring Boot best practices. The application uses SQLite for development simplicity, Spring Data JPA for data access, and follows a strict DTO pattern to separate concerns between API contracts and domain models. It's designed to showcase enterprise patterns (caching, validation, OpenAPI docs, health monitoring) in a beginner-friendly, self-contained package.
-
-## Folder Structure
+## Project Structure
 
 ```tree
-/src/main/java/                   - Application code (layered architecture)
-  ├── Application.java            - @SpringBootApplication entry point
-  ├── controllers/                - REST endpoints (@RestController)
-  ├── services/                   - Business logic (@Service, caching)
-  ├── repositories/               - Data access (Spring Data JPA)
-  ├── models/                     - Entities and DTOs
-  └── converters/                 - JPA converters (ISO-8601 date handling)
-/src/test/java/                   - Test classes (mirrors main structure)
-  ├── controllers/                - Integration tests (@SpringBootTest, MockMvc)
-  ├── services/                   - Service unit tests (mocked dependencies)
-  ├── repositories/               - Repository tests (in-memory SQLite)
-  └── test/                       - Test data factories (PlayerFakes, PlayerDTOFakes)
-/src/main/resources/              - Configuration files
-  ├── application.properties       - Runtime config (SQLite file-based)
-  └── logback-spring.xml          - Logging configuration
-/src/test/resources/              - Test configuration
-  ├── application.properties       - Test config (SQLite in-memory)
-  ├── ddl.sql                     - Test database schema
-  └── dml.sql                     - Test seed data
-/storage/                         - SQLite database file (runtime)
-/scripts/                         - Docker entrypoint and healthcheck
-/.github/workflows/               - CI/CD pipelines (maven.yml)
-pom.xml                           - Maven dependencies and build config
-compose.yaml                      - Docker Compose setup
-Dockerfile                        - Container image definition
+/src/main/java/...         - Application code
+  ├── controllers/         - REST endpoints (@RestController)
+  ├── services/            - Business logic (@Service, @Cacheable)
+  ├── repositories/        - Data access (JpaRepository)
+  ├── models/              - Domain entities (@Entity) and DTOs
+  └── converters/          - JPA attribute converters
+/src/test/java/...         - Test classes (mirrors main structure)
+/src/main/resources/       - application.properties, logback config
+/src/test/resources/       - Test config, schema (ddl.sql), seed data (dml.sql)
+/storage/                  - SQLite database file (runtime)
+/target/                   - Build artifacts, test reports, coverage
+/.github/workflows/        - CI/CD (maven.yml)
 ```
 
 ## Common Workflows
 
 ### Adding a new endpoint
 
-1. Create DTO in `/src/main/java/.../models/` (add validation annotations)
-2. Add method to `PlayersService.java` (add @Transactional if mutating)
-3. Add endpoint to `PlayersController.java` (use @RestController, OpenAPI annotations)
-4. Add integration test in `/src/test/java/.../controllers/PlayersControllerTests.java`
-5. Ensure proper HTTP status codes (200/201/204/404/409) and `ResponseEntity<T>`
-6. Run `./mvnw clean test` to verify all tests pass
+1. **Define DTO** (if needed) in `models/` with Bean Validation:
+
+   ```java
+   @Data
+   @Builder
+   public class PlayerStatsDTO {
+       @NotNull private Integer wins;
+       @NotNull private Integer losses;
+   }
+   ```
+
+2. **Add service method** in `services/PlayersService.java`:
+
+   ```java
+   @Transactional(readOnly = true)
+   public PlayerStatsDTO getPlayerStats(Long id) {
+       Player player = repository.findById(id)
+           .orElseThrow(() -> new ResourceNotFoundException(...));
+       // Business logic
+       return PlayerStatsDTO.builder()...build();
+   }
+   ```
+
+3. **Create controller endpoint** in `controllers/PlayersController.java`:
+
+   ```java
+   @Operation(summary = "Get player statistics")
+   @GetMapping("/{id}/stats")
+   public ResponseEntity<PlayerStatsDTO> getPlayerStats(@PathVariable Long id) {
+       return ResponseEntity.ok(service.getPlayerStats(id));
+   }
+   ```
+
+4. **Add tests** in `test/controllers/PlayersControllerTests.java`:
+
+   ```java
+   @Test
+   void getPlayerStats_playerExists_returnsStats() {
+       // Given/When/Then with MockMvc
+   }
+   ```
+
+5. **Validate**: Run `./mvnw clean test jacoco:report` - all tests pass, coverage maintained
 
 ### Modifying database schema
 
-1. Update `Player.java` entity (JPA annotations: @Column, @Id, etc.)
-2. Update `PlayerDTO.java` to match (add validation: @NotNull, @Size, etc.)
-3. Update fake data generators in `/src/test/java/.../test/` (PlayerFakes, PlayerDTOFakes)
-4. **Important**: SQLite schema NOT auto-generated (spring.jpa.hibernate.ddl-auto=none)
-   - For runtime: Manually update `/storage/players-sqlite3.db` or recreate from backup
-   - For tests: Update `/src/test/resources/ddl.sql` and `/src/test/resources/dml.sql`
-5. Add tests for schema changes (repository and service layers)
-6. Update affected services and controllers
-7. Run `./mvnw clean install` to ensure everything compiles and tests pass
+⚠️ **Manual process** (no migrations framework):
+
+1. Update `@Entity` class in `models/Player.java` (add/modify fields)
+2. Update DTOs in `models/PlayerDTO.java` if API contract changes
+3. Manually update `storage/players-sqlite3.db` (SQLite CLI or DB Browser)
+   - Preserve existing 26 players
+   - Or delete and reinitialize from seed data
+4. Update service layer methods in `services/PlayersService.java`
+5. Update repository queries if needed in `repositories/PlayersRepository.java`
+6. Update tests (test data, assertions)
+7. Run `./mvnw clean test` to verify
 
 ### Running tests
 
-- **All tests**: `./mvnw test`
-- **With coverage**: `./mvnw clean test jacoco:report` (view: `open target/site/jacoco/index.html`)
-- **Single test class**: `./mvnw test -Dtest=PlayersControllerTests`
-- **Single test method**: `./mvnw test -Dtest=PlayersControllerTests#givenPlayersExist_whenGetAll_thenReturnsOkWithAllPlayers`
-- **Integration tests require**: In-memory SQLite (automatic, no docker needed)
-- **Full CI pipeline locally**: `./mvnw clean install` (compile + test + package + jacoco)
+```bash
+# All tests
+./mvnw test
 
-### Running the application
+# With coverage report (matches CI)
+./mvnw clean test jacoco:report
 
-1. **Local development**: `./mvnw spring-boot:run` (with auto-reload via Spring Boot DevTools)
-2. **Packaged JAR**: `./mvnw clean package && java -jar target/java.samples.spring.boot-*.jar`
-3. **Docker**: `docker compose up` (or `docker compose up -d` for background)
-4. **Application URLs**:
-   - API: `http://localhost:9000/players`
-   - Swagger: `http://localhost:9000/swagger/index.html`
-   - Health: `http://localhost:9001/actuator/health`
+# View coverage in browser
+open target/site/jacoco/index.html
 
-### Adding a search/query endpoint
+# Specific test class
+./mvnw test -Dtest=PlayersControllerTests
 
-1. Add repository method in `PlayersRepository.java`:
-   - Derived query: `Optional<Player> findBySquadNumber(Integer squadNumber);`
-   - Custom JPQL: `@Query("SELECT p FROM Player p WHERE ...") List<Player> customQuery(...);`
-2. Add service method in `PlayersService.java` (add @Cacheable if appropriate)
-3. Add controller endpoint with OpenAPI annotations
-4. Add integration test in `PlayersControllerTests.java`
-5. Run tests: `./mvnw clean test`
+# Specific test method
+./mvnw test -Dtest=PlayersControllerTests#post_validPlayer_returnsCreated
 
-### Fixing a bug or adding validation
+# Verbose output for debugging
+./mvnw test -X
+```
 
-1. Identify the layer (controller, service, repository, model)
-2. Write a failing test first (TDD approach)
-3. Implement fix in the appropriate layer
-4. Ensure test passes and coverage is maintained
-5. Check side effects: `./mvnw clean install`
-6. Review JaCoCo report: `open target/site/jacoco/index.html`
+## Autonomy Levels
 
-### Troubleshooting common issues
+### Proceed freely
 
-**Port already in use (9000)**:
+- Route handlers and controller endpoints (following Spring patterns)
+- Service layer business logic
+- Repository custom queries (derived or `@Query`)
+- Unit and integration tests (maintain naming convention)
+- Exception handling in `@ControllerAdvice`
+- Documentation updates (README, JavaDoc, OpenAPI)
+- Bug fixes in business logic
+- Refactoring within existing layers
+- Utility classes and helper methods
+
+### Ask before changing
+
+- Database schema (entity fields, relationships)
+- Dependencies (`pom.xml` - adding new libraries)
+- CI/CD configuration (`.github/workflows/maven.yml`)
+- Docker setup (`Dockerfile`, `compose.yaml`)
+- Application properties (`application.properties` - global config)
+- API contracts (breaking changes to DTOs)
+- Security configuration
+- Caching strategy or TTL values
+- Package structure reorganization
+
+### Never modify
+
+- Production configurations
+- Deployment secrets or credentials
+- `.java-version` (JDK 25 required)
+- Maven wrapper scripts (`mvnw`, `mvnw.cmd`)
+- Core architectural patterns (layered architecture)
+- Test database configuration (in-memory SQLite)
+- Port configuration (9000/9001 without discussion)
+
+## Pre-commit Checks
+
+1. **Build**: `./mvnw clean install` - must pass without errors
+2. **Tests**: All tests pass (included in `clean install`)
+3. **Coverage**: Check `target/site/jacoco/index.html` - maintain existing levels
+4. **No warnings**: Compilation completes without warnings
+5. **Commit format**: `type(scope): description (#issue)` (max 80 chars, commitlint validates)
+6. **Code style**: Follow conventions (Lombok, constructor injection, etc.)
+
+**CI validation**: Push triggers GitHub Actions (`.github/workflows/maven.yml`):
+
+- Lint commit messages (commitlint)
+- Build: `./mvnw clean install`
+- Test coverage upload to Codecov
+
+## API Testing
+
+```bash
+# Health check
+curl http://localhost:9001/actuator/health
+
+# Get all players
+curl http://localhost:9000/players
+
+# Get player by ID
+curl http://localhost:9000/players/1
+
+# Search by league
+curl http://localhost:9000/players/search/league/Premier
+
+# Create player
+curl -X POST http://localhost:9000/players \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"Lionel","lastName":"Messi",...}'
+
+# Swagger UI (recommended)
+http://localhost:9000/swagger/index.html
+```
+
+## Troubleshooting
+
+### Port 9000 in use
 
 ```bash
 lsof -ti:9000 | xargs kill -9
 ```
 
-**Maven dependency issues**:
+### Maven dependency issues
 
 ```bash
-./mvnw clean install -U  # Force update dependencies
+./mvnw clean install -U          # Force update
+rm -rf ~/.m2/repository          # Nuclear option
 ```
 
-**Database locked errors**:
+### Database locked
 
 ```bash
-pkill -f "spring-boot:run"  # Stop all instances
-rm storage/players-sqlite3.db  # Reset database (WARNING: see schema notes above)
+pkill -f "spring-boot:run"       # Stop all instances
+rm storage/players-sqlite3.db    # Reset (WARNING: loses data)
 ```
 
-**Compilation errors**:
+### Test failures
 
 ```bash
-java --version  # Verify Java 25
-./mvnw clean compile  # Clean rebuild
+./mvnw test -X -Dtest=PlayersControllerTests#specific_test
 ```
 
-**Test failures**:
+---
 
-```bash
-./mvnw test -X -Dtest=FailingTestClass  # Verbose output for debugging
-```
-
-**Docker issues**:
-
-```bash
-docker compose down -v && docker compose build --no-cache && docker compose up
-```
-
-## Autonomy Levels
-
-### Proceed freely (no approval needed)
-
-- Add new REST endpoints (GET, POST, PUT, DELETE)
-- Add service layer methods (with @Transactional where needed)
-- Add repository queries (derived or custom JPQL)
-- Write unit and integration tests
-- Add or modify DTOs (with validation annotations)
-- Fix bugs in controllers, services, or repositories
-- Update JavaDoc and inline comments
-- Add Lombok annotations to reduce boilerplate
-- Add OpenAPI/Swagger annotations
-- Refactor code within existing patterns (e.g., extract method, rename variables)
-- Update README or documentation files
-- Add logging statements (using SLF4J)
-
-### Ask before changing
-
-- Database schema modifications (entity field changes, new tables)
-  - Must update both `/storage/players-sqlite3.db` AND `/src/test/resources/ddl.sql`
-  - Schema is NOT auto-generated (spring.jpa.hibernate.ddl-auto=none)
-- Maven dependencies in `pom.xml` (new libraries, version upgrades)
-- Docker configuration (`Dockerfile`, `compose.yaml`)
-- CI/CD workflows (`.github/workflows/maven.yml`)
-- Spring Boot configuration (`application.properties`, major setting changes)
-- Caching strategy changes (TTL, cache names, eviction policies)
-- Adding new architectural layers or patterns (e.g., event system, message queue)
-- Changing test framework or runner configuration
-- Major refactorings that span multiple layers
-
-### Never modify without explicit permission
-
-- `.env` files (if present)
-- Production configurations
-- Deployment secrets or credentials
-- Git hooks or repository settings
-- License files (`LICENSE`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`)
-- Existing seed data in `/storage/players-sqlite3.db` (can read, but don't overwrite)
-
-## Pre-commit Checks
-
-Before committing code, ensure these pass:
-
-1. **Full build**: `./mvnw clean install`
-   - Compiles all code without warnings
-   - All tests pass (unit + integration)
-   - JaCoCo coverage report generated
-
-2. **Code coverage**: `open target/site/jacoco/index.html`
-   - Maintain or improve existing coverage levels
-   - New code should have corresponding tests
-
-3. **Commit message format**: `type(scope): description (#issue)`
-   - Valid types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`
-   - Max 80 characters
-   - Example: `feat(api): add squad number search endpoint (#123)`
-   - Enforced by commitlint in CI
-
-4. **No compilation warnings**: Code must compile cleanly
-
-5. **Manual smoke test** (optional but recommended):
-   - Start app: `./mvnw spring-boot:run`
-   - Test endpoint in Swagger UI: `http://localhost:9000/swagger/index.html`
-   - Verify health endpoint: `http://localhost:9001/actuator/health`
-
-## Cross-repo Context
-
-This repository is part of a larger "samples" project demonstrating the same REST API pattern across multiple technology stacks. Other implementations include Node.js/Express, Python/Flask, C#/.NET, Go, Rust, etc.
-
-**Consistency requirements**:
-
-- Same API contract (endpoints, request/response formats)
-- Same domain model (Player entity with identical fields)
-- Same seed data (21 football players)
-- Similar layered architecture (Controller → Service → Repository)
-- Equivalent test coverage and structure
-
-**When making changes**, consider:
-
-- Is this change relevant to all stack implementations?
-- Should this pattern be documented for reuse in other stacks?
-- Does this maintain the learning-first philosophy of the project?
+For quick reference and code conventions, see `.github/copilot-instructions.md` (auto-loaded).
