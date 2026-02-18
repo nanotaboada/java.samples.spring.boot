@@ -43,7 +43,7 @@ http://localhost:9001/actuator/health       # Health check
 - **Validation**: Bean Validation annotations in DTOs (`@NotNull`, `@Min`, etc.)
 - **Caching**: Spring `@Cacheable` on service layer (1-hour TTL)
 - **DTO Pattern**: ModelMapper for entity ↔ DTO transformations
-- **Repository**: Spring Data JPA with derived queries and custom JPQL
+- **Repository**: Spring Data JPA with derived queries (prefer over custom JPQL)
 
 ## Code Conventions
 
@@ -67,21 +67,21 @@ http://localhost:9001/actuator/health       # Health check
 ## Testing
 
 - **Structure**: `*Tests.java` in `src/test/java/` (mirrors main package structure)
-- **Naming Pattern**: `method_scenario_outcome`
-  - `method`: Method under test (e.g., `post`, `findById`, `create`)
-  - `scenario`: Context (e.g., `playerExists`, `invalidData`, `noMatches`)
-  - `outcome`: Expected result (e.g., `returnsPlayer`, `returnsConflict`, `returnsEmpty`)
+- **Naming Pattern**: `givenX_whenY_thenZ` (BDD Given-When-Then)
+  - `given`: Preconditions/context (e.g., `givenPlayerExists`, `givenInvalidData`, `givenNoMatches`)
+  - `when`: Action being tested (e.g., `whenPost`, `whenFindById`, `whenCreate`)
+  - `then`: Expected outcome (e.g., `thenReturnsPlayer`, `thenReturnsConflict`, `thenReturnsEmpty`)
 - **Examples**:
 
   ```java
   // Controller
-  void post_squadNumberExists_returnsConflict()
+  void givenSquadNumberExists_whenPost_thenReturnsConflict()
 
   // Service
-  void create_noConflict_returnsPlayerDTO()
+  void givenNoConflict_whenCreate_thenReturnsPlayerDTO()
 
   // Repository
-  void findById_playerExists_returnsPlayer()
+  void givenPlayerExists_whenFindById_thenReturnsPlayer()
   ```
 
 - **JavaDoc**: BDD Given/When/Then structure in test comments
@@ -97,7 +97,7 @@ http://localhost:9001/actuator/health       # Health check
   ```
 
 - **Annotations**: `@SpringBootTest`, `@AutoConfigureMockMvc`, `@Test`
-- **Assertions**: AssertJ (fluent, e.g., `assertThat(result).isNotNull()`)
+- **Assertions**: AssertJ BDD style (e.g., `then(result).isNotNull()`)
 - **Mocking**: Mockito for service layer tests
 - **Database**: Tests use in-memory SQLite (auto-cleared after each test)
 - **Coverage**: Target high coverage (JaCoCo reports in `target/site/jacoco/`)
