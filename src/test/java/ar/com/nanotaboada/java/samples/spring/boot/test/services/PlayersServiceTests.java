@@ -159,7 +159,6 @@ class PlayersServiceTests {
         List<PlayerDTO> actual = playersService.retrieveAll();
         // Then
         verify(playersRepositoryMock, times(1)).findAll();
-        then(actual).hasSize(26);
         then(actual).usingRecursiveComparison().isEqualTo(dtos);
     }
 

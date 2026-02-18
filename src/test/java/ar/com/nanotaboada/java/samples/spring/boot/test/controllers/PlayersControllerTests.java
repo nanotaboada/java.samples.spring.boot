@@ -184,7 +184,6 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).retrieveAll();
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).hasSize(26);
         then(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
@@ -331,7 +330,6 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).searchByLeague(any());
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).hasSize(7);
         then(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 

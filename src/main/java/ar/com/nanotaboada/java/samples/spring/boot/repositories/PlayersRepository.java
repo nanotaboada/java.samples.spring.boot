@@ -24,8 +24,8 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
  *
  * <h3>Query Strategies:</h3>
  * <ul>
- * <li><b>@Query:</b> Explicit JPQL for complex searches (findByLeagueContainingIgnoreCase)</li>
- * <li><b>Method Names:</b> Spring Data derives queries from method names (Query Creation)</li>
+ * <li><b>Derived Queries:</b> Spring Data derives queries from method names (findBySquadNumber,
+ * findByLeagueContainingIgnoreCase)</li>
  * </ul>
  *
  * @see Player
@@ -55,7 +55,7 @@ public interface PlayersRepository extends JpaRepository<Player, Long> {
     /**
      * Finds players by league name using case-insensitive wildcard matching.
      * <p>
-     * This method uses a custom JPQL query with LIKE operator for partial matches.
+     * This method uses Spring Data's derived query mechanism to perform partial matching.
      * For example, searching for "Premier" will match "Premier League".
      * </p>
      *
