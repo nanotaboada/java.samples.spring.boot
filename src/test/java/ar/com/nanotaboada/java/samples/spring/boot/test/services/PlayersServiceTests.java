@@ -293,8 +293,9 @@ class PlayersServiceTests {
         // Then
         verify(playersRepositoryMock, times(1)).findByLeagueContainingIgnoreCase(any());
         then(actual)
-                .hasSize(7)
-                .allSatisfy(dto -> then(dto.getLeague()).contains(league));
+                .hasSize(expected.size())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     /**
