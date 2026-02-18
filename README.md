@@ -243,10 +243,10 @@ open target/site/jacoco/index.html
 - **Test Database** - SQLite in-memory (jdbc:sqlite::memory:) for fast, isolated test execution
 - **Mocking** - Mockito with `@MockitoBean` for dependency mocking
 - **Assertions** - AssertJ fluent assertions
-- **Naming Convention** - `method_scenario_outcome` pattern:
-  - `getAll_playersExist_returnsOkWithAllPlayers()`
-  - `post_squadNumberExists_returnsConflict()`
-  - `findById_playerExists_returnsPlayer()`
+- **Naming Convention** - `givenX_whenY_thenZ` BDD pattern:
+  - `givenPlayersExist_whenGetAll_thenReturnsOkWithAllPlayers()`
+  - `givenSquadNumberExists_whenPost_thenReturnsConflict()`
+  - `givenPlayerExists_whenFindById_thenReturnsPlayer()`
 
 **Coverage Targets:**
 

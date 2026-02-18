@@ -89,7 +89,7 @@ class PlayersServiceTests {
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
         Integer expectedSquadNumber = 10;
         Player existingPlayer = PlayerFakes.createAll().stream()
-                .filter(player -> player.getSquadNumber() == expectedSquadNumber)
+                .filter(player -> expectedSquadNumber.equals(player.getSquadNumber()))
                 .findFirst()
                 .orElseThrow();
         Mockito
@@ -159,7 +159,7 @@ class PlayersServiceTests {
         List<PlayerDTO> actual = playersService.retrieveAll();
         // Then
         verify(playersRepositoryMock, times(1)).findAll();
-        then(actual).hasSize(26);
+        then(actual).usingRecursiveComparison().isEqualTo(dtos);
     }
 
     /**
@@ -216,11 +216,11 @@ class PlayersServiceTests {
         // Given
         Integer squadNumber = 10;
         Player entity = PlayerFakes.createAll().stream()
-                .filter(player -> player.getSquadNumber() == squadNumber)
+                .filter(player -> squadNumber.equals(player.getSquadNumber()))
                 .findFirst()
                 .orElseThrow();
         PlayerDTO expected = PlayerDTOFakes.createAll().stream()
-                .filter(player -> player.getSquadNumber() == squadNumber)
+                .filter(player -> squadNumber.equals(player.getSquadNumber()))
                 .findFirst()
                 .orElseThrow();
         Mockito

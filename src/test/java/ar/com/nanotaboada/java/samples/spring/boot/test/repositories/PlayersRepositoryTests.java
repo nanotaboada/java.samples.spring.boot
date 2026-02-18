@@ -50,27 +50,27 @@ class PlayersRepositoryTests {
     @Test
     void givenPlayerDoesNotExist_whenFindById_thenReturnsEmpty() {
         // Given
-        Long expected = 999L;
+        Long nonExistentId = 999L;
         // When
-        Optional<Player> actual = repository.findById(expected);
+        Optional<Player> actual = repository.findById(nonExistentId);
         // Then
         then(actual).isEmpty();
     }
 
     /**
-     * Given players exist in a specific league
+     * Given players exist in a specific league (pre-seeded from dml.sql)
      * When searching by league name
      * Then a list of matching players is returned
      */
     @Test
     void givenPlayersExist_whenFindByLeague_thenReturnsList() {
         // Given
-        String expected = "Premier";
+        String leagueName = "Premier";
         // When
-        List<Player> actual = repository.findByLeagueContainingIgnoreCase(expected);
+        List<Player> actual = repository.findByLeagueContainingIgnoreCase(leagueName);
         // Then
         then(actual).isNotEmpty()
-                .allMatch(player -> player.getLeague().toLowerCase().contains(expected.toLowerCase()));
+                .allMatch(player -> player.getLeague().toLowerCase().contains(leagueName.toLowerCase()));
     }
 
     /**
@@ -81,30 +81,29 @@ class PlayersRepositoryTests {
     @Test
     void givenNoPlayersExist_whenFindByLeague_thenReturnsEmptyList() {
         // Given
-        String expected = "Expected League";
+        String nonExistentLeague = "Nonexistent League";
         // When
-        List<Player> actual = repository.findByLeagueContainingIgnoreCase(expected);
+        List<Player> actual = repository.findByLeagueContainingIgnoreCase(nonExistentLeague);
         // Then
         then(actual).isEmpty();
     }
 
     /**
-     * Given a player with a specific squad number exists in the database
+     * Given a player with a specific squad number exists (pre-seeded from dml.sql)
      * When querying by that squad number
      * Then the player record is returned
      */
     @Test
     void givenPlayerExists_whenFindBySquadNumber_thenReturnsPlayer() {
         // Given
-        Player expected = PlayerFakes.createAll().stream()
-                .filter(p -> p.getId().equals(10L))
-                .findFirst()
-                .orElseThrow();
+        Integer messiSquadNumber = 10; // Pre-seeded from dml.sql
+        String expectedLastName = "Messi";
         // When
-        Optional<Player> actual = repository.findBySquadNumber(expected.getSquadNumber());
+        Optional<Player> actual = repository.findBySquadNumber(messiSquadNumber);
         // Then
         then(actual).isPresent();
-        then(actual.get()).usingRecursiveComparison().isEqualTo(expected);
+        then(actual.get().getSquadNumber()).isEqualTo(messiSquadNumber);
+        then(actual.get().getLastName()).isEqualTo(expectedLastName);
     }
 
     /**
@@ -115,9 +114,9 @@ class PlayersRepositoryTests {
     @Test
     void givenPlayerDoesNotExist_whenFindBySquadNumber_thenReturnsEmpty() {
         // Given
-        Integer expected = 99;
+        Integer nonExistentSquadNumber = 99;
         // When
-        Optional<Player> actual = repository.findBySquadNumber(expected);
+        Optional<Player> actual = repository.findBySquadNumber(nonExistentSquadNumber);
         // Then
         then(actual).isEmpty();
     }

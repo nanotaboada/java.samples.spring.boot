@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.com.nanotaboada.java.samples.spring.boot.controllers.PlayersController;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
-import ar.com.nanotaboada.java.samples.spring.boot.repositories.PlayersRepository;
 import ar.com.nanotaboada.java.samples.spring.boot.services.PlayersService;
 import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerDTOFakes;
 
@@ -49,9 +48,6 @@ class PlayersControllerTests {
 
     @MockitoBean
     private PlayersService playersServiceMock;
-
-    @MockitoBean
-    private PlayersRepository playersRepositoryMock;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -188,7 +184,6 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).retrieveAll();
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).hasSize(26);
         then(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
@@ -257,7 +252,7 @@ class PlayersControllerTests {
         // Given
         Integer squadNumber = 10;
         PlayerDTO expected = PlayerDTOFakes.createAll().stream()
-                .filter(player -> player.getSquadNumber() == squadNumber)
+                .filter(player -> squadNumber.equals(player.getSquadNumber()))
                 .findFirst()
                 .orElseThrow();
         Mockito
@@ -335,7 +330,6 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).searchByLeague(any());
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).hasSize(7);
         then(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
