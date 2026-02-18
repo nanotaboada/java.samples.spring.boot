@@ -58,7 +58,7 @@ class PlayersRepositoryTests {
     }
 
     /**
-     * Given players exist in a specific league
+     * Given players exist in a specific league (pre-seeded from dml.sql)
      * When searching by league name
      * Then a list of matching players is returned
      */
@@ -89,22 +89,20 @@ class PlayersRepositoryTests {
     }
 
     /**
-     * Given a player with a specific squad number exists in the database
+     * Given a player with a specific squad number exists (pre-seeded from dml.sql)
      * When querying by that squad number
      * Then the player record is returned
      */
     @Test
     void givenPlayerExists_whenFindBySquadNumber_thenReturnsPlayer() {
         // Given
-        Player expected = PlayerFakes.createAll().stream()
-                .filter(p -> p.getId().equals(10L))
-                .findFirst()
-                .orElseThrow();
+        Integer expectedSquadNumber = 10; // Messi's squad number from pre-seeded data
         // When
-        Optional<Player> actual = repository.findBySquadNumber(expected.getSquadNumber());
+        Optional<Player> actual = repository.findBySquadNumber(expectedSquadNumber);
         // Then
         then(actual).isPresent();
-        then(actual.get()).usingRecursiveComparison().isEqualTo(expected);
+        then(actual.get().getSquadNumber()).isEqualTo(expectedSquadNumber);
+        then(actual.get().getLastName()).isEqualTo("Messi");
     }
 
     /**

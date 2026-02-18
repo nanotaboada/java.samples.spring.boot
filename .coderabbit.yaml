@@ -84,7 +84,7 @@ reviews:
         - Test classes should use JUnit 5 (Jupiter)
         - Verify proper Spring test annotations (@WebMvcTest, @DataJpaTest, etc.)
         - Check use of @MockitoBean (Spring Boot 4.0 style)
-        - Ensure test naming follows method_scenario_outcome pattern (concise)
+        - Ensure test naming follows givenX_whenY_thenZ BDD pattern
         - Validate BDD semantics in JavaDoc comments (Given/When/Then)
         - Validate use of AssertJ for fluent assertions
         - Check @DisplayName for readable test descriptions

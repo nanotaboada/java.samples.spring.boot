@@ -67,21 +67,21 @@ http://localhost:9001/actuator/health       # Health check
 ## Testing
 
 - **Structure**: `*Tests.java` in `src/test/java/` (mirrors main package structure)
-- **Naming Pattern**: `method_scenario_outcome`
-  - `method`: Method under test (e.g., `post`, `findById`, `create`)
-  - `scenario`: Context (e.g., `playerExists`, `invalidData`, `noMatches`)
-  - `outcome`: Expected result (e.g., `returnsPlayer`, `returnsConflict`, `returnsEmpty`)
+- **Naming Pattern**: `givenX_whenY_thenZ` (BDD Given-When-Then)
+  - `given`: Preconditions/context (e.g., `givenPlayerExists`, `givenInvalidData`, `givenNoMatches`)
+  - `when`: Action being tested (e.g., `whenPost`, `whenFindById`, `whenCreate`)
+  - `then`: Expected outcome (e.g., `thenReturnsPlayer`, `thenReturnsConflict`, `thenReturnsEmpty`)
 - **Examples**:
 
   ```java
   // Controller
-  void post_squadNumberExists_returnsConflict()
+  void givenSquadNumberExists_whenPost_thenReturnsConflict()
 
   // Service
-  void create_noConflict_returnsPlayerDTO()
+  void givenNoConflict_whenCreate_thenReturnsPlayerDTO()
 
   // Repository
-  void findById_playerExists_returnsPlayer()
+  void givenPlayerExists_whenFindById_thenReturnsPlayer()
   ```
 
 - **JavaDoc**: BDD Given/When/Then structure in test comments
