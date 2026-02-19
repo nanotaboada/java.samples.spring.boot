@@ -1,132 +1,124 @@
-# Copilot Instructions
+# GitHub Copilot Instructions
 
-## Project Overview
+## Overview
 
-REST API for managing football players built with Java 25 and Spring Boot 4. Demonstrates layered architecture (Controller → Service → Repository), Spring Data JPA with SQLite, comprehensive validation, caching, and Swagger documentation.
+REST API for managing football players built with Java and Spring Boot. Implements CRUD operations with a layered architecture, Spring Data JPA + SQLite, Bean Validation, Spring Cache, and Swagger documentation. Part of a cross-language comparison study (.NET, Go, Python, Rust, TypeScript).
 
-## Quick Start
+## Tech Stack
 
-```bash
-# Development
-./mvnw spring-boot:run                      # Run with hot reload (port 9000)
-./mvnw clean test                           # Run tests
-./mvnw clean test jacoco:report             # Test with coverage
+- **Language**: Java 25 (LTS, required)
+- **Framework**: Spring Boot 4.0.0 (Spring MVC)
+- **ORM**: Spring Data JPA + Hibernate
+- **Database**: SQLite (file-based runtime, in-memory for tests)
+- **Build**: Maven 3 — always use `./mvnw` wrapper
+- **Validation**: Bean Validation (JSR-380)
+- **Caching**: Spring `@Cacheable` (1-hour TTL)
+- **Mapping**: ModelMapper
+- **Logging**: SLF4J
+- **Testing**: JUnit 5 + AssertJ + MockMvc + Mockito
+- **Coverage**: JaCoCo
+- **API Docs**: SpringDoc OpenAPI 3 (Swagger)
+- **Boilerplate**: Lombok
+- **Containerization**: Docker
 
-# Docker
-docker compose up                           # Start in container
-docker compose down -v                      # Reset database
+## Structure
 
-# Documentation
-http://localhost:9000/swagger/index.html    # API docs
-http://localhost:9001/actuator/health       # Health check
+```text
+src/main/java/
+├── controllers/        — HTTP handlers; delegate to services, no business logic        [HTTP layer]
+├── services/           — Business logic + @Cacheable caching                           [business layer]
+├── repositories/       — Spring Data JPA with derived queries                          [data layer]
+├── models/             — Player entity + DTOs
+└── converters/         — ModelMapper entity ↔ DTO transformations
+src/main/resources/     — application.properties, Logback config
+src/test/java/          — test classes mirroring main structure
+src/test/resources/     — test config, schema (ddl.sql), seed data (dml.sql)
+storage/                — SQLite database file (runtime)
 ```
 
-## Stack
+**Layer rule**: `Controller → Service → Repository → JPA`. Controllers must not access repositories directly. Business logic must not live in controllers.
 
-- Java 25 (LTS, required)
-- Spring Boot 4.0.0 (Spring MVC)
-- Spring Data JPA + Hibernate
-- SQLite (file-based runtime, in-memory tests)
-- Maven 3 (use `./mvnw` wrapper)
-- Bean Validation (JSR-380)
-- Spring Cache (1-hour TTL)
-- JUnit 5 + AssertJ + MockMvc
-- JaCoCo (coverage)
-- SpringDoc OpenAPI 3 (Swagger)
-- Lombok (boilerplate reduction)
-
-## Project Patterns
-
-- **Architecture**: Layered (Controller → Service → Repository → JPA)
-- **Dependency Injection**: Constructor injection via Lombok `@RequiredArgsConstructor`
-- **Error Handling**: `@ControllerAdvice` for global exception handling
-- **Validation**: Bean Validation annotations in DTOs (`@NotNull`, `@Min`, etc.)
-- **Caching**: Spring `@Cacheable` on service layer (1-hour TTL)
-- **DTO Pattern**: ModelMapper for entity ↔ DTO transformations
-- **Repository**: Spring Data JPA with derived queries (prefer over custom JPQL)
-
-## Code Conventions
+## Coding Guidelines
 
 - **Naming**: camelCase (methods/variables), PascalCase (classes), UPPER_SNAKE_CASE (constants)
-- **Files**: Class name matches file name (e.g., `PlayersController.java`)
-- **Package Structure**:
-  - `controllers/` - REST endpoints (`@RestController`)
-  - `services/` - Business logic (`@Service`)
-  - `repositories/` - Data access (`@Repository`, extends `JpaRepository`)
-  - `models/` - Domain entities (`@Entity`) and DTOs
-  - `converters/` - JPA attribute converters
-- **Annotations**:
-  - Controllers: `@RestController`, `@RequestMapping`, `@Operation` (OpenAPI)
-  - Services: `@Service`, `@Transactional`, `@Cacheable`
-  - Repositories: `@Repository` (Spring Data JPA)
-  - DTOs: `@NotNull`, `@Min`, `@Max` (Bean Validation)
-  - Entities: `@Entity`, `@Table`, `@Id`, `@GeneratedValue`
-- **Lombok**: `@Data`, `@Builder`, `@AllArgsConstructor`, `@RequiredArgsConstructor`
-- **Logging**: SLF4J (never `System.out.println`)
+- **Files**: class name matches file name
+- **DI**: Constructor injection via Lombok `@RequiredArgsConstructor`; never field injection
+- **Annotations**: `@RestController`, `@Service`, `@Repository`, `@Entity`, `@Data`/`@Builder`/`@AllArgsConstructor` (Lombok)
+- **Transactions**: `@Transactional(readOnly = true)` on read service methods; `@Transactional` on writes
+- **Errors**: `@ControllerAdvice` for global exception handling
+- **Logging**: SLF4J only; never `System.out.println`
+- **DTOs**: Never expose entities directly in controllers — always use DTOs
+- **Tests**: BDD Given-When-Then naming (`givenX_whenY_thenZ`); AssertJ BDD style (`then(result).isNotNull()`); in-memory SQLite auto-clears after each test
+- **Avoid**: field injection, `new` for Spring beans, missing `@Transactional`, exposing entities in controllers, hardcoded configuration
 
-## Testing
+## Commands
 
-- **Structure**: `*Tests.java` in `src/test/java/` (mirrors main package structure)
-- **Naming Pattern**: `givenX_whenY_thenZ` (BDD Given-When-Then)
-  - `given`: Preconditions/context (e.g., `givenPlayerExists`, `givenInvalidData`, `givenNoMatches`)
-  - `when`: Action being tested (e.g., `whenPost`, `whenFindById`, `whenCreate`)
-  - `then`: Expected outcome (e.g., `thenReturnsPlayer`, `thenReturnsConflict`, `thenReturnsEmpty`)
-- **Examples**:
+### Quick Start
 
-  ```java
-  // Controller
-  void givenSquadNumberExists_whenPost_thenReturnsConflict()
+```bash
+./mvnw spring-boot:run                  # port 9000
+./mvnw clean test                       # run tests
+./mvnw clean test jacoco:report         # tests + coverage
+open target/site/jacoco/index.html      # view coverage report
+docker compose up
+docker compose down -v
+```
 
-  // Service
-  void givenNoConflict_whenCreate_thenReturnsPlayerDTO()
+### Pre-commit Checks
 
-  // Repository
-  void givenPlayerExists_whenFindById_thenReturnsPlayer()
-  ```
+1. `./mvnw clean install` — must succeed
+2. All tests pass
+3. Check coverage at `target/site/jacoco/index.html`
+4. No compilation warnings
+5. Commit message follows Conventional Commits format (enforced by commitlint)
 
-- **JavaDoc**: BDD Given/When/Then structure in test comments
+### Commits
 
-  ```java
-  /**
-   * Given a player with squad number 5 already exists in the database
-   * When POST /players is called with a new player using squad number 5
-   * Then response status is 409 Conflict
-   */
-  @Test
-  void post_squadNumberExists_returnsConflict() { ... }
-  ```
+Format: `type(scope): description (#issue)` — max 80 chars
+Types: `feat` `fix` `chore` `docs` `test` `refactor` `ci` `perf`
+Example: `feat(api): add player stats endpoint (#42)`
 
-- **Annotations**: `@SpringBootTest`, `@AutoConfigureMockMvc`, `@Test`
-- **Assertions**: AssertJ BDD style (e.g., `then(result).isNotNull()`)
-- **Mocking**: Mockito for service layer tests
-- **Database**: Tests use in-memory SQLite (auto-cleared after each test)
-- **Coverage**: Target high coverage (JaCoCo reports in `target/site/jacoco/`)
+## Agent Mode
 
-## Avoid
+### Proceed freely
 
-- Field injection (use constructor injection)
-- Using `new` for Spring beans (breaks DI)
-- Missing `@Transactional` on service methods that modify data
-- Exposing entities directly in controllers (use DTOs)
-- `System.out.println` (use SLF4J logging)
-- Hardcoded configuration (use `@Value` or `application.properties`)
-- Ignoring exceptions (always handle or propagate)
-- Testing implementation details (test behavior, not internals)
+- Route handlers and controller endpoints
+- Service layer business logic
+- Repository custom queries
+- Unit and integration tests
+- Exception handling in `@ControllerAdvice`
+- Documentation updates, bug fixes, and refactoring
+- Utility classes and helpers
 
-## Commit Messages
+### Ask before changing
 
-Follow Conventional Commits format (enforced by commitlint in CI):
+- Database schema (entity fields, relationships)
+- Dependencies (`pom.xml`)
+- CI/CD configuration (`.github/workflows/`)
+- Docker setup
+- Application properties
+- API contracts (breaking DTO changes)
+- Caching strategy or TTL values
+- Package structure
 
-**Format**: `type(scope): description (#issue)` (max 80 chars)
+### Never modify
 
-**Types**: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`, `perf`, `style`, `build`
+- `.java-version` (JDK 25 required)
+- Maven wrapper scripts (`mvnw`, `mvnw.cmd`)
+- Port configuration (9000/9001)
+- Test database configuration (in-memory SQLite)
+- Production configurations or deployment secrets
 
-**Examples**:
+### Key workflows
 
-- `feat(api): add player stats endpoint (#42)`
-- `fix(service): resolve cache invalidation bug (#88)`
-- `test: adopt BDD Given-When-Then pattern across all tests (#266)`
+**Add an endpoint**: Define DTO in `models/` with Bean Validation → add service method in `services/` with `@Transactional` → create controller endpoint with `@Operation` annotation → add tests → run `./mvnw clean test jacoco:report`.
 
----
+**Modify schema**: Update `@Entity` in `models/Player.java` → update DTOs if API changes → manually update `storage/players-sqlite3.db` (preserve 26 players) → update service, repository, and tests → run `./mvnw clean test`.
 
-For detailed workflows, troubleshooting, and CI/CD setup, load `#file:AGENTS.md`.
+**After completing work**: Suggest a branch name (e.g. `feat/add-player-stats`) and a commit message following Conventional Commits including co-author line:
+
+```text
+feat(scope): description (#issue)
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+```
