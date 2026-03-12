@@ -25,7 +25,7 @@
 
     <properties>
         <java.version>25</java.version>
-        <lombok.version>1.18.42</lombok.version>
+        <lombok.version>1.18.44</lombok.version>
     </properties>
 
     <dependencies>
