@@ -1,6 +1,7 @@
 # 🧪 RESTful API with Java and Spring Boot
 
 [![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml)
+[![CodeQL Advanced](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/codeql.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/codeql.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_java.samples.spring.boot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_java.samples.spring.boot)
 [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
@@ -47,7 +48,7 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 ## Tech Stack
 
 | Component | Technology |
-|-----------|------------|
+| --------- | ---------- |
 | **Framework** | [Spring Boot](https://github.com/spring-projects/spring-boot) 4.0.0 |
 | **Runtime** | [Java](https://github.com/openjdk/jdk) (JDK 25 LTS) |
 | **Build Tool** | [Maven](https://github.com/apache/maven) |
@@ -64,7 +65,7 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 
 ## Project Structure
 
-```
+```tree
 src/main/java/ar/com/nanotaboada/java/samples/spring/boot/
 ├── Application.java              # Main entry point, @SpringBootApplication
 ├── controllers/                  # REST endpoints (@RestController)
@@ -313,7 +314,7 @@ springdoc.api-docs.path=/v3/api-docs
 springdoc.swagger-ui.path=/swagger/index.html
 ```
 
-### Testing
+### Testing (Local)
 
 Configuration in `src/test/resources/application.properties`:
 
@@ -330,7 +331,7 @@ spring.jpa.hibernate.ddl-auto=create-drop
 ## Command Summary
 
 | Command | Description |
-|---------|-------------|
+| ------- | ----------- |
 | `./mvnw clean compile` | Clean and compile the project |
 | `./mvnw test` | Run tests without coverage |
 | `./mvnw verify` | Run tests with JaCoCo coverage |
