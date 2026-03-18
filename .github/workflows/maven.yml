@@ -52,7 +52,7 @@ jobs:
                   name: jacoco.xml
 
             - name: Upload JaCoCo coverage report to Codecov
-              uses: codecov/codecov-action@v5.5.2
+              uses: codecov/codecov-action@v5.5.3
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: jacoco.xml
