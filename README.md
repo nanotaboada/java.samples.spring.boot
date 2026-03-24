@@ -5,7 +5,10 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_java.samples.spring.boot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_java.samples.spring.boot)
 [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot/badge)](https://www.codefactor.io/repository/github/nanotaboada/java.samples.spring.boot)
-[![License: MIT](https://img.shields.io/badge/License-MIT-white.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-3DA639.svg)](https://opensource.org/licenses/MIT)
+![Dependabot](https://img.shields.io/badge/Dependabot-contributing-025E8C?logo=dependabot&logoColor=white&labelColor=181818)
+![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-contributing-8662C5?logo=githubcopilot&logoColor=white&labelColor=181818)
+![Claude](https://img.shields.io/badge/Claude-Sonnet_4.6-D97757?logo=claude&logoColor=white&labelColor=181818)
 
 Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targeting **JDK 25 (LTS)**. This project demonstrates best practices for building a layered, testable, and maintainable API implementing CRUD operations for a Players resource (Argentina 2022 FIFA World Cup squad).
 
@@ -15,7 +18,7 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
+- [API Reference](#api-reference)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
   - [Clone](#clone)
@@ -23,7 +26,7 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
   - [Run](#run)
   - [Access](#access)
 - [Testing](#testing)
-- [Docker](#docker)
+- [Containers](#containers)
   - [Build and Start](#build-and-start)
   - [Stop](#stop)
   - [Reset Database](#reset-database)
@@ -90,80 +93,121 @@ src/test/java/.../test/
 
 ## Architecture
 
+Layered architecture with dependency injection via Spring Boot's IoC container and constructor injection using Lombok's `@RequiredArgsConstructor`.
+
 ```mermaid
+
 %%{init: {
   "theme": "default",
   "themeVariables": {
     "fontFamily": "Fira Code, Consolas, monospace",
     "textColor": "#555",
     "lineColor": "#555",
-    "lineWidth": 2
+    "clusterBkg": "#f5f5f5",
+    "clusterBorder": "#ddd"
   }
 }}%%
 
-graph BT
-    %% Core Layers
-    models[models]
-    repositories[repositories]
-    services[services]
-    controllers[controllers]
+graph RL
 
-    %% Framework Features
-    SpringBoot[Spring Boot]
-    SpringDataJPA[Spring Data JPA]
-    SpringCache[Spring Cache]
-    SpringValidation[Spring Validation]
-
-    %% External Dependencies
-    ProjectLombok[Lombok]
-    JakartaPersistence[Jakarta Persistence]
-    ModelMapper[ModelMapper]
-    SpringDoc[SpringDoc]
-
-    %% Tests
     tests[tests]
 
-    %% Main Application Flow
-    models --> repositories
-    models --> services
-    models --> controllers
-    repositories --> services
-    services --> controllers
+    subgraph Layer1[" "]
+        Application[Application]
+        SpringBoot[Spring Boot]
+        SpringDoc[SpringDoc]
+    end
 
-    %% Framework Features connections
-    SpringBoot --> controllers
-    SpringBoot --> services
-    SpringBoot --> repositories
-    SpringDataJPA --> repositories
-    SpringCache --> services
+    subgraph Layer2[" "]
+        controllers[controllers]
+        SpringValidation[Spring Validation]
+    end
+
+    subgraph Layer3[" "]
+        services[services]
+        ModelMapper[ModelMapper]
+        SpringCache[Spring Cache]
+    end
+
+    subgraph Layer4[" "]
+        repositories[repositories]
+        SpringDataJPA[Spring Data JPA]
+    end
+
+    models[models]
+    JakartaPersistence[Jakarta Persistence]
+    ProjectLombok[Lombok]
+
+    %% Strong dependencies
+
+    %% Layer 1
+    SpringBoot --> Application
+    SpringDoc --> Application
+    controllers --> Application
+    services --> Application
+    repositories --> Application
+
+    %% Layer 2
     SpringValidation --> controllers
+    services --> controllers
+    models --> controllers
 
-    %% External Dependencies connections
-    JakartaPersistence --> models
-    ProjectLombok --> models
+    %% Layer 3
+    SpringCache --> services
     ModelMapper --> services
-    SpringDoc --> controllers
+    repositories --> services
+    models --> services
 
-    %% Tests connection (dotted)
+    %% Layer 4
+    SpringDataJPA --> repositories
+    models --> repositories
+
+    %% Soft dependencies
+
     controllers -.-> tests
     services -.-> tests
     repositories -.-> tests
 
-    %% Styling
+    %% Cross-cutting
+
+    JakartaPersistence --> models
+    ProjectLombok --> models
+
+    %% Node styling with stroke-width
     classDef core fill:#b3d9ff,stroke:#6db1ff,stroke-width:2px,color:#555,font-family:monospace;
     classDef feat fill:#ffffcc,stroke:#fdce15,stroke-width:2px,color:#555,font-family:monospace;
     classDef deps fill:#ffcccc,stroke:#ff8f8f,stroke-width:2px,color:#555,font-family:monospace;
     classDef test fill:#ccffcc,stroke:#53c45e,stroke-width:2px,color:#555,font-family:monospace;
 
-    class models,repositories,services,controllers core
+    class Application,models,repositories,services,controllers core
     class SpringBoot,SpringDataJPA,SpringCache,SpringValidation feat
     class JakartaPersistence,ProjectLombok,ModelMapper,SpringDoc deps
     class tests test
 ```
 
-_Figure: Core application flow (blue), supporting features (yellow), external dependencies (red), and test coverage (green). Not all dependencies are shown._
+*Simplified, conceptual view — not all components or dependencies are shown.*
 
-## API Endpoints
+### Arrow Semantics
+
+Arrows follow the injection direction: `A --> B` means A is injected into B. Solid arrows (`-->`) represent active Spring dependencies — beans wired by the IoC container and invoked at runtime. Dotted arrows (`-.->`) represent test dependencies — test classes reference the types they exercise but are not injected into them.
+
+### Composition Root Pattern
+
+`Application` is the composition root: `@SpringBootApplication` triggers component scanning that discovers and registers all beans, `@EnableCaching` activates the caching infrastructure, and `@Bean ModelMapper` declares the mapping dependency explicitly. Constructor injection is enforced throughout via Lombok's `@RequiredArgsConstructor` on `final` fields.
+
+### Layered Architecture
+
+Four layers: Initialization (`Application`), HTTP (`controllers`), Business (`services`), and Data (`repositories`).
+
+Spring and third-party packages are placed inside the subgraph of the layer that uses them — co-residency communicates the relationship without extra arrows: `Spring Boot` and `SpringDoc` in Initialization, `Spring Validation` in HTTP, `Spring Cache` and `ModelMapper` in Business, `Spring Data JPA` in Data.
+
+`models` and `converters` are cross-cutting: `models` defines the JPA entity and DTOs shared across all layers; `converters` holds the `AttributeConverter` that handles ISO-8601 date serialization for `models`. `Jakarta Persistence` and `Lombok` are their respective dependencies. `Lombok` is also used in `services` and `controllers` via `@RequiredArgsConstructor` and `@Slf4j`, though those arrows are omitted for clarity.
+
+### Color Coding
+
+Blue = core application packages, yellow = Spring ecosystem, red = third-party libraries, green = tests.
+
+## API Reference
 
 Interactive API documentation is available via Swagger UI at `http://localhost:9000/swagger/index.html` when the server is running.
 
@@ -172,7 +216,7 @@ Interactive API documentation is available via Swagger UI at `http://localhost:9
 - `GET /players` - List all players
 - `GET /players/{id}` - Get player by ID
 - `GET /players/search/league/{league}` - Search players by league
-- `GET /players/search/squadnumber/{squadNumber}` - Get player by squad number
+- `GET /players/squadnumber/{squadNumber}` - Get player by squad number
 - `POST /players` - Create new player
 - `PUT /players/{id}` - Update existing player
 - `DELETE /players/{id}` - Remove player
@@ -257,7 +301,7 @@ open target/site/jacoco/index.html
 
 > 💡 **Note:** Dates are stored as ISO-8601 strings for SQLite compatibility. A JPA `AttributeConverter` handles LocalDate ↔ ISO-8601 string conversion transparently. Tests use SQLite in-memory database (jdbc:sqlite::memory:) - the converter works seamlessly with both file-based and in-memory SQLite.
 
-## Docker
+## Containers
 
 ### Build and Start
 
@@ -366,4 +410,4 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for det
 
 ## Legal
 
-This project is provided for educational and demonstration purposes and may be used in production environments at your discretion. All referenced trademarks, service marks, product names, company names, and logos are the property of their respective owners and are used solely for identification or illustrative purposes.
+This project is provided for educational and demonstration purposes and may be used in production at your own discretion. All trademarks, service marks, product names, company names, and logos referenced herein are the property of their respective owners and are used solely for identification or illustrative purposes.
