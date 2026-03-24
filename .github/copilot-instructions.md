@@ -12,7 +12,7 @@ REST API for managing football players built with Java and Spring Boot. Implemen
 - **Database**: SQLite (file-based runtime, in-memory for tests)
 - **Build**: Maven 3 — always use `./mvnw` wrapper
 - **Validation**: Bean Validation (JSR-380)
-- **Caching**: Spring `@Cacheable` (1-hour TTL)
+- **Caching**: Spring `@Cacheable` (simple in-memory, no expiry)
 - **Mapping**: ModelMapper
 - **Logging**: SLF4J
 - **Testing**: JUnit 5 + AssertJ + MockMvc + Mockito
@@ -29,7 +29,7 @@ src/main/java/
 ├── services/           — Business logic + @Cacheable caching                           [business layer]
 ├── repositories/       — Spring Data JPA with derived queries                          [data layer]
 ├── models/             — Player entity + DTOs
-└── converters/         — ModelMapper entity ↔ DTO transformations
+└── converters/         — JPA AttributeConverter for ISO-8601 date handling
 src/main/resources/     — application.properties, Logback config
 src/test/java/          — test classes mirroring main structure
 src/test/resources/     — test config, schema (ddl.sql), seed data (dml.sql)
@@ -120,5 +120,5 @@ Example: `feat(api): add player stats endpoint (#42)`
 ```text
 feat(scope): description (#issue)
 
-Co-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>
+Co-authored-by: Claude <noreply@anthropic.com>
 ```
