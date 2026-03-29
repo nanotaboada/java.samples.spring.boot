@@ -100,7 +100,8 @@ jobs:
             - name: Generate changelog
               id: changelog
               run: |
-                  PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${GITHUB_REF#refs/tags/}$" | head -n 1)
+                  CURRENT_TAG="${GITHUB_REF#refs/tags/}"
+                  PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -Fxv "$CURRENT_TAG" | head -n 1)
                   if [ -n "$PREVIOUS_TAG" ]; then
                     CHANGELOG=$(git log "$PREVIOUS_TAG"..HEAD --pretty=format:"- %s" --no-merges)
                   else
