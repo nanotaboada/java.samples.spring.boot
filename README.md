@@ -1,6 +1,6 @@
 # 🧪 RESTful API with Java and Spring Boot
 
-[![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven-ci.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/maven-ci.yml)
 [![CodeQL Advanced](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/codeql.yml/badge.svg)](https://github.com/nanotaboada/java.samples.spring.boot/actions/workflows/codeql.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_java.samples.spring.boot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_java.samples.spring.boot)
 [![codecov](https://codecov.io/gh/nanotaboada/java.samples.spring.boot/branch/master/graph/badge.svg?token=D3FMNG0WOI)](https://codecov.io/gh/nanotaboada/java.samples.spring.boot)
@@ -32,6 +32,7 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
   - [Reset Database](#reset-database)
 - [Environment Variables](#environment-variables)
 - [Command Summary](#command-summary)
+- [Releases](#releases)
 - [Contributing](#contributing)
 - [Legal](#legal)
 
@@ -390,6 +391,92 @@ spring.jpa.hibernate.ddl-auto=create-drop
 | `docker compose logs -f` | View container logs |
 
 > 💡 **Note:** Always use the Maven wrapper (`./mvnw`) instead of system Maven to ensure consistent builds.
+
+## Releases
+
+This project uses **historic football clubs** as release codenames 🏆 (inspired by Ubuntu, Android, and macOS naming conventions).
+
+### Release Naming Convention
+
+Releases follow the pattern: `v{SEMVER}-{CLUB}` (e.g., `v1.0.0-arsenal`)
+
+- **Semantic Version**: Standard versioning (MAJOR.MINOR.PATCH)
+- **Club Name**: Alphabetically ordered codename from the [historic club list](CHANGELOG.md)
+
+### Create a Release
+
+To create a new release, follow this workflow:
+
+#### 1. Create a Release Branch
+
+Branch protection prevents direct pushes to `master`, so all release prep goes through a PR:
+
+```bash
+git checkout master && git pull
+git checkout -b release/v1.0.0-arsenal
+```
+
+#### 2. Update CHANGELOG.md
+
+Move items from `[Unreleased]` to a new release section in [CHANGELOG.md](CHANGELOG.md), then commit and push the branch:
+
+```bash
+# Move items from [Unreleased] to new release section
+# Example: [1.0.0 - Arsenal] - 2026-XX-XX
+git add CHANGELOG.md
+git commit -m "docs(changelog): prepare release notes for v1.0.0-arsenal"
+git push origin release/v1.0.0-arsenal
+```
+
+#### 3. Merge the Release PR
+
+Open a pull request from `release/v1.0.0-arsenal` into `master` and merge it. The tag must be created **after** the merge so it points to the correct commit on `master`.
+
+#### 4. Create and Push Tag
+
+After the PR is merged, pull `master` and create the annotated tag:
+
+```bash
+git checkout master && git pull
+git tag -a v1.0.0-arsenal -m "Release 1.0.0 - Arsenal"
+git push origin v1.0.0-arsenal
+```
+
+#### 5. Automated CD Workflow
+
+This triggers the CD workflow which automatically:
+
+1. Validates the club name
+2. Builds and tests the project with Maven
+3. Publishes Docker images to GitHub Container Registry with three tags
+4. Creates a GitHub Release with auto-generated changelog from commits
+
+#### Pre-Release Checklist
+
+- [ ] Release branch created from `master`
+- [ ] `CHANGELOG.md` updated with release notes
+- [ ] Changes committed and pushed on the release branch
+- [ ] Release PR merged into `master`
+- [ ] Tag created with correct format: `vX.Y.Z-club`
+- [ ] Club name is valid (A-Z from the [historic club list](CHANGELOG.md))
+- [ ] Tag pushed to trigger CD workflow
+
+### Pull Docker Images
+
+Each release publishes multiple tags for flexibility:
+
+```bash
+# By semantic version (recommended for production)
+docker pull ghcr.io/nanotaboada/java-samples-spring-boot:1.0.0
+
+# By club name (memorable alternative)
+docker pull ghcr.io/nanotaboada/java-samples-spring-boot:arsenal
+
+# Latest release
+docker pull ghcr.io/nanotaboada/java-samples-spring-boot:latest
+```
+
+> 💡 See [CHANGELOG.md](CHANGELOG.md) for the complete club list (A-Z) and release history.
 
 ## Contributing
 

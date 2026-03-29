@@ -1,0 +1,140 @@
+# Deploying Java with Maven to GitHub Container Registry
+# https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-docker-images
+
+name: Java CD
+
+on:
+    push:
+        tags:
+            - "v*.*.*-*"
+
+env:
+    JAVA_VERSION: 25
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
+
+            - name: Set up OpenJDK ${{ env.JAVA_VERSION }}
+              uses: actions/setup-java@v5.2.0
+              with:
+                  java-version: ${{ env.JAVA_VERSION }}
+                  distribution: "temurin"
+                  cache: "maven"
+
+            - name: Compile and verify with Maven
+              run: ./mvnw clean verify
+
+    release:
+        needs: test
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Extract and validate tag components
+              id: tag
+              run: |
+                  TAG="${GITHUB_REF#refs/tags/}"
+                  echo "Full tag: $TAG"
+
+                  SEMVER=$(echo "$TAG" | sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+)-.+$/\1/')
+                  CLUB=$(echo "$TAG" | sed -E 's/^v[0-9]+\.[0-9]+\.[0-9]+-(.+)$/\1/')
+
+                  VALID_CLUBS="arsenal barcelona chelsea dortmund everton flamengo galatasaray hamburg inter juventus kaiserslautern liverpool manchesterutd napoli olympique psg qpr realmadrid sevilla tottenham union valencia werder xerez youngboys zenit"
+
+                  if ! echo "$SEMVER" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+                    echo "❌ Invalid semver: $SEMVER"
+                    exit 1
+                  fi
+
+                  if ! echo "$VALID_CLUBS" | grep -qw "$CLUB"; then
+                    echo "❌ Invalid club name: $CLUB"
+                    echo "Valid clubs: $VALID_CLUBS"
+                    exit 1
+                  fi
+
+                  echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+                  echo "club=$CLUB" >> "$GITHUB_OUTPUT"
+                  echo "✅ Tag: v$SEMVER - $CLUB"
+
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@v4.0.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4.0.0
+
+            - name: Build and push Docker image to GitHub Container Registry
+              uses: docker/build-push-action@v7.0.0
+              with:
+                  context: .
+                  push: true
+                  platforms: linux/amd64,linux/arm64
+                  provenance: false
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  tags: |
+                      ghcr.io/${{ github.repository }}:latest
+                      ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.semver }}
+                      ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.club }}
+
+            - name: Generate changelog
+              id: changelog
+              run: |
+                  PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${GITHUB_REF#refs/tags/}$" | head -n 1)
+                  if [ -n "$PREVIOUS_TAG" ]; then
+                    CHANGELOG=$(git log "$PREVIOUS_TAG"..HEAD --pretty=format:"- %s" --no-merges)
+                  else
+                    CHANGELOG=$(git log --pretty=format:"- %s" --no-merges)
+                  fi
+                  {
+                    echo "content<<EOF"
+                    echo "$CHANGELOG"
+                    echo "EOF"
+                  } >> "$GITHUB_OUTPUT"
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2.6.1
+              with:
+                  name: "v${{ steps.tag.outputs.semver }} - ${{ steps.tag.outputs.club }} 🏆"
+                  body: |
+                      ## What's Changed
+
+                      ${{ steps.changelog.outputs.content }}
+
+                      ## Docker
+
+                      ```bash
+                      # By semantic version (recommended)
+                      docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.semver }}
+
+                      # By club name
+                      docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.club }}
+
+                      # Latest
+                      docker pull ghcr.io/${{ github.repository }}:latest
+                      ```
+
+                      ## Quick Start
+
+                      ```bash
+                      docker run -p 9000:9000 ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.semver }}
+                      ```
+
+                      API available at `http://localhost:9000` · Swagger UI at `http://localhost:9000/swagger/index.html`
+                  generate_release_notes: false
