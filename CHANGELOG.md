@@ -40,8 +40,8 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ## [Unreleased]
 
-### Added
+---
 
-### Changed
+## [1.0.0 - Arsenal] - 2026-03-29
 
-### Fixed
+Initial release. See [README.md](README.md) for complete feature list and documentation.
