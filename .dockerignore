@@ -4,9 +4,14 @@
 target
 .gitignore
 azure-pipelines.yml
+CHANGELOG.md
+.claude/
+CLAUDE.md
+.coderabbit.yaml
 CODE_OF_CONDUCT.md
 codecov.yml
 CONTRIBUTING.md
 LICENSE
 mvnw
 mvnw.cmd
+.sonarcloud.properties
