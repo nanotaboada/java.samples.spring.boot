@@ -1,3 +1,5 @@
+Before running the checklist, run `git fetch origin`. If the current branch is behind `origin/master`, stop and rebase before proceeding.
+
 Run the pre-commit checklist for this project:
 
 1. Update `CHANGELOG.md` `[Unreleased]` section — add an entry under the appropriate subsection (Added / Changed / Fixed / Removed) describing the changes made, referencing the issue number.
@@ -8,4 +10,4 @@ Run the pre-commit checklist for this project:
    - If only nitpick-level findings, report them and continue to the commit proposal.
    - If `coderabbit` is not installed, skip this step with a note.
 
-Run steps 1–3, report the results clearly, run step 4 if available, then propose a branch name and commit message for my approval using the format `type(scope): description (#issue)` (max 80 chars; types: `feat` `fix` `chore` `docs` `test` `refactor` `ci` `perf`). Do not create the branch or commit until I explicitly confirm.
+Run steps 1–3, report the results clearly, then run step 4 (CodeRabbit review) if available, then propose a branch name and commit message for my approval using the format `type(scope): description (#issue)` (max 80 chars; types: `feat` `fix` `chore` `docs` `test` `refactor` `ci` `perf`). Do not create the branch or commit until I explicitly confirm.
