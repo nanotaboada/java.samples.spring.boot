@@ -40,6 +40,13 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ## [Unreleased]
 
+### Added
+
+- `.sonarcloud.properties`: SonarCloud Automatic Analysis configuration —
+  sources, tests, coverage exclusions aligned with `codecov.yml` (#293)
+- `.dockerignore`: added `.claude/`, `CLAUDE.md`, `.coderabbit.yaml`,
+  `.sonarcloud.properties`, `CHANGELOG.md`, `README.md` (#293)
+
 ---
 
 ## [1.0.0 - Arsenal] - 2026-03-29
