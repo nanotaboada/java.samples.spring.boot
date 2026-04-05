@@ -153,7 +153,7 @@ Interactive API documentation is available via Swagger UI at `http://localhost:9
 
 Error codes: `400 Bad Request` (validation failed) · `404 Not Found` (player not found) · `409 Conflict` (duplicate squad number on `POST`)
 
-For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](http://localhost:9000/swagger/index.html). You can also access the OpenAPI JSON specification at `http://localhost:9000/v3/api-docs`.
+For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](http://localhost:9000/swagger/index.html). You can also access the OpenAPI JSON specification at `http://localhost:9000/docs`.
 
 ## Prerequisites
 
@@ -196,7 +196,7 @@ Once the application is running, you can access:
 
 - **API Server**: `http://localhost:9000`
 - **Swagger UI**: `http://localhost:9000/swagger/index.html`
-- **OpenAPI Spec**: `http://localhost:9000/v3/api-docs`
+- **OpenAPI Spec**: `http://localhost:9000/docs`
 - **Health Check**: `http://localhost:9001/actuator/health`
 
 ## Containers
@@ -257,6 +257,7 @@ server.port=9000
 management.server.port=9001
 spring.datasource.url=jdbc:sqlite:storage/players-sqlite3.db
 springdoc.swagger-ui.path=/swagger/index.html
+springdoc.api-docs.path=/docs
 ```
 
 ### Testing

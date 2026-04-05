@@ -53,7 +53,7 @@ git push origin v1.0.0-arsenal
 
 Pushing the tag triggers the CD workflow which automatically:
 
-1. Validates the club name
+1. Validates tag format (semver and club name)
 2. Builds and tests the project with Maven
 3. Publishes Docker images to GitHub Container Registry with three tags
 4. Creates a GitHub Release with auto-generated changelog from commits
