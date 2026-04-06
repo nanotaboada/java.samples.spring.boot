@@ -2,6 +2,7 @@ package ar.com.nanotaboada.java.samples.spring.boot.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,56 +13,39 @@ import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
  * Spring Data JPA Repository for {@link Player} entities.
  * <p>
  * Provides data access methods for the {@code players} table using Spring Data's repository abstraction.
- * Extends {@link JpaRepository} for CRUD operations, batch operations, and query methods.
+ * Extends {@link JpaRepository} for CRUD operations keyed on the UUID primary key.
  * </p>
  *
  * <h3>Provided Methods:</h3>
  * <ul>
- * <li><b>Inherited from JpaRepository:</b> save, findAll (returns List), findById, delete, flush, etc.</li>
- * <li><b>Custom Query Methods:</b> League search with case-insensitive wildcard matching</li>
- * <li><b>Derived Queries:</b> findBySquadNumber (method name conventions)</li>
- * </ul>
- *
- * <h3>Query Strategies:</h3>
- * <ul>
- * <li><b>Derived Queries:</b> Spring Data derives queries from method names (findBySquadNumber,
- * findByLeagueContainingIgnoreCase)</li>
+ * <li><b>Inherited from JpaRepository:</b> save, findAll, findById(UUID), existsById, deleteById, etc.</li>
+ * <li><b>Derived Queries:</b> findBySquadNumber, findByLeagueContainingIgnoreCase</li>
  * </ul>
  *
  * @see Player
  * @see org.springframework.data.jpa.repository.JpaRepository
- * @see <a href=
- * "https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation">Query
- * Creation from Method Names</a>
  * @since 4.0.2025
  */
 @Repository
-public interface PlayersRepository extends JpaRepository<Player, Long> {
+public interface PlayersRepository extends JpaRepository<Player, UUID> {
 
     /**
      * Finds a player by their squad number (exact match).
      * <p>
-     * This is a derived query method - Spring Data JPA generates the query automatically.
-     * Squad numbers are jersey numbers that users recognize (e.g., Messi is #10).
-     * This demonstrates Spring Data's method name query derivation with a natural key.
+     * Squad numbers are unique jersey numbers (e.g., Messi is #10).
+     * Used as the natural key for mutation endpoints (PUT, DELETE).
      * </p>
      *
-     * @param squadNumber the squad number to search for (jersey number, typically
-     * 1-99)
+     * @param squadNumber the squad number to search for (jersey number, typically 1-99)
      * @return an Optional containing the player if found, empty Optional otherwise
      */
     Optional<Player> findBySquadNumber(Integer squadNumber);
 
     /**
      * Finds players by league name using case-insensitive wildcard matching.
-     * <p>
-     * This method uses Spring Data's derived query mechanism to perform partial matching.
-     * For example, searching for "Premier" will match "Premier League".
-     * </p>
      *
      * @param league the league name to search for (partial matches allowed)
-     * @return a list of players whose league name contains the search term (empty
-     * list if none found)
+     * @return a list of players whose league name contains the search term
      */
     List<Player> findByLeagueContainingIgnoreCase(String league);
 }

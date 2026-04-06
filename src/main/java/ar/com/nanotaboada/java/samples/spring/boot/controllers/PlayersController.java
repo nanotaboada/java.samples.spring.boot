@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,12 @@ import lombok.RequiredArgsConstructor;
  * <h3>Base Path:</h3>
  * <ul>
  * <li><b>GET</b> {@code /players} - Retrieve all players</li>
- * <li><b>GET</b> {@code /players/{id}} - Retrieve player by ID</li>
+ * <li><b>GET</b> {@code /players/{id}} - Retrieve player by UUID (admin/internal use)</li>
  * <li><b>GET</b> {@code /players/search/league/{league}} - Search players by league name</li>
- * <li><b>GET</b> {@code /players/squadnumber/{number}} - Retrieve player by squad number</li>
+ * <li><b>GET</b> {@code /players/squadnumber/{squadNumber}} - Retrieve player by squad number</li>
  * <li><b>POST</b> {@code /players} - Create a new player</li>
- * <li><b>PUT</b> {@code /players/{id}} - Update an existing player</li>
- * <li><b>DELETE</b> {@code /players/{id}} - Delete a player by ID</li>
+ * <li><b>PUT</b> {@code /players/{squadNumber}} - Update an existing player by squad number</li>
+ * <li><b>DELETE</b> {@code /players/{squadNumber}} - Delete a player by squad number</li>
  * </ul>
  *
  * <h3>Response Codes:</h3>
@@ -74,12 +75,8 @@ public class PlayersController {
     /**
      * Creates a new player resource.
      * <p>
-     * Validates the request body and creates a new player in the database. Returns a 201 Created response with a Location
-     * header pointing to the new resource.
-     * </p>
-     * <p>
-     * <b>Conflict Detection:</b> If a player with the same squad number already exists, returns 409 Conflict.
-     * Squad numbers must be unique (jersey numbers like Messi's #10).
+     * Validates the request body and creates a new player. Returns 201 Created with a Location
+     * header pointing to the new resource (UUID-based path).
      * </p>
      *
      * @param playerDTO the player data to create (validated with JSR-380 constraints)
@@ -115,9 +112,6 @@ public class PlayersController {
 
     /**
      * Retrieves all players in the squad.
-     * <p>
-     * Returns the complete Argentina 2022 FIFA World Cup squad (26 players).
-     * </p>
      *
      * @return 200 OK with array of all players (empty array if none found)
      */
@@ -132,18 +126,18 @@ public class PlayersController {
     }
 
     /**
-     * Retrieves a single player by their unique identifier.
+     * Retrieves a single player by their surrogate UUID (admin/internal use only).
      *
-     * @param id the unique identifier of the player
+     * @param id the UUID surrogate key of the player
      * @return 200 OK with player data, or 404 Not Found if player doesn't exist
      */
     @GetMapping("/players/{id}")
-    @Operation(summary = "Retrieves a player by ID")
+    @Operation(summary = "Retrieves a player by UUID (admin/internal use)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO.class))),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<PlayerDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<PlayerDTO> getById(@PathVariable UUID id) {
         PlayerDTO playerDTO = playersService.retrieveById(id);
         return (playerDTO != null)
                 ? ResponseEntity.status(HttpStatus.OK).body(playerDTO)
@@ -151,9 +145,8 @@ public class PlayersController {
     }
 
     /**
-     * Retrieves a player by their squad number (unique identifier).
+     * Retrieves a player by their squad number.
      * <p>
-     * Squad numbers are unique jersey numbers (e.g., Messi is #10). This is a direct lookup similar to getById().
      * Example: {@code /players/squadnumber/10} returns Lionel Messi
      * </p>
      *
@@ -199,30 +192,29 @@ public class PlayersController {
      */
 
     /**
-     * Updates an existing player resource (full update).
+     * Updates an existing player resource (full update) identified by squad number.
      * <p>
-     * Performs a complete replacement of the player entity. The ID in the path must match the ID in the request body.
+     * Performs a complete replacement of the player entity. The squad number in the path
+     * must match the squad number in the request body (if provided).
      * </p>
      *
-     * @param id the unique identifier of the player to update
+     * @param squadNumber the squad number (natural key) of the player to update
      * @param playerDTO the complete player data (must pass validation)
-     * @return 204 No Content if successful, 404 Not Found if player doesn't exist, or 400 Bad Request if validation fails or
-     * ID mismatch
+     * @return 204 No Content if successful, 404 Not Found if player doesn't exist, or 400 Bad Request if validation fails
      */
-    @PutMapping("/players/{id}")
-    @Operation(summary = "Updates (entirely) a player by ID")
+    @PutMapping("/players/{squadNumber}")
+    @Operation(summary = "Updates (entirely) a player by squad number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<Void> put(@PathVariable Long id, @RequestBody @Valid PlayerDTO playerDTO) {
-        // Ensure path ID matches body ID
-        if (playerDTO.getId() != null && !playerDTO.getId().equals(id)) {
+    public ResponseEntity<Void> put(@PathVariable Integer squadNumber, @RequestBody @Valid PlayerDTO playerDTO) {
+        if (playerDTO.getSquadNumber() != null && !playerDTO.getSquadNumber().equals(squadNumber)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        playerDTO.setId(id); // Set ID from path to ensure consistency
-        boolean updated = playersService.update(playerDTO);
+        playerDTO.setSquadNumber(squadNumber);
+        boolean updated = playersService.update(squadNumber, playerDTO);
         return (updated)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -235,19 +227,19 @@ public class PlayersController {
      */
 
     /**
-     * Deletes a player resource by their unique identifier.
+     * Deletes a player resource by their squad number.
      *
-     * @param id the unique identifier of the player to delete
+     * @param squadNumber the squad number of the player to delete
      * @return 204 No Content if successful, or 404 Not Found if player doesn't exist
      */
-    @DeleteMapping("/players/{id}")
-    @Operation(summary = "Deletes a player by ID")
+    @DeleteMapping("/players/{squadNumber}")
+    @Operation(summary = "Deletes a player by squad number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boolean deleted = playersService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Integer squadNumber) {
+        boolean deleted = playersService.deleteBySquadNumber(squadNumber);
         return (deleted)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();

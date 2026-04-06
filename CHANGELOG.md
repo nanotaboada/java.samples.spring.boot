@@ -40,6 +40,23 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ## [Unreleased]
 
+### Changed
+
+- `Player` entity: `id` demoted from `@Id Long` to surrogate `UUID` (non-PK,
+  `updatable=false`, `unique`, generated via `@PrePersist`); `squadNumber`
+  promoted to `@Id Integer` (natural key) (#268)
+- `PlayerDTO`: `id` type changed from `Long` to `UUID` (#268)
+- `PlayersRepository`: keyed on `Integer` (squad number as PK); added
+  `findById(UUID)` overload for admin/internal lookup (#268)
+- `PlayersService`: `retrieveById` now accepts `UUID`; `update` keyed on
+  `Integer squadNumber`; `delete` renamed to `deleteBySquadNumber(Integer)` (#268)
+- `PUT /players/{squadNumber}` and `DELETE /players/{squadNumber}`: path
+  variable changed from `Long id` to `Integer squadNumber` (#268)
+- `GET /players/{id}`: path variable changed from `Long` to `UUID` (admin use) (#268)
+- `storage/players-sqlite3.db`: schema migrated to `id VARCHAR(36) NOT NULL UNIQUE`,
+  `squadNumber INTEGER PRIMARY KEY`; 25 players preserved with generated UUIDs (#268)
+- `ddl.sql` and `dml.sql`: test schema and seed data updated for new structure (#268)
+
 ### Added
 
 - `.sonarcloud.properties`: SonarCloud Automatic Analysis configuration —
