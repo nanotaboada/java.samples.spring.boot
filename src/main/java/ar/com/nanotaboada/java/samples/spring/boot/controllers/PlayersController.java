@@ -210,7 +210,7 @@ public class PlayersController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     public ResponseEntity<Void> put(@PathVariable Integer squadNumber, @RequestBody @Valid PlayerDTO playerDTO) {
-        if (playerDTO.getSquadNumber() != null && !playerDTO.getSquadNumber().equals(squadNumber)) {
+        if (!playerDTO.getSquadNumber().equals(squadNumber)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         playerDTO.setSquadNumber(squadNumber);
