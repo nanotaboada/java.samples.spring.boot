@@ -59,6 +59,8 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Added
 
+- JaCoCo `check` goal added to Maven build enforcing 80% instruction and branch
+  coverage — replaces manual HTML report step in `/pre-commit` (#268)
 - `.sonarcloud.properties`: SonarCloud Automatic Analysis configuration —
   sources, tests, coverage exclusions aligned with `codecov.yml` (#293)
 - `.dockerignore`: added `.claude/`, `CLAUDE.md`, `.coderabbit.yaml`,
