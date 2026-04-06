@@ -40,6 +40,23 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ## [Unreleased]
 
+### Changed
+
+- `Player` entity: `id` (UUID) is the database primary key — `@Id` with
+  `GenerationType.UUID`; `squadNumber` (Integer) carries `@Column(unique=true)`
+  and serves as the natural-key route identifier for `PUT` and `DELETE` (#268)
+- `PlayerDTO`: `id` type changed from `Long` to `UUID` (#268)
+- `PlayersRepository`: keyed on `UUID`; `findBySquadNumber(Integer)` derived
+  query resolves the UUID PK before update/delete operations (#268)
+- `PlayersService`: `retrieveById` accepts `UUID`; `update` and
+  `deleteBySquadNumber` use `findBySquadNumber` to look up the UUID PK (#268)
+- `PUT /players/{squadNumber}` and `DELETE /players/{squadNumber}`: path
+  variable changed from `Long id` to `Integer squadNumber` (#268)
+- `GET /players/{id}`: path variable changed from `Long` to `UUID` (#268)
+- `storage/players-sqlite3.db`: schema migrated to `id VARCHAR(36) PRIMARY KEY`,
+  `squadNumber INTEGER NOT NULL UNIQUE`; 25 players preserved (#268)
+- `ddl.sql` and `dml.sql`: test schema and seed data updated for new structure (#268)
+
 ### Added
 
 - `.sonarcloud.properties`: SonarCloud Automatic Analysis configuration —

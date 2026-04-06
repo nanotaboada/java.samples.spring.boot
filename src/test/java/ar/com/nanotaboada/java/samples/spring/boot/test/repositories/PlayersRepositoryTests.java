@@ -4,6 +4,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,30 +28,31 @@ class PlayersRepositoryTests {
     private PlayersRepository repository;
 
     /**
-     * Given a player exists in the database
-     * When findById() is called with that player's ID
+     * Given a player is saved to the database
+     * When findById() is called with the player's UUID surrogate key
      * Then the player is returned
      */
     @Test
     void givenPlayerExists_whenFindById_thenReturnsPlayer() {
         // Given
         Player expected = repository.save(PlayerFakes.createOneValid());
+        UUID savedUuid = expected.getId();
         // When
-        Optional<Player> actual = repository.findById(expected.getId());
+        Optional<Player> actual = repository.findById(savedUuid);
         // Then
         then(actual).isPresent();
         then(actual.get()).usingRecursiveComparison().isEqualTo(expected);
     }
 
     /**
-     * Given the database does not contain a player with a specific ID
-     * When querying by that ID
+     * Given the database does not contain a player with a specific UUID
+     * When querying by that UUID
      * Then an empty Optional is returned
      */
     @Test
     void givenPlayerDoesNotExist_whenFindById_thenReturnsEmpty() {
         // Given
-        Long nonExistentId = 999L;
+        UUID nonExistentId = UUID.randomUUID();
         // When
         Optional<Player> actual = repository.findById(nonExistentId);
         // Then

@@ -1,6 +1,7 @@
 package ar.com.nanotaboada.java.samples.spring.boot.models;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -28,9 +29,9 @@ import lombok.NoArgsConstructor;
  *
  * <h3>Key Features:</h3>
  * <ul>
- * <li>Auto-generated ID using IDENTITY strategy</li>
- * <li>ISO-8601 date storage for SQLite compatibility
- * ({@link IsoDateConverter})</li>
+ * <li>UUID primary key — generated at application level via {@code GenerationType.UUID}</li>
+ * <li>Squad number natural key — unique domain identifier, used as path variable for mutations</li>
+ * <li>ISO-8601 date storage for SQLite compatibility ({@link IsoDateConverter})</li>
  * <li>JSON serialization support for LocalDate fields</li>
  * </ul>
  *
@@ -44,9 +45,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Player {
+
+    /**
+     * Primary key — UUID generated at application level.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "VARCHAR(36)")
+    private UUID id;
+
+    /**
+     * Natural key — unique domain identifier, path variable for PUT and DELETE.
+     * Squad number (jersey number) is unique per team and stable.
+     */
+    @Column(name = "squadNumber", nullable = false, unique = true, updatable = false)
+    private Integer squadNumber;
+
     private String firstName;
     private String middleName;
     private String lastName;
@@ -58,16 +72,6 @@ public class Player {
     @JsonSerialize(using = LocalDateSerializer.class)
     @Convert(converter = IsoDateConverter.class)
     private LocalDate dateOfBirth;
-
-    /**
-     * Squad number (jersey number) - unique natural key.
-     * <p>
-     * Used for player lookups via /players/search/squadnumber/{squadNumber}.
-     * Database constraint enforces uniqueness.
-     * </p>
-     */
-    @Column(unique = true)
-    private Integer squadNumber;
 
     private String position;
     private String abbrPosition;

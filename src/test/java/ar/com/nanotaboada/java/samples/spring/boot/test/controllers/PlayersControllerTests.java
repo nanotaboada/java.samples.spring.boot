@@ -2,12 +2,13 @@ package ar.com.nanotaboada.java.samples.spring.boot.test.controllers;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,8 @@ class PlayersControllerTests {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
         PlayerDTO savedDTO = PlayerDTOFakes.createOneValid();
-        savedDTO.setId(19L); // Simulating auto-generated ID
+        UUID savedUuid = UUID.fromString("00000000-0000-0000-0000-000000000019");
+        savedDTO.setId(savedUuid);
         String content = objectMapper.writeValueAsString(dto);
         Mockito
                 .when(playersServiceMock.create(any(PlayerDTO.class)))
@@ -95,7 +97,7 @@ class PlayersControllerTests {
         verify(playersServiceMock, times(1)).create(any(PlayerDTO.class));
         then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         then(response.getHeader(HttpHeaders.LOCATION)).isNotNull();
-        then(response.getHeader(HttpHeaders.LOCATION)).contains(PATH + "/19");
+        then(response.getHeader(HttpHeaders.LOCATION)).contains(PATH + "/" + savedUuid);
     }
 
     /**
@@ -189,7 +191,7 @@ class PlayersControllerTests {
 
     /**
      * Given a player exists
-     * When requesting that player by ID
+     * When requesting that player by UUID
      * Then response status is 200 OK and the player data is returned
      */
     @Test
@@ -197,11 +199,12 @@ class PlayersControllerTests {
             throws Exception {
         // Given
         PlayerDTO expected = PlayerDTOFakes.createOneForUpdate();
+        UUID id = expected.getId();
         Mockito
-                .when(playersServiceMock.retrieveById(1L))
+                .when(playersServiceMock.retrieveById(id))
                 .thenReturn(expected);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get(PATH + "/{id}", 1L);
+                .get(PATH + "/{id}", id);
         // When
         MockHttpServletResponse response = application
                 .perform(request)
@@ -211,23 +214,23 @@ class PlayersControllerTests {
         PlayerDTO actual = objectMapper.readValue(content, PlayerDTO.class);
         // Then
         then(response.getContentType()).contains("application/json");
-        verify(playersServiceMock, times(1)).retrieveById(1L);
+        verify(playersServiceMock, times(1)).retrieveById(id);
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         then(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     /**
-     * Given a player with a specific ID does not exist
-     * When requesting that player by ID
+     * Given a player with a specific UUID does not exist
+     * When requesting that player by UUID
      * Then response status is 404 Not Found
      */
     @Test
     void givenPlayerDoesNotExist_whenGetById_thenReturnsNotFound()
             throws Exception {
         // Given
-        Long id = 999L;
+        UUID id = UUID.randomUUID();
         Mockito
-                .when(playersServiceMock.retrieveById(anyLong()))
+                .when(playersServiceMock.retrieveById(any(UUID.class)))
                 .thenReturn(null);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(PATH + "/{id}", id);
@@ -237,7 +240,7 @@ class PlayersControllerTests {
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, times(1)).retrieveById(anyLong());
+        verify(playersServiceMock, times(1)).retrieveById(any(UUID.class));
         then(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
@@ -371,7 +374,7 @@ class PlayersControllerTests {
 
     /**
      * Given a player exists and valid update data is provided
-     * When updating that player
+     * When updating that player by squad number
      * Then response status is 204 No Content
      */
     @Test
@@ -379,13 +382,13 @@ class PlayersControllerTests {
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        dto.setId(1L); // Set ID for update operation
+        Integer squadNumber = dto.getSquadNumber();
         String content = objectMapper.writeValueAsString(dto);
         Mockito
-                .when(playersServiceMock.update(any(PlayerDTO.class)))
+                .when(playersServiceMock.update(squadNumber, dto))
                 .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH + "/{id}", dto.getId())
+                .put(PATH + "/{squadNumber}", squadNumber)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON);
         // When
@@ -394,12 +397,12 @@ class PlayersControllerTests {
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, times(1)).update(any(PlayerDTO.class));
+        verify(playersServiceMock, times(1)).update(anyInt(), any(PlayerDTO.class));
         then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     /**
-     * Given a player with the provided ID does not exist
+     * Given a player with the provided squad number does not exist
      * When attempting to update that player
      * Then response status is 404 Not Found
      */
@@ -408,13 +411,13 @@ class PlayersControllerTests {
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        dto.setId(999L); // Set ID for update operation
+        Integer squadNumber = dto.getSquadNumber();
         String content = objectMapper.writeValueAsString(dto);
         Mockito
-                .when(playersServiceMock.update(any(PlayerDTO.class)))
+                .when(playersServiceMock.update(anyInt(), any(PlayerDTO.class)))
                 .thenReturn(false);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH + "/{id}", dto.getId())
+                .put(PATH + "/{squadNumber}", squadNumber)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON);
         // When
@@ -423,7 +426,7 @@ class PlayersControllerTests {
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, times(1)).update(any(PlayerDTO.class));
+        verify(playersServiceMock, times(1)).update(anyInt(), any(PlayerDTO.class));
         then(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
@@ -439,7 +442,7 @@ class PlayersControllerTests {
         PlayerDTO dto = PlayerDTOFakes.createOneInvalid();
         String content = objectMapper.writeValueAsString(dto);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH + "/{id}", dto.getId())
+                .put(PATH + "/{squadNumber}", 1)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON);
         // When
@@ -448,25 +451,25 @@ class PlayersControllerTests {
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, never()).update(any(PlayerDTO.class));
+        verify(playersServiceMock, never()).update(anyInt(), any(PlayerDTO.class));
         then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
-     * Given the path ID does not match the body ID
+     * Given the path squad number does not match the body squad number
      * When attempting to update a player
      * Then response status is 400 Bad Request and service is never called
      */
     @Test
-    void givenIdMismatch_whenPut_thenReturnsBadRequest()
+    void givenSquadNumberMismatch_whenPut_thenReturnsBadRequest()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        dto.setId(999L); // Body has different ID
-        Long pathId = 1L; // Path has different ID
+        dto.setSquadNumber(999); // Body has different squad number
+        Integer pathSquadNumber = 5; // Path has different squad number
         String content = objectMapper.writeValueAsString(dto);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH + "/{id}", pathId)
+                .put(PATH + "/{squadNumber}", pathSquadNumber)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON);
         // When
@@ -475,28 +478,24 @@ class PlayersControllerTests {
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, never()).update(any(PlayerDTO.class));
+        verify(playersServiceMock, never()).update(anyInt(), any(PlayerDTO.class));
         then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
-     * Given the body ID is null (ID only in path)
-     * When updating a player
-     * Then the ID is set from the path and the update proceeds normally
+     * Given the body squad number is null
+     * When attempting to update a player
+     * Then response status is 400 Bad Request (squad number is required)
      */
     @Test
-    void givenNullBodyId_whenPut_thenSetsIdFromPath()
+    void givenNullBodySquadNumber_whenPut_thenReturnsBadRequest()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        dto.setId(null); // Body has null ID
-        Long pathId = 1L;
+        dto.setSquadNumber(null); // Body has null squad number (violates @NotNull)
         String content = objectMapper.writeValueAsString(dto);
-        Mockito
-                .when(playersServiceMock.update(any(PlayerDTO.class)))
-                .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(PATH + "/{id}", pathId)
+                .put(PATH + "/{squadNumber}", 5)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON);
         // When
@@ -505,8 +504,8 @@ class PlayersControllerTests {
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, times(1)).update(any(PlayerDTO.class));
-        then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        verify(playersServiceMock, never()).update(anyInt(), any(PlayerDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /*
@@ -517,50 +516,51 @@ class PlayersControllerTests {
 
     /**
      * Given a player exists
-     * When deleting that player by ID
+     * When deleting that player by squad number
      * Then response status is 204 No Content
      */
     @Test
     void givenPlayerExists_whenDelete_thenReturnsNoContent()
             throws Exception {
         // Given
+        Integer squadNumber = 17;
         Mockito
-                .when(playersServiceMock.delete(1L))
+                .when(playersServiceMock.deleteBySquadNumber(squadNumber))
                 .thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .delete(PATH + "/{id}", 1L);
+                .delete(PATH + "/{squadNumber}", squadNumber);
         // When
         MockHttpServletResponse response = application
                 .perform(request)
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, times(1)).delete(1L);
+        verify(playersServiceMock, times(1)).deleteBySquadNumber(squadNumber);
         then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     /**
-     * Given a player with a specific ID does not exist
-     * When attempting to delete that player by ID
+     * Given a player with a specific squad number does not exist
+     * When attempting to delete that player
      * Then response status is 404 Not Found
      */
     @Test
     void givenPlayerDoesNotExist_whenDelete_thenReturnsNotFound()
             throws Exception {
         // Given
-        Long id = 999L;
+        Integer squadNumber = 999;
         Mockito
-                .when(playersServiceMock.delete(id))
+                .when(playersServiceMock.deleteBySquadNumber(squadNumber))
                 .thenReturn(false);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .delete(PATH + "/{id}", id);
+                .delete(PATH + "/{squadNumber}", squadNumber);
         // When
         MockHttpServletResponse response = application
                 .perform(request)
                 .andReturn()
                 .getResponse();
         // Then
-        verify(playersServiceMock, times(1)).delete(id);
+        verify(playersServiceMock, times(1)).deleteBySquadNumber(squadNumber);
         then(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
