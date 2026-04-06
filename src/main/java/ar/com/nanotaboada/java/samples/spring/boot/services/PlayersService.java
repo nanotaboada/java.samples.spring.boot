@@ -243,7 +243,7 @@ public class PlayersService {
 
         return playersRepository.findBySquadNumber(squadNumber)
                 .map(existing -> {
-                    playersRepository.deleteById(existing.getId());
+                    playersRepository.delete(existing);
                     log.info("Player deleted successfully - Squad Number: {}", squadNumber);
                     return true;
                 })

@@ -415,7 +415,7 @@ class PlayersServiceTests {
         boolean actual = playersService.deleteBySquadNumber(squadNumber);
         // Then
         verify(playersRepositoryMock, times(1)).findBySquadNumber(squadNumber);
-        verify(playersRepositoryMock, times(1)).deleteById(entity.getId());
+        verify(playersRepositoryMock, times(1)).delete(entity);
         then(actual).isTrue();
     }
 
