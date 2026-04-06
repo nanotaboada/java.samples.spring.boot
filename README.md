@@ -15,9 +15,9 @@ Proof of Concept for a RESTful Web Service built with **Spring Boot 4** targetin
 
 ## Features
 
-- 📚 **Clean Architecture** - Layered design with clear separation of concerns
-- 📝 **Interactive Documentation** - Live API exploration and testing interface
-- 🚦 **Input Validation** - Bean Validation (JSR-380) constraints
+- 🏗️ **Clean Architecture** - Layered design with clear separation of concerns
+- 📚 **Interactive Documentation** - Live API exploration and testing interface
+- ✅ **Input Validation** - Bean Validation (JSR-380) constraints
 - ⚡ **Performance Caching** - Optimized data retrieval with cache annotations
 - 🐳 **Containerized Deployment** - Multi-stage builds with pre-seeded database
 - 🔄 **Automated Pipeline** - Continuous integration with automated testing and builds
@@ -147,7 +147,7 @@ Interactive API documentation is available via Swagger UI at `http://localhost:9
 | `GET` | `/players/search/league/{league}` | Search players by league | `200 OK` |
 | `GET` | `/players/squadnumber/{squadNumber}` | Get player by squad number | `200 OK` |
 | `POST` | `/players` | Create new player | `201 Created` |
-| `PUT` | `/players/{id}` | Update player by ID | `200 OK` |
+| `PUT` | `/players/{id}` | Update player by ID | `204 No Content` |
 | `DELETE` | `/players/{id}` | Remove player by ID | `204 No Content` |
 | `GET` | `/actuator/health` | Health check | `200 OK` |
 
