@@ -1,6 +1,7 @@
 package ar.com.nanotaboada.java.samples.spring.boot.models;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -11,9 +12,8 @@ import ar.com.nanotaboada.java.samples.spring.boot.converters.IsoDateConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,9 +28,9 @@ import lombok.NoArgsConstructor;
  *
  * <h3>Key Features:</h3>
  * <ul>
- * <li>Auto-generated ID using IDENTITY strategy</li>
- * <li>ISO-8601 date storage for SQLite compatibility
- * ({@link IsoDateConverter})</li>
+ * <li>UUID surrogate key — admin/internal use only, generated at application level</li>
+ * <li>Squad number natural key — domain identifier, used as path variable for mutations</li>
+ * <li>ISO-8601 date storage for SQLite compatibility ({@link IsoDateConverter})</li>
  * <li>JSON serialization support for LocalDate fields</li>
  * </ul>
  *
@@ -44,9 +44,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Player {
+
+    /**
+     * Surrogate key — admin/internal use only, never exposed in mutation endpoints.
+     * Generated at application level via {@link #generateId()} before persist.
+     */
+    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private UUID id;
+
+    /**
+     * Natural key — domain identifier, path variable for PUT and DELETE.
+     * Squad number (jersey number) is unique per team and stable.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "squadNumber", nullable = false, updatable = false)
+    private Integer squadNumber;
+
     private String firstName;
     private String middleName;
     private String lastName;
@@ -59,19 +72,16 @@ public class Player {
     @Convert(converter = IsoDateConverter.class)
     private LocalDate dateOfBirth;
 
-    /**
-     * Squad number (jersey number) - unique natural key.
-     * <p>
-     * Used for player lookups via /players/search/squadnumber/{squadNumber}.
-     * Database constraint enforces uniqueness.
-     * </p>
-     */
-    @Column(unique = true)
-    private Integer squadNumber;
-
     private String position;
     private String abbrPosition;
     private String team;
     private String league;
     private Boolean starting11;
+
+    @PrePersist
+    private void generateId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+    }
 }

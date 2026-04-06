@@ -5,15 +5,15 @@
 DROP TABLE IF EXISTS players;
 
 CREATE TABLE players (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    firstName TEXT NOT NULL,
-    middleName TEXT,
-    lastName TEXT NOT NULL,
-    dateOfBirth TEXT NOT NULL,
-    squadNumber INTEGER NOT NULL UNIQUE,
-    position TEXT NOT NULL,
-    abbrPosition TEXT NOT NULL,
-    team TEXT NOT NULL,
-    league TEXT NOT NULL,
-    starting11 INTEGER NOT NULL
+    id          VARCHAR(36)  NOT NULL UNIQUE,
+    squadNumber INTEGER      PRIMARY KEY,
+    firstName   TEXT         NOT NULL,
+    middleName  TEXT,
+    lastName    TEXT         NOT NULL,
+    dateOfBirth TEXT         NOT NULL,
+    position    TEXT         NOT NULL,
+    abbrPosition TEXT        NOT NULL,
+    team        TEXT         NOT NULL,
+    league      TEXT         NOT NULL,
+    starting11  INTEGER      NOT NULL
 );

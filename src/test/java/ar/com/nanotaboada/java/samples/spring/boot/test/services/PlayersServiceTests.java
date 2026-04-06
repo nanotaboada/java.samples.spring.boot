@@ -2,13 +2,14 @@ package ar.com.nanotaboada.java.samples.spring.boot.test.services;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class PlayersServiceTests {
         PlayerDTO expected = PlayerDTOFakes.createOneValid();
         Mockito
                 .when(playersRepositoryMock.findBySquadNumber(expected.getSquadNumber()))
-                .thenReturn(Optional.empty()); // No conflict
+                .thenReturn(Optional.empty());
         Mockito
                 .when(modelMapperMock.map(expected, Player.class))
                 .thenReturn(entity);
@@ -115,7 +116,7 @@ class PlayersServiceTests {
         Player entity = PlayerFakes.createOneValid();
         Mockito
                 .when(playersRepositoryMock.findBySquadNumber(dto.getSquadNumber()))
-                .thenReturn(Optional.empty()); // No conflict initially
+                .thenReturn(Optional.empty());
         Mockito
                 .when(modelMapperMock.map(dto, Player.class))
                 .thenReturn(entity);
@@ -149,7 +150,6 @@ class PlayersServiceTests {
         Mockito
                 .when(playersRepositoryMock.findAll())
                 .thenReturn(entities);
-        // Mock modelMapper to convert each player correctly
         for (int i = 0; i < entities.size(); i++) {
             Mockito
                     .when(modelMapperMock.map(entities.get(i), PlayerDTO.class))
@@ -163,8 +163,8 @@ class PlayersServiceTests {
     }
 
     /**
-     * Given a player exists with a specific ID
-     * When retrieving that player by ID
+     * Given a player exists with a specific UUID
+     * When retrieving that player by UUID
      * Then the corresponding PlayerDTO is returned
      */
     @Test
@@ -172,36 +172,37 @@ class PlayersServiceTests {
         // Given
         Player entity = PlayerFakes.createOneForUpdate();
         PlayerDTO expected = PlayerDTOFakes.createOneForUpdate();
+        UUID id = entity.getId();
         Mockito
-                .when(playersRepositoryMock.findById(1L))
+                .when(playersRepositoryMock.findById(id))
                 .thenReturn(Optional.of(entity));
         Mockito
                 .when(modelMapperMock.map(entity, PlayerDTO.class))
                 .thenReturn(expected);
         // When
-        PlayerDTO actual = playersService.retrieveById(1L);
+        PlayerDTO actual = playersService.retrieveById(id);
         // Then
-        verify(playersRepositoryMock, times(1)).findById(1L);
+        verify(playersRepositoryMock, times(1)).findById(id);
         verify(modelMapperMock, times(1)).map(entity, PlayerDTO.class);
         then(actual).isEqualTo(expected);
     }
 
     /**
-     * Given no player exists with a specific ID
-     * When retrieving by that ID
+     * Given no player exists with a specific UUID
+     * When retrieving by that UUID
      * Then null is returned
      */
     @Test
     void givenPlayerDoesNotExist_whenRetrieveById_thenReturnsNull() {
         // Given
-        Long id = 999L;
+        UUID id = UUID.randomUUID();
         Mockito
-                .when(playersRepositoryMock.findById(anyLong()))
+                .when(playersRepositoryMock.findById(id))
                 .thenReturn(Optional.empty());
         // When
         PlayerDTO actual = playersService.retrieveById(id);
         // Then
-        verify(playersRepositoryMock, times(1)).findById(anyLong());
+        verify(playersRepositoryMock, times(1)).findById(id);
         verify(modelMapperMock, never()).map(any(Player.class), any());
         then(actual).isNull();
     }
@@ -282,7 +283,6 @@ class PlayersServiceTests {
         Mockito
                 .when(playersRepositoryMock.findByLeagueContainingIgnoreCase(any()))
                 .thenReturn(entities);
-        // Mock modelMapper to convert each player correctly
         for (int i = 0; i < entities.size(); i++) {
             Mockito
                     .when(modelMapperMock.map(entities.get(i), PlayerDTO.class))
@@ -326,7 +326,7 @@ class PlayersServiceTests {
 
     /**
      * Given a player exists
-     * When update() is called with modified player data
+     * When update() is called with the player's squad number and modified data
      * Then the player is updated and true is returned
      */
     @Test
@@ -334,23 +334,24 @@ class PlayersServiceTests {
         // Given
         Player entity = PlayerFakes.createOneUpdated();
         PlayerDTO dto = PlayerDTOFakes.createOneUpdated();
+        Integer squadNumber = dto.getSquadNumber();
         Mockito
-                .when(playersRepositoryMock.existsById(1L))
+                .when(playersRepositoryMock.existsById(squadNumber))
                 .thenReturn(true);
         Mockito
                 .when(modelMapperMock.map(dto, Player.class))
                 .thenReturn(entity);
         // When
-        boolean actual = playersService.update(dto);
+        boolean actual = playersService.update(squadNumber, dto);
         // Then
-        verify(playersRepositoryMock, times(1)).existsById(1L);
+        verify(playersRepositoryMock, times(1)).existsById(squadNumber);
         verify(playersRepositoryMock, times(1)).save(any(Player.class));
         verify(modelMapperMock, times(1)).map(dto, Player.class);
         then(actual).isTrue();
     }
 
     /**
-     * Given no player exists with the specified ID
+     * Given no player exists with the specified squad number
      * When update() is called
      * Then false is returned without saving
      */
@@ -358,31 +359,30 @@ class PlayersServiceTests {
     void givenPlayerDoesNotExist_whenUpdate_thenReturnsFalse() {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        dto.setId(999L);
+        Integer squadNumber = 999;
         Mockito
-                .when(playersRepositoryMock.existsById(999L))
+                .when(playersRepositoryMock.existsById(squadNumber))
                 .thenReturn(false);
         // When
-        boolean actual = playersService.update(dto);
+        boolean actual = playersService.update(squadNumber, dto);
         // Then
-        verify(playersRepositoryMock, times(1)).existsById(999L);
+        verify(playersRepositoryMock, times(1)).existsById(squadNumber);
         verify(playersRepositoryMock, never()).save(any(Player.class));
         verify(modelMapperMock, never()).map(dto, Player.class);
         then(actual).isFalse();
     }
 
     /**
-     * Given a PlayerDTO has null ID
+     * Given a null squad number is passed
      * When update() is called
      * Then false is returned without checking repository or saving
      */
     @Test
-    void givenNullId_whenUpdate_thenReturnsFalse() {
+    void givenNullSquadNumber_whenUpdate_thenReturnsFalse() {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        dto.setId(null);
         // When
-        boolean actual = playersService.update(dto);
+        boolean actual = playersService.update(null, dto);
         // Then
         verify(playersRepositoryMock, never()).existsById(any());
         verify(playersRepositoryMock, never()).save(any(Player.class));
@@ -398,39 +398,41 @@ class PlayersServiceTests {
 
     /**
      * Given a player exists
-     * When deleting that player
+     * When deleting that player by squad number
      * Then the player is deleted and true is returned
      */
     @Test
     void givenPlayerExists_whenDelete_thenReturnsTrue() {
         // Given
+        Integer squadNumber = 17;
         Mockito
-                .when(playersRepositoryMock.existsById(21L))
+                .when(playersRepositoryMock.existsById(squadNumber))
                 .thenReturn(true);
         // When
-        boolean actual = playersService.delete(21L);
+        boolean actual = playersService.deleteBySquadNumber(squadNumber);
         // Then
-        verify(playersRepositoryMock, times(1)).existsById(21L);
-        verify(playersRepositoryMock, times(1)).deleteById(21L);
+        verify(playersRepositoryMock, times(1)).existsById(squadNumber);
+        verify(playersRepositoryMock, times(1)).deleteById(squadNumber);
         then(actual).isTrue();
     }
 
     /**
-     * Given no player exists with a specific ID
+     * Given no player exists with a specific squad number
      * When attempting to delete that player
      * Then false is returned without deleting
      */
     @Test
     void givenPlayerDoesNotExist_whenDelete_thenReturnsFalse() {
         // Given
+        Integer squadNumber = 999;
         Mockito
-                .when(playersRepositoryMock.existsById(999L))
+                .when(playersRepositoryMock.existsById(squadNumber))
                 .thenReturn(false);
         // When
-        boolean actual = playersService.delete(999L);
+        boolean actual = playersService.deleteBySquadNumber(squadNumber);
         // Then
-        verify(playersRepositoryMock, times(1)).existsById(999L);
-        verify(playersRepositoryMock, never()).deleteById(anyLong());
+        verify(playersRepositoryMock, times(1)).existsById(squadNumber);
+        verify(playersRepositoryMock, never()).deleteById(anyInt());
         then(actual).isFalse();
     }
 }
