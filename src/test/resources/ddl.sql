@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS players;
 
 CREATE TABLE players (
-    id          VARCHAR(36)  PRIMARY KEY,
+    id          VARCHAR(36)  NOT NULL PRIMARY KEY,
     squadNumber INTEGER      NOT NULL UNIQUE,
     firstName   TEXT         NOT NULL,
     middleName  TEXT,

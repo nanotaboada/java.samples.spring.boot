@@ -111,6 +111,7 @@ public class PlayersService {
      *
      * @return a list of all players (empty list if none found)
      */
+    @Transactional(readOnly = true)
     @Cacheable(value = "players")
     public List<PlayerDTO> retrieveAll() {
         return playersRepository.findAll()
@@ -128,6 +129,7 @@ public class PlayersService {
      * @param id the UUID primary key (must not be null)
      * @return the player DTO if found, null otherwise
      */
+    @Transactional(readOnly = true)
     @Cacheable(value = "players", key = "#id", unless = "#result == null")
     public PlayerDTO retrieveById(UUID id) {
         return playersRepository.findById(id)
@@ -144,6 +146,7 @@ public class PlayersService {
      * @param squadNumber the squad number to retrieve (jersey number, typically 1-99)
      * @return the player DTO if found, null otherwise
      */
+    @Transactional(readOnly = true)
     @Cacheable(value = "players", key = "'squad-' + #squadNumber", unless = "#result == null")
     public PlayerDTO retrieveBySquadNumber(Integer squadNumber) {
         return playersRepository.findBySquadNumber(squadNumber)
@@ -163,6 +166,7 @@ public class PlayersService {
      * @param league the league name to search for (must not be null or blank)
      * @return a list of matching players (empty list if none found)
      */
+    @Transactional(readOnly = true)
     public List<PlayerDTO> searchByLeague(String league) {
         return playersRepository.findByLeagueContainingIgnoreCase(league)
                 .stream()
@@ -191,6 +195,11 @@ public class PlayersService {
     @CacheEvict(value = "players", allEntries = true)
     public boolean update(Integer squadNumber, PlayerDTO playerDTO) {
         log.debug("Updating player with squad number: {}", squadNumber);
+
+        if (squadNumber == null) {
+            log.warn("Cannot update player - squad number is null");
+            return false;
+        }
 
         return playersRepository.findBySquadNumber(squadNumber)
                 .map(existing -> {

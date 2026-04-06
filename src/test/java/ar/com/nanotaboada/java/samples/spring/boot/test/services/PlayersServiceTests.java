@@ -380,12 +380,10 @@ class PlayersServiceTests {
     void givenNullSquadNumber_whenUpdate_thenReturnsFalse() {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
-        Mockito
-                .when(playersRepositoryMock.findBySquadNumber(null))
-                .thenReturn(Optional.empty());
         // When
         boolean actual = playersService.update(null, dto);
         // Then
+        verify(playersRepositoryMock, never()).findBySquadNumber(any());
         verify(playersRepositoryMock, never()).save(any(Player.class));
         verify(modelMapperMock, never()).map(any(), any());
         then(actual).isFalse();

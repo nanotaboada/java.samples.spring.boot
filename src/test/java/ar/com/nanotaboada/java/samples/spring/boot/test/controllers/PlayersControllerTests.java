@@ -186,7 +186,8 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).retrieveAll();
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).usingRecursiveComparison().isEqualTo(expected);
+        expected.forEach(player -> then(content).contains(player.getId().toString()));
+        then(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expected);
     }
 
     /**
@@ -216,7 +217,8 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).retrieveById(id);
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).usingRecursiveComparison().isEqualTo(expected);
+        then(content).contains(expected.getId().toString());
+        then(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expected);
     }
 
     /**
@@ -274,7 +276,8 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).retrieveBySquadNumber(squadNumber);
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).usingRecursiveComparison().isEqualTo(expected);
+        then(content).contains(expected.getId().toString());
+        then(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expected);
         then(actual.getSquadNumber()).isEqualTo(squadNumber);
     }
 
@@ -333,7 +336,8 @@ class PlayersControllerTests {
         then(response.getContentType()).contains("application/json");
         verify(playersServiceMock, times(1)).searchByLeague(any());
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(actual).usingRecursiveComparison().isEqualTo(expected);
+        expected.forEach(player -> then(content).contains(player.getId().toString()));
+        then(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expected);
     }
 
     /**
