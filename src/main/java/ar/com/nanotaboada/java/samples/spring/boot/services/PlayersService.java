@@ -236,6 +236,11 @@ public class PlayersService {
     public boolean deleteBySquadNumber(Integer squadNumber) {
         log.debug("Deleting player with squad number: {}", squadNumber);
 
+        if (squadNumber == null) {
+            log.warn("Cannot delete player - squad number is null");
+            return false;
+        }
+
         return playersRepository.findBySquadNumber(squadNumber)
                 .map(existing -> {
                     playersRepository.deleteById(existing.getId());

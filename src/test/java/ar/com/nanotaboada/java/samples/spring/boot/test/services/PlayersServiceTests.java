@@ -438,4 +438,19 @@ class PlayersServiceTests {
         verify(playersRepositoryMock, never()).deleteById(any());
         then(actual).isFalse();
     }
+
+    /**
+     * Given a null squad number is passed
+     * When deleteBySquadNumber() is called
+     * Then false is returned without hitting the repository
+     */
+    @Test
+    void givenNullSquadNumber_whenDelete_thenReturnsFalse() {
+        // Given / When
+        boolean actual = playersService.deleteBySquadNumber(null);
+        // Then
+        verify(playersRepositoryMock, never()).findBySquadNumber(any());
+        verify(playersRepositoryMock, never()).deleteById(any());
+        then(actual).isFalse();
+    }
 }
