@@ -1,6 +1,7 @@
 package ar.com.nanotaboada.java.samples.spring.boot.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -65,29 +66,26 @@ public class PlayersService {
     /**
      * Creates a new player and stores it in the database.
      * <p>
-     * This method converts the PlayerDTO to a Player entity, persists it, and returns the saved player with its auto-generated
-     * ID. The result is automatically cached using the player's ID as the cache key.
+     * Converts the PlayerDTO to a Player entity, persists it (UUID generated via
+     * {@code GenerationType.UUID}), and returns the saved player with its assigned UUID.
      * </p>
      * <p>
-     * <b>Conflict Detection:</b> Checks if a player with the same squad number already exists (optimization).
-     * Squad numbers are unique identifiers (jersey numbers). Database constraint ensures uniqueness even under
-     * concurrent operations. If a race condition occurs between check and save, DataIntegrityViolationException
-     * is caught and null is returned to indicate conflict.
+     * <b>Conflict Detection:</b> Checks if a player with the same squad number already exists.
+     * If a race condition occurs between check and save, DataIntegrityViolationException is caught
+     * and null is returned to indicate conflict.
      * </p>
      *
      * @param playerDTO the player data to create (must not be null)
-     * @return the created player with auto-generated ID, or null if squad number already exists
-     * @see org.springframework.cache.annotation.CacheEvict
+     * @return the created player with generated UUID, or null if squad number already exists
      */
     @Transactional
     @CacheEvict(value = "players", allEntries = true)
     public PlayerDTO create(PlayerDTO playerDTO) {
         log.debug("Creating new player with squad number: {}", playerDTO.getSquadNumber());
 
-        // Check if squad number already exists (optimization to avoid unnecessary DB write)
         if (playersRepository.findBySquadNumber(playerDTO.getSquadNumber()).isPresent()) {
             log.warn("Cannot create player - squad number {} already exists", playerDTO.getSquadNumber());
-            return null; // Conflict: squad number already taken
+            return null;
         }
 
         try {
@@ -97,8 +95,6 @@ public class PlayersService {
             log.info("Player created successfully - ID: {}, Squad Number: {}", result.getId(), result.getSquadNumber());
             return result;
         } catch (DataIntegrityViolationException _) {
-            // Handle race condition: concurrent request created player with same squad number
-            // between our check and save operation
             log.warn("Cannot create player - squad number {} already exists (race condition)", playerDTO.getSquadNumber());
             return null;
         }
@@ -112,14 +108,10 @@ public class PlayersService {
 
     /**
      * Retrieves all players from the database.
-     * <p>
-     * This method returns the complete Argentina 2022 FIFA World Cup squad (26 players).
-     * Results are cached to improve performance on subsequent calls.
-     * </p>
      *
      * @return a list of all players (empty list if none found)
-     * @see org.springframework.cache.annotation.Cacheable
      */
+    @Transactional(readOnly = true)
     @Cacheable(value = "players")
     public List<PlayerDTO> retrieveAll() {
         return playersRepository.findAll()
@@ -129,35 +121,32 @@ public class PlayersService {
     }
 
     /**
-     * Retrieves a player by their unique identifier.
+     * Retrieves a player by their UUID primary key.
      * <p>
-     * This method uses caching to improve performance. If the player is found in the cache, it will be returned without
-     * hitting the database. Otherwise, it queries the database and caches the result.
-     * Null results (player not found) are not cached to avoid serving stale misses.
+     * Uses caching to improve performance. Null results are not cached.
      * </p>
      *
-     * @param id the unique identifier of the player (must not be null)
+     * @param id the UUID primary key (must not be null)
      * @return the player DTO if found, null otherwise
-     * @see org.springframework.cache.annotation.Cacheable
      */
+    @Transactional(readOnly = true)
     @Cacheable(value = "players", key = "#id", unless = "#result == null")
-    public PlayerDTO retrieveById(Long id) {
+    public PlayerDTO retrieveById(UUID id) {
         return playersRepository.findById(id)
                 .map(this::mapFrom)
                 .orElse(null);
     }
 
     /**
-     * Retrieves a player by their squad number (unique identifier).
+     * Retrieves a player by their squad number.
      * <p>
-     * Squad numbers are unique jersey numbers (e.g., Messi is #10). This is a direct lookup by unique identifier,
-     * similar to retrieveById(). Results are cached to improve performance.
+     * Squad numbers are unique jersey numbers (e.g., Messi is #10). Results are cached.
      * </p>
      *
      * @param squadNumber the squad number to retrieve (jersey number, typically 1-99)
      * @return the player DTO if found, null otherwise
-     * @see org.springframework.cache.annotation.Cacheable
      */
+    @Transactional(readOnly = true)
     @Cacheable(value = "players", key = "'squad-' + #squadNumber", unless = "#result == null")
     public PlayerDTO retrieveBySquadNumber(Integer squadNumber) {
         return playersRepository.findBySquadNumber(squadNumber)
@@ -173,14 +162,11 @@ public class PlayersService {
 
     /**
      * Searches for players by league name (case-insensitive, partial match).
-     * <p>
-     * This method performs a wildcard search on the league field, matching any player whose league name contains the search
-     * term (e.g., "Premier" matches "Premier League").
-     * </p>
      *
      * @param league the league name to search for (must not be null or blank)
      * @return a list of matching players (empty list if none found)
      */
+    @Transactional(readOnly = true)
     public List<PlayerDTO> searchByLeague(String league) {
         return playersRepository.findByLeagueContainingIgnoreCase(league)
                 .stream()
@@ -195,30 +181,38 @@ public class PlayersService {
      */
 
     /**
-     * Updates an existing player's information.
+     * Updates an existing player identified by their squad number.
      * <p>
-     * This method performs a full update (PUT semantics) of the player entity. If the player exists, it updates all fields and
-     * refreshes the cache. If the player doesn't exist, returns false without making changes.
+     * Looks up the existing player by squad number to retrieve the UUID primary key,
+     * maps the DTO to an entity, preserves the UUID, and saves. Returns false if not found.
      * </p>
      *
-     * @param playerDTO the player data to update (must include a valid ID)
+     * @param squadNumber the squad number (natural key) of the player to update
+     * @param playerDTO the player data to update
      * @return true if the player was updated successfully, false if not found
-     * @see org.springframework.cache.annotation.CacheEvict
      */
     @Transactional
     @CacheEvict(value = "players", allEntries = true)
-    public boolean update(PlayerDTO playerDTO) {
-        log.debug("Updating player with ID: {}", playerDTO.getId());
+    public boolean update(Integer squadNumber, PlayerDTO playerDTO) {
+        log.debug("Updating player with squad number: {}", squadNumber);
 
-        if (playerDTO.getId() != null && playersRepository.existsById(playerDTO.getId())) {
-            Player player = mapFrom(playerDTO);
-            playersRepository.save(player);
-            log.info("Player updated successfully - ID: {}", playerDTO.getId());
-            return true;
-        } else {
-            log.warn("Cannot update player - ID {} not found", playerDTO.getId());
+        if (squadNumber == null) {
+            log.warn("Cannot update player - squad number is null");
             return false;
         }
+
+        return playersRepository.findBySquadNumber(squadNumber)
+                .map(existing -> {
+                    Player player = mapFrom(playerDTO);
+                    player.setId(existing.getId());
+                    playersRepository.save(player);
+                    log.info("Player updated successfully - Squad Number: {}", squadNumber);
+                    return true;
+                })
+                .orElseGet(() -> {
+                    log.warn("Cannot update player - squad number {} not found", squadNumber);
+                    return false;
+                });
     }
 
     /*
@@ -228,29 +222,35 @@ public class PlayersService {
      */
 
     /**
-     * Deletes a player by their unique identifier.
+     * Deletes a player by their squad number.
      * <p>
-     * This method removes the player from the database and evicts it from the cache. If the player doesn't exist, returns
-     * false without making changes.
+     * Looks up the player by squad number to retrieve the UUID primary key, then deletes by UUID.
+     * Returns false if the player doesn't exist.
      * </p>
      *
-     * @param id the unique identifier of the player to delete (must not be null)
+     * @param squadNumber the squad number of the player to delete (must not be null)
      * @return true if the player was deleted successfully, false if not found
-     * @see org.springframework.cache.annotation.CacheEvict
      */
     @Transactional
     @CacheEvict(value = "players", allEntries = true)
-    public boolean delete(Long id) {
-        log.debug("Deleting player with ID: {}", id);
+    public boolean deleteBySquadNumber(Integer squadNumber) {
+        log.debug("Deleting player with squad number: {}", squadNumber);
 
-        if (playersRepository.existsById(id)) {
-            playersRepository.deleteById(id);
-            log.info("Player deleted successfully - ID: {}", id);
-            return true;
-        } else {
-            log.warn("Cannot delete player - ID {} not found", id);
+        if (squadNumber == null) {
+            log.warn("Cannot delete player - squad number is null");
             return false;
         }
+
+        return playersRepository.findBySquadNumber(squadNumber)
+                .map(existing -> {
+                    playersRepository.delete(existing);
+                    log.info("Player deleted successfully - Squad Number: {}", squadNumber);
+                    return true;
+                })
+                .orElseGet(() -> {
+                    log.warn("Cannot delete player - squad number {} not found", squadNumber);
+                    return false;
+                });
     }
 
     private PlayerDTO mapFrom(Player player) {
