@@ -42,6 +42,14 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Changed
 
+- Normalize player dataset: seed Leandro Paredes (squad 5) permanently; correct
+  Enzo Fernández (squad 24) to SL Benfica / Liga Portugal, Alexis Mac Allister
+  (squad 20) to Brighton & Hove Albion, and Lionel Messi (squad 10) to Paris
+  Saint-Germain / Ligue 1 — all reflecting November 2022 World Cup squads (#288)
+- Align CRUD test fixtures: Giovani Lo Celso (squad 27) for Create and Delete,
+  Lionel Messi (squad 10) for Retrieve, Damián Martínez (squad 23) for Update;
+  canonical UUID v5 strings applied across `dml.sql`, `PlayerFakes`,
+  `PlayerDTOFakes`, and `storage/players-sqlite3.db` (#288)
 - `Player` entity: `id` (UUID) is the database primary key — `@Id` with
   `GenerationType.UUID`; `squadNumber` (Integer) carries `@Column(unique=true)`
   and serves as the natural-key route identifier for `PUT` and `DELETE` (#268)
@@ -59,6 +67,8 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Added
 
+- Repository delete test: `givenPlayerExists_whenDelete_thenPlayerIsRemoved`
+  covers Lo Celso inline save + delete pattern (#288)
 - JaCoCo `check` goal added to Maven build enforcing 80% instruction and branch
   coverage — replaces manual HTML report step in `/pre-commit` (#268)
 - `.sonarcloud.properties`: SonarCloud Automatic Analysis configuration —

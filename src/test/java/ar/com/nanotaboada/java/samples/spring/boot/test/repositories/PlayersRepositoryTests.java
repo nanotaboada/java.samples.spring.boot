@@ -122,4 +122,21 @@ class PlayersRepositoryTests {
         // Then
         then(actual).isEmpty();
     }
+
+    /**
+     * Given Lo Celso is saved to the database (not pre-seeded)
+     * When deleting that player by their UUID
+     * Then the player is no longer found
+     */
+    @Test
+    void givenPlayerExists_whenDelete_thenPlayerIsRemoved() {
+        // Given
+        Player saved = repository.save(PlayerFakes.createOneValid()); // Lo Celso (squad 27)
+        UUID savedId = saved.getId();
+        then(savedId).isNotNull();
+        // When
+        repository.delete(saved);
+        // Then
+        then(repository.findById(savedId)).isEmpty();
+    }
 }
