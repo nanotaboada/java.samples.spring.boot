@@ -270,7 +270,7 @@ class PlayersServiceTests {
      * Then a list of matching player DTOs is returned
      */
     @Test
-    void givenPlayersExist_whenSearchByLeague_thenReturns7Players() {
+    void givenPlayersExist_whenSearchByLeague_thenReturns6Players() {
         // Given
         String league = "Premier";
         List<Player> entities = PlayerFakes.createAll().stream()
@@ -403,11 +403,8 @@ class PlayersServiceTests {
     @Test
     void givenPlayerExists_whenDelete_thenReturnsTrue() {
         // Given
-        Integer squadNumber = 17;
-        Player entity = PlayerFakes.createAll().stream()
-                .filter(p -> squadNumber.equals(p.getSquadNumber()))
-                .findFirst()
-                .orElseThrow();
+        Player entity = PlayerFakes.createOneValid(); // Lo Celso (squad 27)
+        Integer squadNumber = entity.getSquadNumber();
         Mockito
                 .when(playersRepositoryMock.findBySquadNumber(squadNumber))
                 .thenReturn(Optional.of(entity));

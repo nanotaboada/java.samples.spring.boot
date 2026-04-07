@@ -78,7 +78,7 @@ class PlayersControllerTests {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
         PlayerDTO savedDTO = PlayerDTOFakes.createOneValid();
-        UUID savedUuid = UUID.fromString("00000000-0000-0000-0000-000000000019");
+        UUID savedUuid = UUID.fromString("f8d13028-0d22-5513-8774-08a2332b5814");
         savedDTO.setId(savedUuid);
         String content = objectMapper.writeValueAsString(dto);
         Mockito
@@ -527,7 +527,7 @@ class PlayersControllerTests {
     void givenPlayerExists_whenDelete_thenReturnsNoContent()
             throws Exception {
         // Given
-        Integer squadNumber = 17;
+        Integer squadNumber = 27; // Lo Celso
         Mockito
                 .when(playersServiceMock.deleteBySquadNumber(squadNumber))
                 .thenReturn(true);
