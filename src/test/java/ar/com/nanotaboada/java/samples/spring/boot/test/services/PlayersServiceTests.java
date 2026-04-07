@@ -52,7 +52,7 @@ class PlayersServiceTests {
      * Then the player is saved and a PlayerDTO is returned
      */
     @Test
-    void givenNoExistingPlayer_whenCreate_thenReturnsPlayerDTO() {
+    void givenNonexistentPlayer_whenCreate_thenReturnsPlayerDTO() {
         // Given
         Player entity = PlayerFakes.createOneValid();
         PlayerDTO expected = PlayerDTOFakes.createOneValid();
@@ -84,7 +84,7 @@ class PlayersServiceTests {
      * Then null is returned (conflict detected)
      */
     @Test
-    void givenPlayerAlreadyExists_whenCreate_thenReturnsNull() {
+    void givenExistingPlayer_whenCreate_thenReturnsNull() {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
         Integer expectedSquadNumber = 10;
@@ -192,7 +192,7 @@ class PlayersServiceTests {
      * Then null is returned
      */
     @Test
-    void givenPlayerDoesNotExist_whenRetrieveById_thenReturnsNull() {
+    void givenUnknownPlayer_whenRetrieveById_thenReturnsNull() {
         // Given
         UUID id = UUID.randomUUID();
         Mockito
@@ -244,7 +244,7 @@ class PlayersServiceTests {
      * Then null is returned
      */
     @Test
-    void givenPlayerDoesNotExist_whenRetrieveBySquadNumber_thenReturnsNull() {
+    void givenUnknownPlayer_whenRetrieveBySquadNumber_thenReturnsNull() {
         // Given
         Integer squadNumber = 99;
         Mockito
@@ -355,7 +355,7 @@ class PlayersServiceTests {
      * Then false is returned without saving
      */
     @Test
-    void givenPlayerDoesNotExist_whenUpdate_thenReturnsFalse() {
+    void givenUnknownPlayer_whenUpdate_thenReturnsFalse() {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
         Integer squadNumber = 999;
@@ -422,7 +422,7 @@ class PlayersServiceTests {
      * Then false is returned without deleting
      */
     @Test
-    void givenPlayerDoesNotExist_whenDelete_thenReturnsFalse() {
+    void givenUnknownPlayer_whenDelete_thenReturnsFalse() {
         // Given
         Integer squadNumber = 999;
         Mockito

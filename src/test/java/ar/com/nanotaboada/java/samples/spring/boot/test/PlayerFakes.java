@@ -7,6 +7,16 @@ import java.util.UUID;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 
+/**
+ * Test data factory for Player entities.
+ *
+ * <p>Data-state vocabulary used in BDD-style test names:
+ * <ul>
+ *   <li>{@code existing} — player is present in the database</li>
+ *   <li>{@code nonexistent} — player is absent, valid shape for creation (POST scenarios)</li>
+ *   <li>{@code unknown} — valid ID format, absent from database (404-by-lookup scenarios)</li>
+ * </ul>
+ */
 public final class PlayerFakes {
 
     private PlayerFakes() {

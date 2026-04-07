@@ -42,6 +42,11 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Changed
 
+- Normalize data-state vocabulary in BDD-style test names: rename 12 `given*`
+  methods across `PlayersServiceTests`, `PlayersControllerTests`, and
+  `PlayersRepositoryTests` to use canonical terms (`existing`, `nonexistent`,
+  `unknown`); add class-level Javadoc to `PlayerFakes` documenting the
+  three-term convention (#303)
 - Normalize player dataset: seed Leandro Paredes (squad 5) permanently; correct
   Enzo Fernández (squad 24) to SL Benfica / Liga Portugal, Alexis Mac Allister
   (squad 20) to Brighton & Hove Albion, and Lionel Messi (squad 10) to Paris

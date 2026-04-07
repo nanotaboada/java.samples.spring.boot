@@ -227,7 +227,7 @@ class PlayersControllerTests {
      * Then response status is 404 Not Found
      */
     @Test
-    void givenPlayerDoesNotExist_whenGetById_thenReturnsNotFound()
+    void givenUnknownPlayer_whenGetById_thenReturnsNotFound()
             throws Exception {
         // Given
         UUID id = UUID.randomUUID();
@@ -287,7 +287,7 @@ class PlayersControllerTests {
      * Then response status is 404 Not Found
      */
     @Test
-    void givenPlayerDoesNotExist_whenGetBySquadNumber_thenReturnsNotFound()
+    void givenUnknownPlayer_whenGetBySquadNumber_thenReturnsNotFound()
             throws Exception {
         // Given
         Integer squadNumber = 99;
@@ -411,7 +411,7 @@ class PlayersControllerTests {
      * Then response status is 404 Not Found
      */
     @Test
-    void givenPlayerDoesNotExist_whenPut_thenReturnsNotFound()
+    void givenUnknownPlayer_whenPut_thenReturnsNotFound()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
@@ -549,7 +549,7 @@ class PlayersControllerTests {
      * Then response status is 404 Not Found
      */
     @Test
-    void givenPlayerDoesNotExist_whenDelete_thenReturnsNotFound()
+    void givenUnknownPlayer_whenDelete_thenReturnsNotFound()
             throws Exception {
         // Given
         Integer squadNumber = 999;
