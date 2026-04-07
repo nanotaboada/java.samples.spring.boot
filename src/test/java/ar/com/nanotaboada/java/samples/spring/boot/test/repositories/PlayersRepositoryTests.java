@@ -50,7 +50,7 @@ class PlayersRepositoryTests {
      * Then an empty Optional is returned
      */
     @Test
-    void givenPlayerDoesNotExist_whenFindById_thenReturnsEmpty() {
+    void givenUnknownPlayer_whenFindById_thenReturnsEmpty() {
         // Given
         UUID nonExistentId = UUID.randomUUID();
         // When
@@ -114,7 +114,7 @@ class PlayersRepositoryTests {
      * Then an empty Optional is returned
      */
     @Test
-    void givenPlayerDoesNotExist_whenFindBySquadNumber_thenReturnsEmpty() {
+    void givenUnknownPlayer_whenFindBySquadNumber_thenReturnsEmpty() {
         // Given
         Integer nonExistentSquadNumber = 99;
         // When
