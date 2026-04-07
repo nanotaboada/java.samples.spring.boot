@@ -40,6 +40,18 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ## [Unreleased]
 
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## [2.0.0 - Barcelona] - 2026-04-06
+
 ### Changed
 
 - Normalize data-state vocabulary in BDD-style test names: rename 12 `given*`
@@ -66,6 +78,10 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 - `PUT /players/{squadNumber}` and `DELETE /players/{squadNumber}`: path
   variable changed from `Long id` to `Integer squadNumber` (#268)
 - `GET /players/{id}`: path variable changed from `Long` to `UUID` (#268)
+
+  **BREAKING CHANGE**: `PUT /players/{id}` and `DELETE /players/{id}` routes
+  replaced by `PUT /players/{squadNumber}` and `DELETE /players/{squadNumber}`;
+  `GET /players/{id}` path variable type changed from `Long` to `UUID` (#268)
 - `storage/players-sqlite3.db`: schema migrated to `id VARCHAR(36) PRIMARY KEY`,
   `squadNumber INTEGER NOT NULL UNIQUE`; 25 players preserved (#268)
 - `ddl.sql` and `dml.sql`: test schema and seed data updated for new structure (#268)

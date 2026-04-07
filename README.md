@@ -143,12 +143,12 @@ Interactive API documentation is available via Swagger UI at `http://localhost:9
 | Method | Endpoint | Description | Status |
 | ------ | -------- | ----------- | ------ |
 | `GET` | `/players` | List all players | `200 OK` |
-| `GET` | `/players/{id}` | Get player by ID | `200 OK` |
+| `GET` | `/players/{id}` | Get player by UUID | `200 OK` |
 | `GET` | `/players/search/league/{league}` | Search players by league | `200 OK` |
 | `GET` | `/players/squadnumber/{squadNumber}` | Get player by squad number | `200 OK` |
 | `POST` | `/players` | Create new player | `201 Created` |
-| `PUT` | `/players/{id}` | Update player by ID | `204 No Content` |
-| `DELETE` | `/players/{id}` | Remove player by ID | `204 No Content` |
+| `PUT` | `/players/{squadNumber}` | Update player by squad number | `204 No Content` |
+| `DELETE` | `/players/{squadNumber}` | Remove player by squad number | `204 No Content` |
 | `GET` | `/actuator/health` | Health check | `200 OK` |
 
 Error codes: `400 Bad Request` (validation failed) · `404 Not Found` (player not found) · `409 Conflict` (duplicate squad number on `POST`)
