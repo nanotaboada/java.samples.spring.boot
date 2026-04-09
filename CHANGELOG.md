@@ -44,6 +44,11 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Changed
 
+- Switch runtime base image from `eclipse-temurin:25-jdk-alpine` to
+  `eclipse-temurin:25-jre-alpine` to reduce image size by dropping compiler
+  toolchain (`javac`, `jshell`, debug utilities) while retaining the full JVM
+  (#307)
+
 ### Fixed
 
 ### Removed
