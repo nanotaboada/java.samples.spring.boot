@@ -19,7 +19,7 @@ RUN mvn clean package -DskipTests
 # Stage 2: Runtime
 # This stage creates the final, minimal image to run the application.
 # ------------------------------------------------------------------------------
-FROM eclipse-temurin:25-jdk-alpine AS runtime
+FROM eclipse-temurin:25-jre-alpine AS runtime
 
 WORKDIR /app
 
