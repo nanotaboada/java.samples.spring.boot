@@ -49,11 +49,12 @@ Release names follow the **historic football clubs** naming convention (A–Z):
   migration directory `src/main/resources/db/migration/` with three versioned
   scripts: `V1__Create_players_table.sql` (schema), `V2__Seed_starting11.sql`
   (11 Starting XI players), `V3__Seed_substitutes.sql` (15 substitute players);
-  configure `spring.flyway.enabled=true` with `baseline-on-migrate=true` for
-  backwards compatibility with existing databases; disable Flyway in test
-  environment which continues to use SQLite in-memory with `ddl.sql`/`dml.sql`;
-  switch `spring.jpa.hibernate.ddl-auto` from `none` to `validate` so Hibernate
-  verifies entity mappings against the Flyway-managed schema (#130)
+  configure `spring.flyway.enabled=true` and `spring.flyway.locations` only —
+  no baseline settings, Flyway runs V1→V2→V3 from scratch on every empty
+  database; disable Flyway in test environment which continues to use SQLite
+  in-memory with `ddl.sql`/`dml.sql`; switch `spring.jpa.hibernate.ddl-auto`
+  from `none` to `validate` so Hibernate verifies entity mappings against the
+  Flyway-managed schema (#130)
 
 ### Changed
 
