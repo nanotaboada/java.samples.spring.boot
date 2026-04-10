@@ -15,5 +15,5 @@ CREATE TABLE players (
     abbrPosition TEXT        NOT NULL,
     team        TEXT         NOT NULL,
     league      TEXT         NOT NULL,
-    starting11  INTEGER      NOT NULL
+    starting11  BOOLEAN      NOT NULL
 );
