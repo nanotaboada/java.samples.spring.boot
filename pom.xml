@@ -169,6 +169,29 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
         </dependency>
+        <!-- Flyway Core ================================================== -->
+        <!--
+            Flyway is an open-source database migration tool. It provides version
+            control for your database schema and automates migrations across all
+            environments. Includes built-in support for SQLite (community).
+            https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+        -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <!-- Flyway Database PostgreSQL ==================================== -->
+        <!--
+            Flyway 10+ modular architecture requires explicit database support
+            modules for non-community databases. Required for PostgreSQL support
+            (see #286 — Add PostgreSQL support with unified migration-based
+            initialization).
+            https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
+        -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
         <!-- H2 Database Engine ============================================ -->
         <!--
             Provides a fast in-memory database for testing. Used only in test
