@@ -277,7 +277,7 @@ Schema versioning is managed by [Flyway](https://documentation.red-gate.com/flyw
 
 Versioned SQL scripts live in `src/main/resources/db/migration/` and follow the Flyway naming convention:
 
-```
+```text
 V{version}__{description}.sql
 ```
 
