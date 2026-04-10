@@ -269,6 +269,53 @@ spring.datasource.url=jdbc:sqlite::memory:
 spring.jpa.hibernate.ddl-auto=create-drop
 ```
 
+## Database Migrations
+
+Schema versioning is managed by [Flyway](https://documentation.red-gate.com/flyway), which runs automatically on application startup and applies any pending migrations in order.
+
+### Migration files
+
+Versioned SQL scripts live in `src/main/resources/db/migration/` and follow the Flyway naming convention:
+
+```text
+V{version}__{description}.sql
+```
+
+| File | Description |
+| ---- | ----------- |
+| `V1__Create_players_table.sql` | Creates the `players` table (schema) |
+| `V2__Seed_starting11.sql` | Seeds 11 Starting XI players (`starting11 = 1`) |
+| `V3__Seed_substitutes.sql` | Seeds 15 Substitute players (`starting11 = 0`) |
+
+All migration SQL is written to be compatible with both **SQLite** (local dev) and **PostgreSQL** (see #286).
+
+### First start
+
+On first run, Flyway detects an empty database and applies V1 → V2 → V3 in sequence, creating the `players` table and seeding all 26 players. The database file (`storage/players-sqlite3.db`) is created automatically and is excluded from version control.
+
+### Adding a new migration
+
+Create a new file in `src/main/resources/db/migration/` with the next version number:
+
+```bash
+touch src/main/resources/db/migration/V4__Add_nationality_column.sql
+```
+
+Flyway applies it automatically on the next application startup. View the applied history by querying the `flyway_schema_history` table.
+
+### Reset local database
+
+Delete the SQLite file and restart — Flyway recreates the schema and seed data from scratch:
+
+```bash
+rm storage/players-sqlite3.db
+./mvnw spring-boot:run
+```
+
+### Tests
+
+The test environment keeps `spring.flyway.enabled=false` and uses SQLite in-memory with `ddl.sql`/`dml.sql` via Spring SQL init for fast, isolated test execution.
+
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on:

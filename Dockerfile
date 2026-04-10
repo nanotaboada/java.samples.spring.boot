@@ -44,11 +44,6 @@ COPY --chmod=444        README.md                   ./
 COPY --chmod=555        scripts/entrypoint.sh       ./entrypoint.sh
 COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
 
-# The 'hold' is our storage compartment within the image. Here, we copy a
-# pre-seeded SQLite database file, which Compose will mount as a persistent
-# 'storage' volume when the container starts up.
-COPY --chmod=555        storage/                    ./hold/
-
 # Install SQLite runtime libs, add non-root user and prepare volume mount point
 RUN apk add --no-cache sqlite-libs && \
     addgroup -S spring && \

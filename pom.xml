@@ -169,6 +169,31 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
         </dependency>
+        <!-- Spring Boot Starter Flyway ==================================== -->
+        <!--
+            Spring Boot 4.0 moved Flyway auto-configuration out of
+            spring-boot-autoconfigure into this dedicated starter. Adding only
+            flyway-core is no longer sufficient — this starter is required to
+            enable FlywayAutoConfiguration and the spring.flyway.* properties.
+            Transitively brings in flyway-core (version managed by Spring BOM).
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-flyway
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <!-- Flyway Database PostgreSQL ==================================== -->
+        <!--
+            Flyway 10+ modular architecture requires explicit database support
+            modules for non-community databases. Required for PostgreSQL support
+            (see #286 — Add PostgreSQL support with unified migration-based
+            initialization).
+            https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
+        -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
         <!-- H2 Database Engine ============================================ -->
         <!--
             Provides a fast in-memory database for testing. Used only in test

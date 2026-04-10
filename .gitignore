@@ -1,6 +1,7 @@
 HELP.md
 .claude/settings.local.json
 target/
+storage/*.db
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
