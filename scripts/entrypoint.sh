@@ -22,7 +22,7 @@ fi
 
 log "✔ Ready!"
 log "🚀 Launching app..."
-log "🔌 API endpoints | http://localhost:9000"
-log "📚 Swagger UI    | http://localhost:9000/swagger/index.html"
-log "❤️  Health check  | http://localhost:9001/actuator/health"
+log "🔌 API endpoints   | http://localhost:9000"
+log "📚 Swagger UI      | http://localhost:9000/swagger/index.html"
+log "❤️ Health check    | http://localhost:9001/actuator/health"
 exec "$@"

@@ -289,6 +289,10 @@ V{version}__{description}.sql
 
 All migration SQL is written to be compatible with both **SQLite** (local dev) and **PostgreSQL** (see #286).
 
+### First start
+
+On first run, Flyway detects an empty database and applies V1 → V2 → V3 in sequence, creating the `players` table and seeding all 26 players. The database file (`storage/players-sqlite3.db`) is created automatically and is excluded from version control.
+
 ### Adding a new migration
 
 Create a new file in `src/main/resources/db/migration/` with the next version number:
@@ -299,13 +303,9 @@ touch src/main/resources/db/migration/V4__Add_nationality_column.sql
 
 Flyway applies it automatically on the next application startup. View the applied history by querying the `flyway_schema_history` table.
 
-### Existing databases
-
-`baseline-on-migrate=true` ensures that databases created before Flyway was introduced are recognised as already at `V3` (schema + full seed data), so no migrations run against them. Fresh databases (new file) run V1 → V2 → V3 from scratch.
-
 ### Reset local database
 
-Delete the SQLite file and restart the application — Flyway recreates the schema and seed data automatically:
+Delete the SQLite file and restart — Flyway recreates the schema and seed data from scratch:
 
 ```bash
 rm storage/players-sqlite3.db
