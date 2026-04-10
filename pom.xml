@@ -169,16 +169,18 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
         </dependency>
-        <!-- Flyway Core ================================================== -->
+        <!-- Spring Boot Starter Flyway ==================================== -->
         <!--
-            Flyway is an open-source database migration tool. It provides version
-            control for your database schema and automates migrations across all
-            environments. Includes built-in support for SQLite (community).
-            https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+            Spring Boot 4.0 moved Flyway auto-configuration out of
+            spring-boot-autoconfigure into this dedicated starter. Adding only
+            flyway-core is no longer sufficient — this starter is required to
+            enable FlywayAutoConfiguration and the spring.flyway.* properties.
+            Transitively brings in flyway-core (version managed by Spring BOM).
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-flyway
         -->
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
         </dependency>
         <!-- Flyway Database PostgreSQL ==================================== -->
         <!--

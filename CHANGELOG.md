@@ -43,7 +43,9 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 ### Added
 
 - Integrate Flyway for database schema versioning and automated migrations;
-  add `flyway-core` and `flyway-database-postgresql` to `pom.xml`; create
+  add `spring-boot-starter-flyway` (Spring Boot 4.0 requires this dedicated
+  starter for autoconfiguration — `flyway-core` alone is insufficient) and
+  `flyway-database-postgresql` to `pom.xml`; create
   migration directory `src/main/resources/db/migration/` with three versioned
   scripts: `V1__Create_players_table.sql` (schema), `V2__Seed_starting11.sql`
   (11 Starting XI players), `V3__Seed_substitutes.sql` (15 substitute players);
