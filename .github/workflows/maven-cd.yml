@@ -45,7 +45,7 @@ jobs:
 
             - name: Verify tag commit is reachable from master
               run: |
-                  if ! git branch -r --contains "${{ github.sha }}" | grep -q "origin/master"; then
+                  if ! git merge-base --is-ancestor "${{ github.sha }}" origin/master; then
                     echo "❌ Tag commit ${{ github.sha }} is not reachable from origin/master"
                     exit 1
                   fi
