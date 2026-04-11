@@ -55,6 +55,9 @@ Release names follow the **historic football clubs** naming convention (A–Z):
   in-memory with `ddl.sql`/`dml.sql`; switch `spring.jpa.hibernate.ddl-auto`
   from `none` to `validate` so Hibernate verifies entity mappings against the
   Flyway-managed schema (#130)
+- Add runtime verification step to the CD workflow that checks whether the tag
+  commit is reachable from `origin/master` before proceeding with build and
+  publish steps, preventing accidental releases from unmerged branches (#292)
 
 ### Changed
 
