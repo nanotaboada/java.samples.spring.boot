@@ -105,7 +105,7 @@ jobs:
                       ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.club }}
 
             - name: Attest build provenance
-              uses: actions/attest-build-provenance@v2
+              uses: actions/attest-build-provenance@v4.1.0
               with:
                   subject-name: ghcr.io/${{ github.repository }}
                   subject-digest: ${{ steps.push.outputs.digest }}
@@ -158,13 +158,6 @@ jobs:
                       docker pull ghcr.io/${{ github.repository }}:latest
                       ```
 
-                      ## Quick Start
-
-                      ```bash
-                      docker run -p 9000:9000 ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.semver }}
-                      ```
-
-                      API available at `http://localhost:9000` · Swagger UI at `http://localhost:9000/swagger/index.html`
                   draft: false
                   prerelease: false
                   generate_release_notes: true
