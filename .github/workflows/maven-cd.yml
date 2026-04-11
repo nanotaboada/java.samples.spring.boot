@@ -36,6 +36,8 @@ jobs:
         permissions:
             contents: write
             packages: write
+            id-token: write
+            attestations: write
 
         steps:
             - name: Checkout repository
@@ -87,23 +89,27 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v4.0.0
 
-            - name: Set image name
-              id: image
-              run: echo "name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
-
             - name: Build and push Docker image to GitHub Container Registry
+              id: push
               uses: docker/build-push-action@v7.1.0
               with:
                   context: .
                   push: true
                   platforms: linux/amd64,linux/arm64
-                  provenance: false
+                  provenance: mode=max
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
                   tags: |
-                      ghcr.io/${{ steps.image.outputs.name }}:latest
-                      ghcr.io/${{ steps.image.outputs.name }}:${{ steps.tag.outputs.semver }}
-                      ghcr.io/${{ steps.image.outputs.name }}:${{ steps.tag.outputs.club }}
+                      ghcr.io/${{ github.repository }}:latest
+                      ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.semver }}
+                      ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.club }}
+
+            - name: Attest build provenance
+              uses: actions/attest-build-provenance@v4.1.0
+              with:
+                  subject-name: ghcr.io/${{ github.repository }}
+                  subject-digest: ${{ steps.push.outputs.digest }}
+                  push-to-registry: true
 
             - name: Generate changelog
               id: changelog
@@ -111,10 +117,19 @@ jobs:
                   CURRENT_TAG="${GITHUB_REF#refs/tags/}"
                   PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -Fxv "$CURRENT_TAG" | head -n 1)
                   if [ -n "$PREVIOUS_TAG" ]; then
-                    CHANGELOG=$(git log "$PREVIOUS_TAG"..HEAD --pretty=format:"- %s" --no-merges)
+                    CHANGELOG=$(git log "$PREVIOUS_TAG"..HEAD --pretty=format:"- %s (%h)" --no-merges)
                   else
-                    CHANGELOG=$(git log --pretty=format:"- %s" --no-merges)
+                    CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
                   fi
+
+                  if [ -z "$CHANGELOG" ]; then
+                    if [ -n "$PREVIOUS_TAG" ]; then
+                      CHANGELOG="No new changes since $PREVIOUS_TAG"
+                    else
+                      CHANGELOG="No changes (first release)"
+                    fi
+                  fi
+
                   {
                     echo "content<<EOF"
                     echo "$CHANGELOG"
@@ -134,20 +149,15 @@ jobs:
 
                       ```bash
                       # By semantic version (recommended)
-                      docker pull ghcr.io/${{ steps.image.outputs.name }}:${{ steps.tag.outputs.semver }}
+                      docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.semver }}
 
                       # By club name
-                      docker pull ghcr.io/${{ steps.image.outputs.name }}:${{ steps.tag.outputs.club }}
+                      docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.club }}
 
                       # Latest
-                      docker pull ghcr.io/${{ steps.image.outputs.name }}:latest
+                      docker pull ghcr.io/${{ github.repository }}:latest
                       ```
 
-                      ## Quick Start
-
-                      ```bash
-                      docker run -p 9000:9000 ghcr.io/${{ steps.image.outputs.name }}:${{ steps.tag.outputs.semver }}
-                      ```
-
-                      API available at `http://localhost:9000` · Swagger UI at `http://localhost:9000/swagger/index.html`
-                  generate_release_notes: false
+                  draft: false
+                  prerelease: false
+                  generate_release_notes: true
