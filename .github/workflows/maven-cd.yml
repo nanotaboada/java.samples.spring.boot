@@ -43,6 +43,14 @@ jobs:
               with:
                   fetch-depth: 0
 
+            - name: Verify tag commit is reachable from master
+              run: |
+                  if ! git merge-base --is-ancestor "${{ github.sha }}" origin/master; then
+                    echo "❌ Tag commit ${{ github.sha }} is not reachable from origin/master"
+                    exit 1
+                  fi
+                  echo "✅ Tag commit ${{ github.sha }} is reachable from origin/master"
+
             - name: Extract and validate tag components
               id: tag
               run: |
