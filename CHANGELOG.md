@@ -42,6 +42,18 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## [2.0.1 - Chelsea] - 2026-04-11
+
+### Added
+
 - Integrate Flyway for database schema versioning and automated migrations;
   add `spring-boot-starter-flyway` (Spring Boot 4.0 requires this dedicated
   starter for autoconfiguration — `flyway-core` alone is insufficient) and
@@ -65,10 +77,6 @@ Release names follow the **historic football clubs** naming convention (A–Z):
   `eclipse-temurin:25-jre-alpine` to reduce image size by dropping compiler
   toolchain (`javac`, `jshell`, debug utilities) while retaining the full JVM
   (#307)
-
-### Fixed
-
-### Removed
 
 ---
 
