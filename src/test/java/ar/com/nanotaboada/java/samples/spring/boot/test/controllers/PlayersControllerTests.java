@@ -126,6 +126,29 @@ class PlayersControllerTests {
     }
 
     /**
+     * Given malformed JSON is provided (unparseable body)
+     * When attempting to create a player
+     * Then response status is 400 Bad Request and service is never called
+     */
+    @Test
+    void givenMalformedJson_whenPost_thenReturnsBadRequest()
+            throws Exception {
+        // Given
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(PATH)
+                .content("{ not-valid-json ")
+                .contentType(MediaType.APPLICATION_JSON);
+        // When
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Then
+        verify(playersServiceMock, never()).create(any(PlayerDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
      * Given a player with the same squad number already exists
      * When attempting to create a player with a duplicate squad number
      * Then response status is 409 Conflict
