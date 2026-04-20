@@ -44,6 +44,13 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Changed
 
+- Return `422 Unprocessable Entity` for field validation failures (`@Valid`
+  constraint violations and squad number mismatch) instead of `400 Bad Request`;
+  reserve `400` for genuinely malformed requests (unparseable JSON, wrong
+  `Content-Type`); introduce `GlobalExceptionHandler` (`@ControllerAdvice`) to
+  intercept `MethodArgumentNotValidException`; update OpenAPI `@ApiResponse`
+  annotations and test assertions accordingly (#319)
+
 ### Fixed
 
 ### Removed

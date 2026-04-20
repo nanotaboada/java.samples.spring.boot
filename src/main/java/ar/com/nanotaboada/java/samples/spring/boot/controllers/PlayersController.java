@@ -51,7 +51,7 @@ import lombok.RequiredArgsConstructor;
  * <li><b>200 OK:</b> Successful retrieval</li>
  * <li><b>201 Created:</b> Successful creation (with Location header)</li>
  * <li><b>204 No Content:</b> Successful update/delete</li>
- * <li><b>400 Bad Request:</b> Validation failure</li>
+ * <li><b>422 Unprocessable Entity:</b> Validation failure</li>
  * <li><b>404 Not Found:</b> Resource not found</li>
  * </ul>
  *
@@ -80,14 +80,14 @@ public class PlayersController {
      * </p>
      *
      * @param playerDTO the player data to create (validated with JSR-380 constraints)
-     * @return 201 Created with Location header, 400 Bad Request if validation fails, or 409 Conflict if squad number exists
+     * @return 201 Created with Location header, 409 Conflict if squad number exists, or 422 Unprocessable Entity if validation fails
      */
     @PostMapping("/players")
     @Operation(summary = "Creates a new player")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request - Validation failure", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Conflict - Squad number already exists", content = @Content)
+            @ApiResponse(responseCode = "409", description = "Conflict - Squad number already exists", content = @Content),
+            @ApiResponse(responseCode = "422", description = "Unprocessable Entity - Validation failure", content = @Content)
     })
     public ResponseEntity<Void> post(@RequestBody @Valid PlayerDTO playerDTO) {
         PlayerDTO createdPlayer = playersService.create(playerDTO);
@@ -200,18 +200,18 @@ public class PlayersController {
      *
      * @param squadNumber the squad number (natural key) of the player to update
      * @param playerDTO the complete player data (must pass validation)
-     * @return 204 No Content if successful, 404 Not Found if player doesn't exist, or 400 Bad Request if validation fails
+     * @return 204 No Content if successful, 404 Not Found if player doesn't exist, or 422 Unprocessable Entity if validation fails
      */
     @PutMapping("/players/{squadNumber}")
     @Operation(summary = "Updates (entirely) a player by squad number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
+            @ApiResponse(responseCode = "422", description = "Unprocessable Entity - Validation failure", content = @Content)
     })
     public ResponseEntity<Void> put(@PathVariable Integer squadNumber, @RequestBody @Valid PlayerDTO playerDTO) {
         if (!playerDTO.getSquadNumber().equals(squadNumber)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
         playerDTO.setSquadNumber(squadNumber);
         boolean updated = playersService.update(squadNumber, playerDTO);
