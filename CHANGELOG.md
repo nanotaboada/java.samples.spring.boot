@@ -157,7 +157,7 @@ Initial release. See [README.md](README.md) for complete feature list and docume
 
 -->
 
-[unreleased]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.1-chelsea...HEAD
+[Unreleased]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.1-chelsea...HEAD
 [2.0.1 - Chelsea]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.0-barcelona...v2.0.1-chelsea
 [2.0.0 - Barcelona]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v1.0.0-arsenal...v2.0.0-barcelona
 [1.0.0 - Arsenal]: https://github.com/nanotaboada/java.samples.spring.boot/releases/tag/v1.0.0-arsenal
