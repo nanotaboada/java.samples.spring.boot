@@ -139,3 +139,32 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 ## [1.0.0 - Arsenal] - 2026-03-29
 
 Initial release. See [README.md](README.md) for complete feature list and documentation.
+
+<!-- Template for new releases:
+
+## [X.Y.Z - CLUB_NAME] - YYYY-MM-DD
+
+### Added
+- New features
+
+### Changed
+- Changes in existing functionality
+
+### Deprecated
+- Soon-to-be removed features
+
+### Removed
+- Removed features
+
+### Fixed
+- Bug fixes
+
+### Security
+- Security vulnerability fixes
+
+-->
+
+[Unreleased]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.1-chelsea...HEAD
+[2.0.1 - Chelsea]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.0-barcelona...v2.0.1-chelsea
+[2.0.0 - Barcelona]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v1.0.0-arsenal...v2.0.0-barcelona
+[1.0.0 - Arsenal]: https://github.com/nanotaboada/java.samples.spring.boot/releases/tag/v1.0.0-arsenal
