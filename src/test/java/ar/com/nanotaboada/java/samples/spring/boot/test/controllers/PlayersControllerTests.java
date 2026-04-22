@@ -103,10 +103,10 @@ class PlayersControllerTests {
     /**
      * Given invalid player data is provided (validation fails)
      * When attempting to create a player
-     * Then response status is 400 Bad Request and service is never called
+     * Then response status is 422 Unprocessable Entity and service is never called
      */
     @Test
-    void givenInvalidPlayer_whenPost_thenReturnsBadRequest()
+    void givenInvalidPlayer_whenPost_thenReturnsUnprocessableEntity()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneInvalid();
@@ -114,6 +114,29 @@ class PlayersControllerTests {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(PATH)
                 .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
+        // When
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Then
+        verify(playersServiceMock, never()).create(any(PlayerDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    }
+
+    /**
+     * Given malformed JSON is provided (unparseable body)
+     * When attempting to create a player
+     * Then response status is 400 Bad Request and service is never called
+     */
+    @Test
+    void givenMalformedJson_whenPost_thenReturnsBadRequest()
+            throws Exception {
+        // Given
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(PATH)
+                .content("{ not-valid-json ")
                 .contentType(MediaType.APPLICATION_JSON);
         // When
         MockHttpServletResponse response = application
@@ -437,10 +460,10 @@ class PlayersControllerTests {
     /**
      * Given invalid player data is provided (validation fails)
      * When attempting to update a player
-     * Then response status is 400 Bad Request and service is never called
+     * Then response status is 422 Unprocessable Entity and service is never called
      */
     @Test
-    void givenInvalidPlayer_whenPut_thenReturnsBadRequest()
+    void givenInvalidPlayer_whenPut_thenReturnsUnprocessableEntity()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneInvalid();
@@ -456,16 +479,16 @@ class PlayersControllerTests {
                 .getResponse();
         // Then
         verify(playersServiceMock, never()).update(anyInt(), any(PlayerDTO.class));
-        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        then(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
     }
 
     /**
      * Given the path squad number does not match the body squad number
      * When attempting to update a player
-     * Then response status is 400 Bad Request and service is never called
+     * Then response status is 422 Unprocessable Entity and service is never called
      */
     @Test
-    void givenSquadNumberMismatch_whenPut_thenReturnsBadRequest()
+    void givenSquadNumberMismatch_whenPut_thenReturnsUnprocessableEntity()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
@@ -483,16 +506,16 @@ class PlayersControllerTests {
                 .getResponse();
         // Then
         verify(playersServiceMock, never()).update(anyInt(), any(PlayerDTO.class));
-        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        then(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
     }
 
     /**
      * Given the body squad number is null
      * When attempting to update a player
-     * Then response status is 400 Bad Request (squad number is required)
+     * Then response status is 422 Unprocessable Entity (squad number is required)
      */
     @Test
-    void givenNullBodySquadNumber_whenPut_thenReturnsBadRequest()
+    void givenNullBodySquadNumber_whenPut_thenReturnsUnprocessableEntity()
             throws Exception {
         // Given
         PlayerDTO dto = PlayerDTOFakes.createOneValid();
@@ -509,7 +532,7 @@ class PlayersControllerTests {
                 .getResponse();
         // Then
         verify(playersServiceMock, never()).update(anyInt(), any(PlayerDTO.class));
-        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        then(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
     }
 
     /*
