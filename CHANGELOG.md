@@ -44,16 +44,28 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Changed
 
+- Refactor `/pre-release` Phase 2: inline build and test steps directly
+  (`./mvnw clean install`, `docker compose build`) instead of delegating to
+  `/pre-commit`; move CodeRabbit review to run against the uncommitted CHANGELOG
+  diff; separate commit-message approval from the actual commit so checks run
+  in between
+
+### Fixed
+
+### Removed
+
+---
+
+## [2.0.2 - Borussia Dortmund] - 2026-04-27
+
+### Changed
+
 - Return `422 Unprocessable Entity` for field validation failures (`@Valid`
   constraint violations and squad number mismatch) instead of `400 Bad Request`;
   reserve `400` for genuinely malformed requests (unparseable JSON, wrong
   `Content-Type`); introduce `GlobalExceptionHandler` (`@ControllerAdvice`) to
   intercept `MethodArgumentNotValidException`; update OpenAPI `@ApiResponse`
   annotations and test assertions accordingly (#319)
-
-### Fixed
-
-### Removed
 
 ---
 
@@ -164,7 +176,8 @@ Initial release. See [README.md](README.md) for complete feature list and docume
 
 -->
 
-[Unreleased]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.1-chelsea...HEAD
+[Unreleased]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.2-dortmund...HEAD
+[2.0.2 - Borussia Dortmund]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.1-chelsea...v2.0.2-dortmund
 [2.0.1 - Chelsea]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v2.0.0-barcelona...v2.0.1-chelsea
 [2.0.0 - Barcelona]: https://github.com/nanotaboada/java.samples.spring.boot/compare/v1.0.0-arsenal...v2.0.0-barcelona
 [1.0.0 - Arsenal]: https://github.com/nanotaboada/java.samples.spring.boot/releases/tag/v1.0.0-arsenal
