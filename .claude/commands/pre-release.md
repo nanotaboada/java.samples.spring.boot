@@ -58,7 +58,15 @@ proceeding. Never create a branch, commit, tag, or push without approval.
      - `[unreleased]` → `.../compare/vX.Y.Z-{club}...HEAD`
      - Add `[X.Y.Z - ClubName]` → `.../compare/v{prev-tag}...vX.Y.Z-{club}`
 
-3. Show the full diff of `CHANGELOG.md` and propose this commit message:
+3. Show the full diff of `CHANGELOG.md`.
+
+4. If `coderabbit` CLI is installed, run `coderabbit review --type uncommitted --prompt-only`
+   on the uncommitted CHANGELOG changes:
+   - If actionable/serious findings are reported, stop and address them before proceeding.
+   - If only nitpick-level findings, report them and continue.
+   - If `coderabbit` is not installed, skip with a note.
+
+5. Propose this commit message:
 
    ```text
    docs(changelog): prepare release notes for vX.Y.Z-{club} (#issue)
@@ -66,17 +74,20 @@ proceeding. Never create a branch, commit, tag, or push without approval.
 
    **Wait for explicit approval before committing.**
 
-4. Run `/pre-commit`, manually skipping step 1 — do not re-run or re-attempt
-   the CHANGELOG update; it was already completed above. Open with: "Skip
-   step 1 — CHANGELOG was already updated as part of this release branch."
-   Proceed directly with steps 2–4.
+6. Run `./mvnw clean install` — must succeed with no compilation warnings, all
+   tests passing, and the JaCoCo check reporting `All coverage checks have been met.`
 
-5. Propose opening a PR from `release/vX.Y.Z-{club}` into `master`.
+7. If Docker is running, run `docker compose build` — must succeed with no errors.
+   Skip with a note if Docker Desktop is not running.
+
+8. Stage `CHANGELOG.md` and commit using the approved message from step 5.
+
+9. Propose opening a PR from `release/vX.Y.Z-{club}` into `master`.
    **Wait for explicit approval before opening.**
 
-6. Open the PR with:
-   - Title: `docs(changelog): prepare release notes for vX.Y.Z-{club}`
-   - Body summarising what is included in this release.
+10. Open the PR with:
+    - Title: `docs(changelog): prepare release notes for vX.Y.Z-{club}`
+    - Body summarising what is included in this release.
 
 ---
 
