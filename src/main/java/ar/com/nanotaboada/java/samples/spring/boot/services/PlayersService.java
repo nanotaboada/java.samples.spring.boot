@@ -232,8 +232,8 @@ public class PlayersService {
     public boolean patch(Integer squadNumber, PlayerPatchDTO playerPatchDTO) {
         log.debug("Patching player with squad number: {}", squadNumber);
 
-        if (squadNumber == null) {
-            log.warn("Cannot patch player - squad number is null");
+        if (squadNumber == null || playerPatchDTO == null) {
+            log.warn("Cannot patch player - squad number or payload is null");
             return false;
         }
 

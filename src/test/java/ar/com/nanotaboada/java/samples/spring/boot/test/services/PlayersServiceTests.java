@@ -22,6 +22,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
+import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerPatchDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.PlayersRepository;
 import ar.com.nanotaboada.java.samples.spring.boot.services.PlayersService;
 import ar.com.nanotaboada.java.samples.spring.boot.test.PlayerDTOFakes;
@@ -386,6 +387,91 @@ class PlayersServiceTests {
         verify(playersRepositoryMock, never()).findBySquadNumber(any());
         verify(playersRepositoryMock, never()).save(any(Player.class));
         verify(modelMapperMock, never()).map(any(), any());
+        then(actual).isFalse();
+    }
+
+    /*
+     * -----------------------------------------------------------------------------------------------------------------------
+     * Patch
+     * -----------------------------------------------------------------------------------------------------------------------
+     */
+
+    /**
+     * Given a player exists
+     * When patch() is called with the player's squad number and partial data
+     * Then the player is updated and true is returned
+     */
+    @Test
+    void givenExistingPlayer_whenPatch_thenReturnsTrue() {
+        // Given
+        Player entity = PlayerFakes.createOneValid();
+        Integer squadNumber = entity.getSquadNumber();
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setFirstName("Updated");
+        Mockito
+                .when(playersRepositoryMock.findBySquadNumber(squadNumber))
+                .thenReturn(Optional.of(entity));
+        // When
+        boolean actual = playersService.patch(squadNumber, dto);
+        // Then
+        verify(playersRepositoryMock, times(1)).findBySquadNumber(squadNumber);
+        verify(playersRepositoryMock, times(1)).save(entity);
+        then(actual).isTrue();
+    }
+
+    /**
+     * Given no player exists with the specified squad number
+     * When patch() is called
+     * Then false is returned without saving
+     */
+    @Test
+    void givenNonexistentPlayer_whenPatch_thenReturnsFalse() {
+        // Given
+        Integer squadNumber = 999;
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setFirstName("Ghost");
+        Mockito
+                .when(playersRepositoryMock.findBySquadNumber(squadNumber))
+                .thenReturn(Optional.empty());
+        // When
+        boolean actual = playersService.patch(squadNumber, dto);
+        // Then
+        verify(playersRepositoryMock, times(1)).findBySquadNumber(squadNumber);
+        verify(playersRepositoryMock, never()).save(any(Player.class));
+        then(actual).isFalse();
+    }
+
+    /**
+     * Given a null squad number is passed
+     * When patch() is called
+     * Then false is returned without hitting the repository
+     */
+    @Test
+    void givenNullSquadNumber_whenPatch_thenReturnsFalse() {
+        // Given
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        // When
+        boolean actual = playersService.patch(null, dto);
+        // Then
+        verify(playersRepositoryMock, never()).findBySquadNumber(any());
+        verify(playersRepositoryMock, never()).save(any(Player.class));
+        then(actual).isFalse();
+    }
+
+    /**
+     * Given a null payload is passed
+     * When patch() is called
+     * Then false is returned without hitting the repository
+     */
+    @Test
+    void givenNullPayload_whenPatch_thenReturnsFalse() {
+        // Given
+        Integer squadNumber = 10;
+        // When
+        boolean actual = playersService.patch(squadNumber, null);
+        // Then
+        verify(playersRepositoryMock, never()).findBySquadNumber(any());
+        verify(playersRepositoryMock, never()).save(any(Player.class));
         then(actual).isFalse();
     }
 

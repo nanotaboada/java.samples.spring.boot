@@ -249,8 +249,8 @@ public class PlayersController {
     })
     public ResponseEntity<Void> patch(
             @PathVariable Integer squadNumber,
-            @RequestBody PlayerPatchDTO playerPatchDTO) {
-        if (playerPatchDTO.getSquadNumber() != null || playerPatchDTO.getId() != null) {
+            @RequestBody @Valid PlayerPatchDTO playerPatchDTO) {
+        if (playerPatchDTO == null || playerPatchDTO.getSquadNumber() != null || playerPatchDTO.getId() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         boolean patched = playersService.patch(squadNumber, playerPatchDTO);

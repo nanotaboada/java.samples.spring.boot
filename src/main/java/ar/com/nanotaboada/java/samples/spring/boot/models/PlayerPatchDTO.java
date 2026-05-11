@@ -3,6 +3,11 @@ package ar.com.nanotaboada.java.samples.spring.boot.models;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -31,16 +36,34 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlayerPatchDTO {
-
     private UUID id;
+
+    @Min(1) @Max(99)
     private Integer squadNumber;
+
+    @Size(max = 50)
     private String firstName;
+
+    @Size(max = 50)
     private String middleName;
+
+    @Size(max = 50)
     private String lastName;
+
+    @Past
     private LocalDate dateOfBirth;
+
+    @Size(max = 50)
     private String position;
+
+    @Size(max = 10)
     private String abbrPosition;
+
+    @Size(max = 100)
     private String team;
+
+    @Size(max = 100)
     private String league;
+
     private Boolean starting11;
 }
