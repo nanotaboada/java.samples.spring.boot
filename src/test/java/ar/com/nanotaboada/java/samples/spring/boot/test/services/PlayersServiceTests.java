@@ -399,15 +399,20 @@ class PlayersServiceTests {
     /**
      * Given a player exists
      * When patch() is called with the player's squad number and partial data
-     * Then the player is updated and true is returned
+     * Then only the patched field is updated and unchanged fields retain their original values
      */
     @Test
     void givenExistingPlayer_whenPatch_thenReturnsTrue() {
         // Given
         Player entity = PlayerFakes.createOneValid();
         Integer squadNumber = entity.getSquadNumber();
+        String originalLastName = entity.getLastName();
+        String originalPosition = entity.getPosition();
+
         PlayerPatchDTO dto = new PlayerPatchDTO();
         dto.setFirstName("Updated");
+        // lastName and position are intentionally absent (null) — must stay unchanged
+
         Mockito
                 .when(playersRepositoryMock.findBySquadNumber(squadNumber))
                 .thenReturn(Optional.of(entity));
@@ -417,6 +422,10 @@ class PlayersServiceTests {
         verify(playersRepositoryMock, times(1)).findBySquadNumber(squadNumber);
         verify(playersRepositoryMock, times(1)).save(entity);
         then(actual).isTrue();
+        // Assert patch semantics: patched field changed, untouched fields unchanged
+        then(entity.getFirstName()).isEqualTo("Updated");
+        then(entity.getLastName()).isEqualTo(originalLastName);
+        then(entity.getPosition()).isEqualTo(originalPosition);
     }
 
     /**
