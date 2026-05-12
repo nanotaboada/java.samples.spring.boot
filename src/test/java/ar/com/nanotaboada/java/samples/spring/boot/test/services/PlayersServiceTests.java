@@ -484,6 +484,85 @@ class PlayersServiceTests {
         then(actual).isFalse();
     }
 
+    /**
+     * Given a player exists
+     * When patch() is called with only some fields provided
+     * Then only non-null fields are updated, null fields are skipped
+     */
+    @Test
+    void givenExistingPlayer_whenPatchWithPartialFields_thenOnlyNonNullFieldsUpdated() {
+        // Given
+        Player entity = PlayerFakes.createOneValid();
+        Integer squadNumber = entity.getSquadNumber();
+        String originalLastName = entity.getLastName();
+        String originalPosition = entity.getPosition();
+        String originalTeam = entity.getTeam();
+        String originalLeague = entity.getLeague();
+
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setFirstName("Patched");
+        dto.setMiddleName("Middle");
+        // lastName, position, team, league, dateOfBirth, abbrPosition, starting11 → null → must be skipped
+
+        Mockito
+                .when(playersRepositoryMock.findBySquadNumber(squadNumber))
+                .thenReturn(Optional.of(entity));
+        // When
+        boolean actual = playersService.patch(squadNumber, dto);
+        // Then
+        verify(playersRepositoryMock, times(1)).findBySquadNumber(squadNumber);
+        verify(playersRepositoryMock, times(1)).save(entity);
+        then(actual).isTrue();
+        then(entity.getFirstName()).isEqualTo("Patched");
+        then(entity.getMiddleName()).isEqualTo("Middle");
+        then(entity.getLastName()).isEqualTo(originalLastName);
+        then(entity.getPosition()).isEqualTo(originalPosition);
+        then(entity.getTeam()).isEqualTo(originalTeam);
+        then(entity.getLeague()).isEqualTo(originalLeague);
+    }
+
+    /**
+     * Given a player exists
+     * When patch() is called with all patchable fields provided
+     * Then all fields are updated
+     */
+    @Test
+    void givenExistingPlayer_whenPatchWithAllFields_thenAllFieldsUpdated() {
+        // Given
+        Player entity = PlayerFakes.createOneValid();
+        Integer squadNumber = entity.getSquadNumber();
+
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setFirstName("NewFirst");
+        dto.setMiddleName("NewMiddle");
+        dto.setLastName("NewLast");
+        dto.setDateOfBirth(java.time.LocalDate.of(1995, 6, 15));
+        dto.setPosition("Midfielder");
+        dto.setAbbrPosition("MF");
+        dto.setTeam("FC Barcelona");
+        dto.setLeague("La Liga");
+        dto.setStarting11(false);
+
+        Mockito
+                .when(playersRepositoryMock.findBySquadNumber(squadNumber))
+                .thenReturn(Optional.of(entity));
+        // When
+        boolean actual = playersService.patch(squadNumber, dto);
+        // Then
+        verify(playersRepositoryMock, times(1)).findBySquadNumber(squadNumber);
+        verify(playersRepositoryMock, times(1)).save(entity);
+        then(actual).isTrue();
+        then(entity.getFirstName()).isEqualTo("NewFirst");
+        then(entity.getMiddleName()).isEqualTo("NewMiddle");
+        then(entity.getLastName()).isEqualTo("NewLast");
+        then(entity.getDateOfBirth()).isEqualTo(java.time.LocalDate.of(1995, 6, 15));
+        then(entity.getPosition()).isEqualTo("Midfielder");
+        then(entity.getAbbrPosition()).isEqualTo("MF");
+        then(entity.getTeam()).isEqualTo("FC Barcelona");
+        then(entity.getLeague()).isEqualTo("La Liga");
+        then(entity.getStarting11()).isFalse();
+    }
+
     /*
      * -----------------------------------------------------------------------------------------------------------------------
      * Delete
