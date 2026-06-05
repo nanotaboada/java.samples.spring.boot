@@ -313,7 +313,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
+                <version>0.8.15</version>
                 <configuration>
                     <!-- https://www.eclemma.org/jacoco/trunk/doc/report-mojo.html#excludes -->
                     <excludes>
