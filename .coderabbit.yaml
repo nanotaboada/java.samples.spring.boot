@@ -55,6 +55,9 @@ reviews:
         - Ensure proper use of ModelMapper for entity-DTO conversion
         - Validate proper error handling and logging
         - Check async operations if used
+        - Spring Cache is configured with NO expiry — this is intentional. Do not
+          suggest adding a TTL or time-based eviction. Cache is invalidated only on
+          write operations via @CacheEvict(allEntries = true).
 
     - path: "src/main/java/**/repositories/**/*.java"
       instructions: |
@@ -193,12 +196,14 @@ reviews:
           If so, update the relevant sections of README.md to reflect the current state.
           Do not rewrite sections unrelated to the changes.
 
-          ## 3. .github/copilot-instructions.md
+          ## 3. CLAUDE.md
           If the PR introduces patterns, conventions, or architectural decisions that
           should guide future AI-assisted contributions, add or update the relevant
-          instructions in .github/copilot-instructions.md.
+          instructions in CLAUDE.md.
           Focus on things a developer (or AI assistant) unfamiliar with this specific
           stack implementation should know before writing code here.
+          If the change is architecturally significant, also create or amend the
+          relevant ADR in docs/adr/.
 
       - name: "enforce http error handling"
         instructions: |
@@ -355,7 +360,7 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - ".github/copilot-instructions.md"
+      - "CLAUDE.md"
   learnings:
     scope: auto
   issues:
