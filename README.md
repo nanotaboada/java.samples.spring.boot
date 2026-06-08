@@ -136,6 +136,19 @@ graph RL
 
 > *Arrows follow the injection direction (A → B means A is injected into B). Solid = runtime dependency, dotted = structural. Blue = core domain, red = third-party, green = tests.*
 
+## Architecture Decisions
+
+Architecturally significant decisions are documented as Architecture Decision Records (ADRs) in [`docs/adr/`](docs/adr/README.md). Each record captures the context, the alternatives considered, and the trade-offs of the choice — the "why" behind the implementation.
+
+| ADR | Decision |
+|-----|----------|
+| [ADR-0001](docs/adr/0001-adopt-spring-boot.md) | Adopt Spring Boot as REST API Framework |
+| [ADR-0002](docs/adr/0002-spring-data-jpa-sqlite.md) | Use Spring Data JPA with SQLite |
+| [ADR-0003](docs/adr/0003-spring-cache-memory.md) | Implement In-Memory Caching with Spring Cache |
+| [ADR-0004](docs/adr/0004-layered-architecture.md) | Adopt Layered Architecture |
+
+See the [full ADR index](docs/adr/README.md) for all 12 records.
+
 ## API Reference
 
 Interactive API documentation is available via Swagger UI at `http://localhost:9000/swagger/index.html` when the server is running.
