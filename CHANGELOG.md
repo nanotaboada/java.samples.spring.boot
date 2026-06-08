@@ -46,6 +46,14 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Changed
 
+- Consolidate project documentation into `CLAUDE.md` as the single source of
+  truth; add Invariants and Architecture Decision Records sections; extend
+  Pre-commit Checks with ADR update requirement (#335)
+- Remove `.github/copilot-instructions.md` (content merged into `CLAUDE.md`) (#335)
+- Update `.coderabbit.yaml`: document intentional no-expiry cache behaviour in
+  services path instruction; point `knowledge_base.code_guidelines` and
+  `finishing_touches` sync-documentation check to `CLAUDE.md` (#335)
+
 - Refactor `/pre-release` Phase 2: inline build and test steps directly
   (`./mvnw clean install`, `docker compose build`) instead of delegating to
   `/pre-commit`; move CodeRabbit review to run against the uncommitted CHANGELOG

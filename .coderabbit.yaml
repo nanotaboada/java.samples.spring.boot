@@ -55,6 +55,9 @@ reviews:
         - Ensure proper use of ModelMapper for entity-DTO conversion
         - Validate proper error handling and logging
         - Check async operations if used
+        - Spring Cache is configured with NO expiry — this is intentional. Do not
+          suggest adding a TTL or time-based eviction. Cache is invalidated only on
+          write operations via @CacheEvict(allEntries = true).
 
     - path: "src/main/java/**/repositories/**/*.java"
       instructions: |
@@ -106,9 +109,10 @@ reviews:
 
     - path: "src/test/resources/application.properties"
       instructions: |
-        - Verify H2 in-memory database for tests
-        - Check test-specific configurations
-        - Ensure proper test isolation settings
+        - Verify in-memory SQLite for tests (jdbc:sqlite::memory:)
+        - Check test-specific SQLite configurations (dialect, driver, ddl-auto)
+        - Ensure Spring SQL init uses ddl.sql + dml.sql (not Flyway, which must be disabled)
+        - Ensure proper test isolation (server.port=0, spring.flyway.enabled=false)
 
     - path: "src/main/resources/logback-spring.xml"
       instructions: |
@@ -193,12 +197,14 @@ reviews:
           If so, update the relevant sections of README.md to reflect the current state.
           Do not rewrite sections unrelated to the changes.
 
-          ## 3. .github/copilot-instructions.md
+          ## 3. CLAUDE.md
           If the PR introduces patterns, conventions, or architectural decisions that
           should guide future AI-assisted contributions, add or update the relevant
-          instructions in .github/copilot-instructions.md.
+          instructions in CLAUDE.md.
           Focus on things a developer (or AI assistant) unfamiliar with this specific
           stack implementation should know before writing code here.
+          If the change is architecturally significant, also create or amend the
+          relevant ADR in docs/adr/.
 
       - name: "enforce http error handling"
         instructions: |
@@ -232,7 +238,7 @@ reviews:
     title:
       mode: warning
       requirements: |
-        - Use Conventional Commits format (feat:, fix:, chore:, docs:, test:, refactor:)
+        - Use Conventional Commits format (feat:, fix:, chore:, docs:, test:, refactor:, ci:, perf:)
         - Keep under 80 characters
         - Be descriptive and specific
     description:
@@ -355,7 +361,7 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - ".github/copilot-instructions.md"
+      - "CLAUDE.md"
   learnings:
     scope: auto
   issues:
