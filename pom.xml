@@ -156,7 +156,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.53.0.0</version>
+            <version>3.53.2.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- Hibernate Community Dialects ==================================== -->
@@ -313,7 +313,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
+                <version>0.8.15</version>
                 <configuration>
                     <!-- https://www.eclemma.org/jacoco/trunk/doc/report-mojo.html#excludes -->
                     <excludes>
