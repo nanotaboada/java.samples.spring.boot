@@ -16,9 +16,9 @@ We will use UUID as the database primary key (`@Id`) — unique, non-updatable, 
 
 ## Consequences
 
-- Squad numbers are natural keys: unique per team, stable over a career, and meaningful to API consumers. Using them as path variables makes URLs readable (`/players/10`) rather than opaque (`/players/550e8400-e29b-41d4-a716-446655440000`).
-- UUID as the primary key provides global uniqueness for distributed or federated scenarios without exposing sequential counters that hint at dataset size.
-- The `@GeneratedValue`-assigned UUID is set once on creation and never updated, ensuring immutability of the primary key.
-- Retaining `GET /players/{id}` (UUID) preserves internal traceability and supports integration with external systems that may store the UUID.
-- Squad numbers are stable within a single tournament squad but may change across seasons. For this PoC (fixed 2022 World Cup squad), stability is guaranteed. A more general player registry would need to account for squad number reuse.
-- The `squadNumber` field carries a `@Column(unique = true)` constraint enforced at the database level, providing a 409 Conflict response on duplicate POST.
+- `squadNumber` is a domain-meaningful natural key: unique per team, stable over a career, and meaningful to API consumers. As the routing key in REST URLs (`PUT /players/{squadNumber}`, `DELETE /players/{squadNumber}`), it is more readable than an opaque UUID path.
+- UUID is the entity primary key (`@Id`) and functions as a generated surrogate identifier — globally unique, opaque to consumers, and free of sequential leakage. It provides global uniqueness for distributed or federated scenarios without exposing sequential counters that hint at dataset size.
+- The `@GeneratedValue`-assigned UUID (surrogate) is set once on creation and never updated, ensuring immutability of the primary key.
+- `GET /players/{id}` exposes the UUID primary key for internal traceability and integration with external systems that store the UUID reference.
+- `squadNumber` as routing key is stable within a fixed tournament squad but may change across seasons. For this PoC (fixed 2022 World Cup squad), stability is guaranteed. A more general player registry would need to account for squad number reuse.
+- The `squadNumber` natural key carries a `@Column(unique = true)` constraint enforced at the database level, providing a 409 Conflict response on duplicate POST.

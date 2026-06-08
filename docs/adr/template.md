@@ -1,3 +1,4 @@
+<!-- File naming: NNNN-kebab-case-title.md (e.g., 0013-adopt-redis-caching.md). Increment NNNN from the last entry in docs/adr/README.md. -->
 # ADR-NNNN: {Title}
 
 Date: YYYY-MM-DD
