@@ -42,6 +42,8 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Added
 
+- Architecture Decision Records (ADRs) documenting 12 architectural decisions in `docs/adr/` (#299)
+
 ### Changed
 
 - Refactor `/pre-release` Phase 2: inline build and test steps directly

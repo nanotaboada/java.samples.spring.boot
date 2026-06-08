@@ -141,3 +141,8 @@ feat(scope): description (#issue)
 
 Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
+
+## Additional Resources
+
+- **Architecture Decision Records**: [`docs/adr/`](../docs/adr/README.md) — 12 ADRs documenting the "why" behind major architectural and technology choices in this project.
+- New architecturally significant decisions (framework changes, persistence strategy, API contract changes, test strategy shifts) should include a new ADR in `docs/adr/` following the template in [`docs/adr/template.md`](../docs/adr/template.md).
