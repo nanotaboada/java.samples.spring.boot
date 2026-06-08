@@ -15,8 +15,8 @@ An ADR documents a single decision: the context that drove it, the alternatives 
 | [ADR-0005](0005-lombok-boilerplate-reduction.md) | Use Lombok to Reduce Boilerplate | Accepted |
 | [ADR-0006](0006-springdoc-openapi.md) | Use SpringDoc OpenAPI 3 for API Documentation | Accepted |
 | [ADR-0007](0007-docker-single-container.md) | Single-Container Docker Deployment | Accepted |
-| [ADR-0008](0008-stadium-themed-versioning.md) | Use Stadium-Themed Versioning | Accepted |
-| [ADR-0009](0009-uuid-surrogate-squad-number-natural-key.md) | Demote UUID to Surrogate Key and Promote Squad Number to Natural Key | Accepted |
+| [ADR-0008](0008-stadium-themed-versioning.md) | Use Football-Club-Themed Versioning | Accepted |
+| [ADR-0009](0009-uuid-surrogate-squad-number-natural-key.md) | Use UUID as Primary Key and Squad Number as Natural Key | Accepted |
 | [ADR-0010](0010-full-replace-put-no-patch.md) | Full-Replace PUT, No PATCH | Accepted |
 | [ADR-0011](0011-mixed-test-strategy.md) | Mixed Test Strategy | Accepted |
 | [ADR-0012](0012-adopt-flyway-migrations.md) | Adopt Flyway for Database Migrations | Accepted |

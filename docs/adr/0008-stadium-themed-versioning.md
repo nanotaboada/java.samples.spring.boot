@@ -1,4 +1,4 @@
-# ADR-0008: Use Stadium-Themed Versioning
+# ADR-0008: Use Football-Club-Themed Versioning
 
 Date: 2026-06-07
 

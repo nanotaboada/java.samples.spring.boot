@@ -20,5 +20,5 @@ We will adopt Flyway for versioned schema migrations, superseding the manual `dd
 - Spring Boot's auto-configuration wires Flyway automatically when the dependency is present; no explicit bean definition is required.
 - The migration from manual scripts to Flyway was a one-time conversion: the original `ddl.sql` and `dml.sql` content became V1 and V2 (or V3) Flyway scripts, preserving the 26-player seed dataset.
 - Flyway enforces a checksum on applied migrations; modifying an already-applied migration file causes a startup failure. This is a safety mechanism, not a limitation.
-- The in-memory SQLite test database also runs Flyway migrations, ensuring the test schema stays in sync with the production schema automatically.
+- Flyway is disabled for the in-memory SQLite test database (`spring.flyway.enabled=false`); tests continue to use `ddl.sql` and `dml.sql` via Spring SQL init for fast, dependency-free schema setup.
 - Flyway's Apache 2.0 license is compatible with the project's MIT license. The Flyway Teams/Enterprise editions are not required for this use case.
