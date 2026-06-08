@@ -50,9 +50,6 @@ Release names follow the **historic football clubs** naming convention (A–Z):
   diagram, fix "Modify schema" workflow to use versioned Flyway migrations instead
   of manually editing the SQLite file — produced with the
   [CLAUDE.md Management plugin](https://claude.com/plugins/claude-md-management)
-
-### Changed
-
 - Consolidate project documentation into `CLAUDE.md` as the single source of
   truth; add Invariants and Architecture Decision Records sections; extend
   Pre-commit Checks with ADR update requirement (#335)
