@@ -109,9 +109,10 @@ reviews:
 
     - path: "src/test/resources/application.properties"
       instructions: |
-        - Verify H2 in-memory database for tests
-        - Check test-specific configurations
-        - Ensure proper test isolation settings
+        - Verify in-memory SQLite for tests (jdbc:sqlite::memory:)
+        - Check test-specific SQLite configurations (dialect, driver, ddl-auto)
+        - Ensure Spring SQL init uses ddl.sql + dml.sql (not Flyway, which must be disabled)
+        - Ensure proper test isolation (server.port=0, spring.flyway.enabled=false)
 
     - path: "src/main/resources/logback-spring.xml"
       instructions: |
@@ -237,7 +238,7 @@ reviews:
     title:
       mode: warning
       requirements: |
-        - Use Conventional Commits format (feat:, fix:, chore:, docs:, test:, refactor:)
+        - Use Conventional Commits format (feat:, fix:, chore:, docs:, test:, refactor:, ci:, perf:)
         - Keep under 80 characters
         - Be descriptive and specific
     description:
