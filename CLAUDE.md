@@ -14,6 +14,7 @@ REST API for managing football players built with Java and Spring Boot. Implemen
 - **Validation**: Bean Validation (JSR-380)
 - **Caching**: Spring `@Cacheable` (simple in-memory, no expiry)
 - **Mapping**: ModelMapper
+- **Migrations**: Flyway (versioned SQL under `db/migration/`; disabled in tests — tests use Spring SQL init instead)
 - **Logging**: SLF4J
 - **Testing**: JUnit 5 + AssertJ + MockMvc + Mockito
 - **Coverage**: JaCoCo
@@ -31,9 +32,10 @@ src/main/java/
 ├── models/             — Player entity + DTOs
 └── converters/         — JPA AttributeConverter for ISO-8601 date handling
 src/main/resources/     — application.properties, Logback config
+src/main/resources/db/migration/ — Flyway versioned SQL (V1 schema, V2+V3 seed data; add V{N}__ here to change schema)
 src/test/java/          — test classes mirroring main structure
-src/test/resources/     — test config, schema (ddl.sql), seed data (dml.sql)
-storage/                — SQLite database file (runtime)
+src/test/resources/     — test config, schema (ddl.sql), seed data (dml.sql); Flyway disabled in tests
+storage/                — SQLite database file (runtime, created and populated by Flyway on first start)
 ```
 
 **Layer rule**: `Controller → Service → Repository → JPA`. Controllers must not access repositories directly. Business logic must not live in controllers.
@@ -133,7 +135,7 @@ This project uses Spec-Driven Development (SDD): discuss in Plan mode first, cre
 
 **Add an endpoint**: Define DTO in `models/` with Bean Validation → add service method in `services/` with `@Transactional` → create controller endpoint with `@Operation` annotation → add tests → run `./mvnw clean test jacoco:report`.
 
-**Modify schema**: Update `@Entity` in `models/Player.java` → update DTOs if API changes → manually update `storage/players-sqlite3.db` (preserve 26 players) → update service, repository, and tests → run `./mvnw clean test`.
+**Modify schema**: Create a new Flyway migration `src/main/resources/db/migration/V{N}__description.sql` (production path) → update `@Entity` in `models/Player.java` → update DTOs if API changes → also update `src/test/resources/ddl.sql` and `dml.sql` (tests use Spring SQL init, not Flyway) → update service, repository, and tests → run `./mvnw clean test`. Do not manually edit the SQLite file in `storage/`; Flyway owns it.
 
 **After completing work**: Suggest a branch name (e.g. `feat/add-player-stats`) and a commit message following Conventional Commits including co-author line:
 
