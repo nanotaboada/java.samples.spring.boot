@@ -49,8 +49,21 @@ Release names follow the **historic football clubs** naming convention (A–Z):
   and `@PatchMapping` controller with Swagger `@Operation`/`@ApiResponses`
   documentation; returns `204` on success, `400` if immutable fields present,
   `404` if player not found
+- Architecture Decision Records (ADRs) documenting 12 architectural decisions in `docs/adr/` (#299)
 
 ### Changed
+
+- Update `CLAUDE.md`: add Flyway to Tech Stack, add `db/migration/` to structure
+  diagram, fix "Modify schema" workflow to use versioned Flyway migrations instead
+  of manually editing the SQLite file — produced with the
+  [CLAUDE.md Management plugin](https://claude.com/plugins/claude-md-management)
+- Consolidate project documentation into `CLAUDE.md` as the single source of
+  truth; add Invariants and Architecture Decision Records sections; extend
+  Pre-commit Checks with ADR update requirement (#335)
+- Remove `.github/copilot-instructions.md` (content merged into `CLAUDE.md`) (#335)
+- Update `.coderabbit.yaml`: document intentional no-expiry cache behaviour in
+  services path instruction; point `knowledge_base.code_guidelines` and
+  `finishing_touches` sync-documentation check to `CLAUDE.md` (#335)
 
 - Refactor `/pre-release` Phase 2: inline build and test steps directly
   (`./mvnw clean install`, `docker compose build`) instead of delegating to
