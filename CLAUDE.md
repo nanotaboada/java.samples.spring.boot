@@ -161,7 +161,7 @@ When a decision changes, update this file and create or amend the relevant ADR.
 
 ## Additional Resources
 
-- **Architecture Decision Records**: [`docs/adr/`](docs/adr/README.md) — 12 ADRs documenting the "why" behind major architectural and technology choices in this project.
+- **Architecture Decision Records**: [`docs/adr/`](docs/adr/README.md) — 14 ADRs documenting the "why" behind major architectural and technology choices in this project.
 - New architecturally significant decisions (framework changes, persistence strategy, API contract changes, test strategy shifts) should include a new ADR in `docs/adr/` following the template in [`docs/adr/template.md`](docs/adr/template.md).
 
 ## Claude Code
