@@ -20,6 +20,8 @@ An ADR documents a single decision: the context that drove it, the alternatives 
 | [ADR-0010](0010-full-replace-put-no-patch.md) | Full-Replace PUT, No PATCH | Accepted |
 | [ADR-0011](0011-mixed-test-strategy.md) | Mixed Test Strategy | Accepted |
 | [ADR-0012](0012-adopt-flyway-migrations.md) | Adopt Flyway for Database Migrations | Accepted |
+| [ADR-0013](0013-ai-assisted-development-workflow.md) | Adopt AI-Assisted Development Workflow | Accepted |
+| [ADR-0014](0014-spec-driven-development.md) | Adopt Spec-Driven Development (SDD) | Accepted |
 
 ## Resources
 
