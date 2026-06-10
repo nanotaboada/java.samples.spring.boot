@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerPatchDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.services.PlayersService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -219,7 +221,43 @@ public class PlayersController {
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+/*
+     * -----------------------------------------------------------------------------------------------------------------------
+     * HTTP PATCH
+     * -----------------------------------------------------------------------------------------------------------------------
+     */
 
+    /**
+     * Partially updates an existing player resource identified by squad number.
+     * <p>
+     * Only the fields present in the request body are updated; absent fields retain
+     * their current values. The {@code squadNumber} and {@code id} fields are immutable
+     * and must not be included in the request body.
+     * </p>
+     *
+     * @param squadNumber the squad number (natural key) of the player to patch
+     * @param playerPatchDTO the partial player data to apply (only non-null fields are applied)
+     * @return 204 No Content if successful, 400 Bad Request if body contains squadNumber or id,
+     *         or 404 Not Found if player doesn't exist
+     */
+    @PatchMapping("/players/{squadNumber}")
+    @Operation(summary = "Partially updates a player by squad number")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Body must not contain squadNumber or id", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+    })
+    public ResponseEntity<Void> patch(
+            @PathVariable Integer squadNumber,
+            @RequestBody @Valid PlayerPatchDTO playerPatchDTO) {
+        if (playerPatchDTO == null || playerPatchDTO.getSquadNumber() != null || playerPatchDTO.getId() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        boolean patched = playersService.patch(squadNumber, playerPatchDTO);
+        return (patched)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
     /*
      * -----------------------------------------------------------------------------------------------------------------------
      * HTTP DELETE

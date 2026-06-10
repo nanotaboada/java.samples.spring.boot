@@ -42,6 +42,13 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Added
 
+- `PATCH /players/{squadNumber}` endpoint for partial player updates following
+  RFC 7396 (JSON Merge Patch) semantics ([#318](https://github.com/nanotaboada/java.samples.spring.boot/issues/318))
+  — added `PlayerPatchDTO` with nullable fields and `@JsonInclude(NON_NULL)`,
+  `patch()` service method applying only non-null fields via Optional chain,
+  and `@PatchMapping` controller with Swagger `@Operation`/`@ApiResponses`
+  documentation; returns `204` on success, `400` if immutable fields present,
+  `404` if player not found
 - Architecture Decision Records (ADRs) documenting 12 architectural decisions in `docs/adr/` (#299)
 - ADR-0013: Adopt AI-Assisted Development Workflow (#342)
 - ADR-0014: Adopt Spec-Driven Development (SDD) (#342)
