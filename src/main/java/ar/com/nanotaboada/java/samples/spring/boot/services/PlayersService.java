@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ar.com.nanotaboada.java.samples.spring.boot.models.Player;
 import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerDTO;
+import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerPatchDTO;
 import ar.com.nanotaboada.java.samples.spring.boot.repositories.PlayersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -215,6 +216,47 @@ public class PlayersService {
                 });
     }
 
+    /**
+     * Partially updates an existing player identified by their squad number.
+     * <p>
+     * Only the non-null fields in the DTO are applied to the existing entity.
+     * Fields absent from the request (null) are left unchanged.
+     * </p>
+     *
+     * @param squadNumber the squad number (natural key) of the player to patch
+     * @param playerPatchDTO the partial player data to apply
+     * @return true if the player was patched successfully, false if not found
+     */
+    @Transactional
+    @CacheEvict(value = "players", allEntries = true)
+    public boolean patch(Integer squadNumber, PlayerPatchDTO playerPatchDTO) {
+        log.debug("Patching player with squad number: {}", squadNumber);
+
+        if (squadNumber == null || playerPatchDTO == null) {
+            log.warn("Cannot patch player - squad number or payload is null");
+            return false;
+        }
+
+        return playersRepository.findBySquadNumber(squadNumber)
+                .map(existing -> {
+                    if (playerPatchDTO.getFirstName()    != null) existing.setFirstName(playerPatchDTO.getFirstName());
+                    if (playerPatchDTO.getMiddleName()   != null) existing.setMiddleName(playerPatchDTO.getMiddleName());
+                    if (playerPatchDTO.getLastName()     != null) existing.setLastName(playerPatchDTO.getLastName());
+                    if (playerPatchDTO.getDateOfBirth()  != null) existing.setDateOfBirth(playerPatchDTO.getDateOfBirth());
+                    if (playerPatchDTO.getPosition()     != null) existing.setPosition(playerPatchDTO.getPosition());
+                    if (playerPatchDTO.getAbbrPosition() != null) existing.setAbbrPosition(playerPatchDTO.getAbbrPosition());
+                    if (playerPatchDTO.getTeam()         != null) existing.setTeam(playerPatchDTO.getTeam());
+                    if (playerPatchDTO.getLeague()       != null) existing.setLeague(playerPatchDTO.getLeague());
+                    if (playerPatchDTO.getStarting11()   != null) existing.setStarting11(playerPatchDTO.getStarting11());
+                    playersRepository.save(existing);
+                    log.info("Player patched successfully - Squad Number: {}", squadNumber);
+                    return true;
+                })
+                .orElseGet(() -> {
+                    log.warn("Cannot patch player - squad number {} not found", squadNumber);
+                    return false;
+                });
+    }
     /*
      * -----------------------------------------------------------------------------------------------------------------------
      * Delete
