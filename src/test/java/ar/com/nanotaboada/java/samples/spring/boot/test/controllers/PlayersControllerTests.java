@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 import java.util.UUID;
 
+import ar.com.nanotaboada.java.samples.spring.boot.models.PlayerPatchDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -590,4 +591,128 @@ class PlayersControllerTests {
         verify(playersServiceMock, times(1)).deleteBySquadNumber(squadNumber);
         then(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
+
+
+    /*
+     * -------------------------------------------------------------------------
+     * HTTP PATCH
+     * -------------------------------------------------------------------------
+     */
+
+    /**
+     * Given the request body contains squadNumber (immutable field)
+     * When attempting to patch a player
+     * Then response status is 400 Bad Request and service is never called
+     */
+    @Test
+    void givenBodyContainsSquadNumber_whenPatch_thenReturnsBadRequest()
+            throws Exception {
+        // Given
+        Integer squadNumber = 10;
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setSquadNumber(squadNumber); // forbidden field
+        dto.setFirstName("Lionel");
+        String content = objectMapper.writeValueAsString(dto);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .patch(PATH + "/{squadNumber}", squadNumber)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
+        // When
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Then
+        verify(playersServiceMock, never()).patch(anyInt(), any(PlayerPatchDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Given the request body contains id (immutable field)
+     * When attempting to patch a player
+     * Then response status is 400 Bad Request and service is never called
+     */
+    @Test
+    void givenBodyContainsId_whenPatch_thenReturnsBadRequest()
+            throws Exception {
+        // Given
+        Integer squadNumber = 10;
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setId(UUID.randomUUID()); // forbidden field
+        dto.setFirstName("Lionel");
+        String content = objectMapper.writeValueAsString(dto);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .patch(PATH + "/{squadNumber}", squadNumber)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
+        // When
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Then
+        verify(playersServiceMock, never()).patch(anyInt(), any(PlayerPatchDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Given a player exists and valid partial data is provided
+     * When patching that player by squad number
+     * Then response status is 204 No Content
+     */
+    @Test
+    void givenPlayerExists_whenPatch_thenReturnsNoContent()
+            throws Exception {
+        // Given
+        Integer squadNumber = 10;
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setFirstName("Lionel");
+        String content = objectMapper.writeValueAsString(dto);
+        Mockito
+                .when(playersServiceMock.patch(squadNumber, dto))
+                .thenReturn(true);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .patch(PATH + "/{squadNumber}", squadNumber)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
+        // When
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Then
+        verify(playersServiceMock, times(1)).patch(anyInt(), any(PlayerPatchDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given a player with the provided squad number does not exist
+     * When attempting to patch that player
+     * Then response status is 404 Not Found
+     */
+    @Test
+    void givenUnknownPlayer_whenPatch_thenReturnsNotFound()
+            throws Exception {
+        // Given
+        Integer squadNumber = 99;
+        PlayerPatchDTO dto = new PlayerPatchDTO();
+        dto.setFirstName("Unknown");
+        String content = objectMapper.writeValueAsString(dto);
+        Mockito
+                .when(playersServiceMock.patch(anyInt(), any(PlayerPatchDTO.class)))
+                .thenReturn(false);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .patch(PATH + "/{squadNumber}", squadNumber)
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON);
+        // When
+        MockHttpServletResponse response = application
+                .perform(request)
+                .andReturn()
+                .getResponse();
+        // Then
+        verify(playersServiceMock, times(1)).patch(anyInt(), any(PlayerPatchDTO.class));
+        then(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 }
+
