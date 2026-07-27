@@ -65,6 +65,12 @@ Release names follow the **historic football clubs** naming convention (A–Z):
   `/pre-commit`; move CodeRabbit review to run against the uncommitted CHANGELOG
   diff; separate commit-message approval from the actual commit so checks run
   in between
+- Trim `CLAUDE.md`: replace the "Pre-commit Checks" list with a pointer to the
+  existing `/pre-commit` skill, and move "Creating Issues" and "Key workflows"
+  into two new on-demand skills (`create-issue`, `key-workflows`) so their
+  content only loads when needed instead of every session — found and applied
+  by the new `/doctor` command, per
+  [the new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)
 
 ### Fixed
 

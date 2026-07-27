@@ -68,12 +68,7 @@ docker compose down -v
 
 ### Pre-commit Checks
 
-1. `./mvnw clean install` — must succeed
-2. All tests pass
-3. Check coverage at `target/site/jacoco/index.html`
-4. No compilation warnings
-5. Commit message follows Conventional Commits format (enforced by commitlint)
-6. If this commit introduces or changes an architectural decision, update `CLAUDE.md` and create or amend the relevant ADR in `docs/adr/`.
+Run `/pre-commit` to execute the full pre-commit checklist for this project before proposing a commit.
 
 ### Commits
 
@@ -114,36 +109,11 @@ Example: `feat(api): add player stats endpoint (#42)`
 
 ### Creating Issues
 
-This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code.
-
-**Feature request** (`enhancement` label):
-- **Problem**: the pain point being solved
-- **Proposed Solution**: expected behavior and functionality
-- **Suggested Approach** *(optional)*: implementation plan if known
-- **Acceptance Criteria**: at minimum — behaves as proposed, tests added/updated, no regressions
-- **References**: related issues, docs, or examples
-
-**Bug report** (`bug` label):
-- **Description**: clear summary of the bug
-- **Steps to Reproduce**: numbered, minimal steps
-- **Expected / Actual Behavior**: one section each
-- **Environment**: runtime versions + OS
-- **Additional Context**: logs, screenshots, stack traces
-- **Possible Solution** *(optional)*: suggested fix or workaround
+This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code. See the `create-issue` skill for the feature/bug issue templates.
 
 ### Key workflows
 
-**Add an endpoint**: Define DTO in `models/` with Bean Validation → add service method in `services/` with `@Transactional` → create controller endpoint with `@Operation` annotation → add tests → run `./mvnw clean test jacoco:report`.
-
-**Modify schema**: Create a new Flyway migration `src/main/resources/db/migration/V{N}__description.sql` (production path) → update `@Entity` in `models/Player.java` → update DTOs if API changes → also update `src/test/resources/ddl.sql` and `dml.sql` (tests use Spring SQL init, not Flyway) → update service, repository, and tests → run `./mvnw clean test`. Do not manually edit the SQLite file in `storage/`; Flyway owns it.
-
-**After completing work**: Suggest a branch name (e.g. `feat/add-player-stats`) and a commit message following Conventional Commits including co-author line:
-
-```text
-feat(scope): description (#issue)
-
-Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
-```
+See the `key-workflows` skill for the step-by-step guides to adding an endpoint, modifying the schema, and what to propose after finishing work.
 
 ## Invariants (never change without explicit discussion)
 
