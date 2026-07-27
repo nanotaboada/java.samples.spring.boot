@@ -3,6 +3,8 @@ name: create-issue
 description: Draft a GitHub Issue as the spec artifact for Spec-Driven Development (SDD) before implementing a feature or bug fix in this project.
 ---
 
+# Create an issue
+
 This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code.
 
 **Feature request** (`enhancement` label):

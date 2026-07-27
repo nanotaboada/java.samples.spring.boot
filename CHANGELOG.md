@@ -74,6 +74,9 @@ Release names follow the **historic football clubs** naming convention (A–Z):
 
 ### Fixed
 
+- Add top-level Markdown heading to `create-issue` and `key-workflows` skill
+  files to resolve MD041 (first-line-heading) — flagged by CodeRabbit on #355
+
 ### Removed
 
 ---
