@@ -105,7 +105,7 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.club }}
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4.1.1
+        uses: actions/attest-build-provenance@v4.2.2
         with:
           subject-name: ghcr.io/${{ github.repository }}
           subject-digest: ${{ steps.push.outputs.digest }}
