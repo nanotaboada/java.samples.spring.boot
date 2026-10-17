@@ -25,7 +25,7 @@
 
     <properties>
         <java.version>25</java.version>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
     </properties>
 
     <dependencies>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>3.0.3</version>
+            <version>3.1.1</version>
         </dependency>
         <!-- =============================================================== -->
         <!-- Services                                                        -->
@@ -117,7 +117,7 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.2.6</version>
+            <version>3.2.7</version>
         </dependency>
         <!-- =============================================================== -->
         <!-- Repositories                                                    -->
@@ -156,7 +156,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.53.2.0</version>
+            <version>3.53.4.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- Hibernate Community Dialects ==================================== -->
@@ -203,7 +203,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.4.240</version>
+            <version>2.5.252</version>
             <scope>test</scope>
         </dependency>
         <!-- =============================================================== -->
@@ -283,7 +283,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>3.16.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
